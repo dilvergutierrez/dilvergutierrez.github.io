@@ -2418,9 +2418,7 @@ SET @copiasocultas='governancestrategies.group@bbva.com;'
 
 SET @fecha=(select max(fecha) from pd_universo_diario)
 
-SET @cuerpo=N'<html><body><font face=Arial size=2>Estimados, el SOS se encuentra actualizado al '+convert(varchar(10), @fecha, 103)+'.<BR>
-<BR>Saludos,<BR><img src=https://extranetperu.grupobbva.pe/cobranzatm/Imagenes/LogoBBVA.png border=0><BR><BR><BR><b>Governance & Estrategies</b></font><BR><font size=2></font>
-</body></html>'
+SET @cuerpo=N'WW'
 
 --select @cuerpo
 --select @asunto
