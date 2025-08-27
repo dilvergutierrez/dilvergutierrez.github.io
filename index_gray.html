@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis 15 Años - Zimei</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Estilos personalizados para aplicar las fuentes y el tema */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* gray-900 */
+        }
+        .font-great-vibes {
+            font-family: 'Great Vibes', cursive;
+        }
+        .hero-bg {
+            /* Imagen de temática Disco/Brillo */
+            background-image: url('https://images.unsplash.com/photo-1542044012-85310f2655a1?q=80&w=1974&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+        /* Animación de entrada */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 1s ease-out forwards;
+        }
+        /* Para que las animaciones se activen en diferentes momentos */
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        .delay-4 { animation-delay: 0.8s; }
+
+        .card-shadow {
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="text-gray-300">
+
+    <!-- SECCIÓN PRINCIPAL (HERO) -->
+    <header class="hero-bg h-screen flex flex-col items-center justify-center text-white text-center">
+        <div class="bg-black bg-opacity-60 p-6 md:p-10 rounded-xl">
+            <h1 class="font-great-vibes text-7xl md:text-9xl drop-shadow-lg fade-in">Zimei</h1>
+            <p class="text-2xl md:text-4xl tracking-widest uppercase mt-2 fade-in delay-1">Mis 15 Años</p>
+            
+            <!-- Contador Regresivo -->
+            <div id="countdown" class="flex justify-center space-x-4 md:space-x-8 mt-8 text-lg md:text-2xl fade-in delay-2">
+                <div>
+                    <span id="days" class="font-bold text-4xl md:text-5xl">00</span>
+                    <p class="text-sm">Días</p>
+                </div>
+                <div>
+                    <span id="hours" class="font-bold text-4xl md:text-5xl">00</span>
+                    <p class="text-sm">Horas</p>
+                </div>
+                <div>
+                    <span id="minutes" class="font-bold text-4xl md:text-5xl">00</span>
+                    <p class="text-sm">Minutos</p>
+                </div>
+                <div>
+                    <span id="seconds" class="font-bold text-4xl md:text-5xl">00</span>
+                    <p class="text-sm">Segundos</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="max-w-4xl mx-auto p-6 md:p-12">
+
+        <!-- Mensaje de Invitación -->
+        <section class="text-center my-16 fade-in">
+            <h2 class="font-great-vibes text-5xl md:text-6xl text-gray-100 mb-4">Estás invitado</h2>
+            <p class="text-lg md:text-xl text-gray-400 leading-relaxed">
+                Hay momentos en la vida que son especiales por sí solos, pero compartirlos con las personas que amas los convierte en momentos inolvidables. Me haría muy feliz que me acompañes a celebrar mis quince años.
+            </p>
+        </section>
+
+        <!-- Padres -->
+        <section class="my-16 text-center fade-in delay-1">
+            <h3 class="font-great-vibes text-4xl text-gray-100 mb-3">Con la bendición de mis padres</h3>
+            <p class="text-xl text-gray-300">
+                María Castro & <br> Dilver Gutierrez
+            </p>
+        </section>
+
+        <!-- Detalles del Evento -->
+        <section class="my-16 bg-gray-800 p-8 rounded-2xl card-shadow fade-in delay-2">
+            <h2 class="font-great-vibes text-5xl text-gray-100 text-center mb-8">Celebración</h2>
+            <div class="space-y-8">
+                <!-- Evento Unico -->
+                <div class="flex flex-col items-center gap-6 text-center">
+                    <div class="bg-gray-700 p-4 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-100" viewBox="0 0 20 20" fill="currentColor">
+                           <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v4a1 1 0 00.293.707l3 3a1 1 0 001.414-1.414L11 8.586V5z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-2xl font-semibold text-white">Ceremonia y Recepción</h4>
+                        <p class="text-gray-400 mt-1">
+                            Jirón Pomabamba 1305 <br>
+                            Domingo 21 de Septiembre, 2025 - 8:00 PM
+                        </p>
+                        <a href="https://maps.app.goo.gl/HHfYTp8kg7ahBDeZA" target="_blank" class="inline-block mt-3 bg-gray-200 text-black font-semibold px-6 py-2 rounded-full hover:bg-white transition-colors">Ver Ubicación</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Galería de Fotos -->
+        <section class="my-16 fade-in delay-3">
+            <h2 class="font-great-vibes text-5xl text-gray-100 text-center mb-8">Galería</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <!-- Reemplaza estas URLs con las fotos de la quinceañera -->
+                <img src="https://placehold.co/400x600/a3a3a3/171717?text=Foto+1" alt="Foto de Zimei 1" class="rounded-lg shadow-md hover:scale-105 transition-transform">
+                <img src="https://placehold.co/400x400/d4d4d4/171717?text=Foto+2" alt="Foto de Zimei 2" class="rounded-lg shadow-md hover:scale-105 transition-transform">
+                <img src="https://placehold.co/400x600/a3a3a3/171717?text=Foto+3" alt="Foto de Zimei 3" class="rounded-lg shadow-md hover:scale-105 transition-transform">
+                <img src="https://placehold.co/400x400/d4d4d4/171717?text=Foto+4" alt="Foto de Zimei 4" class="rounded-lg shadow-md hover:scale-105 transition-transform col-span-2 md:col-span-1">
+                <img src="https://placehold.co/400x600/a3a3a3/171717?text=Foto+5" alt="Foto de Zimei 5" class="rounded-lg shadow-md hover:scale-105 transition-transform">
+                <img src="https://placehold.co/400x400/d4d4d4/171717?text=Foto+6" alt="Foto de Zimei 6" class="rounded-lg shadow-md hover:scale-105 transition-transform">
+            </div>
+        </section>
+
+        <!-- Información Adicional: Vestimenta y Regalo -->
+        <section class="grid md:grid-cols-2 gap-12 my-16 text-center">
+            <div class="bg-gray-800 p-8 rounded-2xl card-shadow fade-in delay-1">
+                <h3 class="font-great-vibes text-4xl text-gray-100 mb-3">Código de Vestimenta</h3>
+                <p class="text-xl text-white font-semibold">Formal</p>
+                <p class="text-gray-400 mt-2">Tu presencia es mi mejor regalo, pero si deseas obsequiarme algo, que sea con mucho estilo.</p>
+                <!-- BOTÓN PARA MODAL DE VESTIMENTA -->
+                <button onclick="openModal('https://placehold.co/400x600/a3a3a3/171717?text=Ejemplo+Vestimenta')" class="mt-4 bg-gray-600 text-gray-100 px-5 py-2 rounded-full hover:bg-gray-500 transition-colors text-sm font-semibold">Ver Ejemplo</button>
+            </div>
+            <div class="bg-gray-800 p-8 rounded-2xl card-shadow fade-in delay-2">
+                <h3 class="font-great-vibes text-4xl text-gray-100 mb-3">Sugerencia de Regalo</h3>
+                <p class="text-xl text-white font-semibold">Lluvia de Sobres</p>
+                <p class="text-gray-400 mt-2">Tu cariño y buenos deseos son lo más importante para mí en este día tan especial.</p>
+                <!-- BOTÓN PARA MODAL DE REGALO -->
+                <button onclick="openModal('https://placehold.co/400x600/d4d4d4/171717?text=Ejemplo+Sobre')" class="mt-4 bg-gray-600 text-gray-100 px-5 py-2 rounded-full hover:bg-gray-500 transition-colors text-sm font-semibold">Ver Ejemplo</button>
+            </div>
+        </section>
+        
+        <!-- Confirmar Asistencia (RSVP) -->
+        <section class="text-center my-16 fade-in delay-3">
+            <h2 class="font-great-vibes text-5xl text-gray-100 mb-4">¡Te espero!</h2>
+            <p class="text-lg md:text-xl text-gray-400 mb-8">
+                Por favor, confirma tu asistencia para poder contar contigo en esta noche mágica.
+            </p>
+            <a href="https://wa.me/51941703026?text=¡Hola!%20Confirmo%20mi%20asistencia%20a%20los%2015%20de%20Zimei.%20Mi%20nombre%20es%3A%20" target="_blank" class="inline-block bg-green-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-green-600 transition-colors shadow-md">
+                Confirmar por WhatsApp
+            </a>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="text-center py-12 bg-black">
+        <p class="text-xl text-gray-400">Con mucho cariño</p>
+        <h2 class="font-great-vibes text-6xl text-gray-100">Zimei</h2>
+    </footer>
+
+    <!-- ESTRUCTURA DE LA VENTANA MODAL -->
+    <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-gray-800 p-4 rounded-lg shadow-2xl max-w-lg w-full relative">
+            <!-- Botón de cerrar -->
+            <button onclick="closeModal()" class="absolute -top-4 -right-4 bg-gray-200 text-gray-900 rounded-full h-10 w-10 flex items-center justify-center text-2xl font-bold shadow-lg">&times;</button>
+            <!-- Imagen -->
+            <img id="modalImage" src="" alt="Imagen de ejemplo" class="w-full h-auto rounded-md">
+        </div>
+    </div>
+
+
+    <script>
+        // --- CONFIGURACIÓN DEL CONTADOR ---
+        const countdownDate = new Date("September 21, 2025 20:00:00").getTime();
+
+        const countdownFunction = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+
+            // Cálculos de tiempo
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Mostrar el resultado en los elementos
+            document.getElementById("days").innerText = days.toString().padStart(2, '0');
+            document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
+            document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
+            document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
+
+            // Si la cuenta regresiva termina
+            if (distance < 0) {
+                clearInterval(countdownFunction);
+                document.getElementById("countdown").innerHTML = "<div class='text-2xl font-bold'>¡El gran día ha llegado!</div>";
+            }
+        }, 1000);
+
+        // --- LÓGICA DE LA VENTANA MODAL ---
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+
+        function openModal(imageUrl) {
+            modalImage.src = imageUrl;
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+        }
+
+        // Cierra el modal si se hace clic fuera de la imagen
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+    </script>
+
+</body>
+</html>
