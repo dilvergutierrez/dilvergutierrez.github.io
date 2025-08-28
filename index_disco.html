@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis 15 Años - Zimei</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        
+        .font-great-vibes {
+            font-family: 'Great Vibes', cursive;
+        }
+
+        /* Fondo disco con efecto de partículas brillantes */
+        .disco-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%, #1a1a1a 100%);
+            z-index: -2;
+        }
+
+        .disco-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.8) 1px, transparent 1px),
+                radial-gradient(circle at 40% 20%, rgba(255, 255, 255, 0.6) 2px, transparent 2px),
+                radial-gradient(circle at 90% 30%, rgba(255, 255, 255, 0.9) 1.5px, transparent 1.5px),
+                radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.7) 1px, transparent 1px),
+                radial-gradient(circle at 15% 85%, rgba(255, 255, 255, 0.5) 2.5px, transparent 2.5px),
+                radial-gradient(circle at 60% 15%, rgba(255, 255, 255, 0.8) 1px, transparent 1px),
+                radial-gradient(circle at 85% 75%, rgba(255, 255, 255, 0.6) 2px, transparent 2px),
+                radial-gradient(circle at 35% 60%, rgba(255, 255, 255, 0.9) 1px, transparent 1px),
+                radial-gradient(circle at 75% 45%, rgba(255, 255, 255, 0.4) 3px, transparent 3px),
+                radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.7) 1.5px, transparent 1.5px),
+                radial-gradient(circle at 95% 60%, rgba(255, 255, 255, 0.8) 1px, transparent 1px),
+                radial-gradient(circle at 45% 90%, rgba(255, 255, 255, 0.5) 2px, transparent 2px),
+                radial-gradient(circle at 10% 40%, rgba(255, 255, 255, 0.9) 1px, transparent 1px),
+                radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.6) 2.5px, transparent 2.5px),
+                radial-gradient(circle at 55% 35%, rgba(255, 255, 255, 0.4) 1px, transparent 1px);
+            background-size: 
+                200px 200px, 300px 300px, 250px 250px, 180px 180px, 320px 320px,
+                220px 220px, 280px 280px, 190px 190px, 350px 350px, 160px 160px,
+                240px 240px, 300px 300px, 170px 170px, 290px 290px, 210px 210px;
+            animation: sparkle 4s ease-in-out infinite alternate;
+        }
+
+        .disco-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 30% 40%, rgba(192, 192, 192, 0.3) 40px, transparent 40px),
+                radial-gradient(circle at 70% 20%, rgba(192, 192, 192, 0.2) 60px, transparent 60px),
+                radial-gradient(circle at 20% 80%, rgba(192, 192, 192, 0.4) 30px, transparent 30px),
+                radial-gradient(circle at 80% 70%, rgba(192, 192, 192, 0.25) 50px, transparent 50px),
+                radial-gradient(circle at 50% 60%, rgba(192, 192, 192, 0.15) 80px, transparent 80px);
+            background-size: 400px 400px, 500px 500px, 350px 350px, 450px 450px, 600px 600px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { 
+                opacity: 0.8; 
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.3;
+            }
+            50% { 
+                transform: translateY(-10px) rotate(180deg);
+                opacity: 0.6;
+            }
+        }
+
+        .content-overlay {
+            position: relative;
+            z-index: 1;
+            background-color: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(1px);
+        }
+
+        /* Animación de entrada */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 1s ease-out forwards;
+        }
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        .delay-4 { animation-delay: 0.8s; }
+
+        .card-shadow {
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            background-color: rgba(40, 40, 40, 0.8);
+        }
+
+        .hero-text-shadow {
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="text-gray-300">
+    
+    <!-- Fondo disco animado -->
+    <div class="disco-bg"></div>
+
+    <div class="content-overlay min-h-screen">
+        <!-- SECCIÓN PRINCIPAL (HERO) -->
+        <header class="h-screen flex flex-col items-center justify-center text-white text-center px-4">
+            <div class="glass-effect p-6 md:p-10 rounded-xl max-w-4xl w-full">
+                <h1 class="font-great-vibes text-6xl md:text-8xl lg:text-9xl hero-text-shadow fade-in">Zimei</h1>
+                <p class="text-xl md:text-3xl lg:text-4xl tracking-widest uppercase mt-2 fade-in delay-1">Mis 15 Años</p>
+                
+                <!-- Contador Regresivo -->
+                <div id="countdown" class="flex justify-center space-x-2 md:space-x-6 mt-8 text-base md:text-xl fade-in delay-2">
+                    <div class="text-center">
+                        <span id="days" class="font-bold text-3xl md:text-4xl lg:text-5xl block">00</span>
+                        <p class="text-xs md:text-sm">Días</p>
+                    </div>
+                    <div class="text-center">
+                        <span id="hours" class="font-bold text-3xl md:text-4xl lg:text-5xl block">00</span>
+                        <p class="text-xs md:text-sm">Horas</p>
+                    </div>
+                    <div class="text-center">
+                        <span id="minutes" class="font-bold text-3xl md:text-4xl lg:text-5xl block">00</span>
+                        <p class="text-xs md:text-sm">Minutos</p>
+                    </div>
+                    <div class="text-center">
+                        <span id="seconds" class="font-bold text-3xl md:text-4xl lg:text-5xl block">00</span>
+                        <p class="text-xs md:text-sm">Segundos</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="max-w-4xl mx-auto p-6 md:p-12">
+
+            <!-- Mensaje de Invitación -->
+            <section class="text-center my-16 fade-in">
+                <div class="glass-effect p-8 rounded-2xl">
+                    <h2 class="font-great-vibes text-4xl md:text-5xl lg:text-6xl text-white mb-4">Estás invitado</h2>
+                    <p class="text-base md:text-lg lg:text-xl text-gray-200 leading-relaxed">
+                        Hay momentos en la vida que son especiales por sí solos, pero compartirlos con las personas que amas los convierte en momentos inolvidables. Me haría muy feliz que me acompañes a celebrar mis quince años.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Padres -->
+            <section class="my-16 text-center fade-in delay-1">
+                <div class="glass-effect p-8 rounded-2xl">
+                    <h3 class="font-great-vibes text-3xl md:text-4xl text-white mb-3">Con la bendición de mis padres</h3>
+                    <p class="text-lg md:text-xl text-gray-200">
+                        María Castro & <br> Dilver Gutiérrez
+                    </p>
+                </div>
+            </section>
+
+            <!-- Detalles del Evento -->
+            <section class="my-16 card-shadow p-8 rounded-2xl fade-in delay-2">
+                <h2 class="font-great-vibes text-4xl md:text-5xl text-white text-center mb-8">Celebración</h2>
+                <div class="space-y-8">
+                    <div class="flex flex-col items-center gap-6 text-center">
+                        <div class="bg-gray-600 bg-opacity-50 p-4 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" viewBox="0 0 20 20" fill="currentColor">
+                               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v4a1 1 0 00.293.707l3 3a1 1 0 001.414-1.414L11 8.586V5z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="text-xl md:text-2xl font-semibold text-white">Ceremonia y Recepción</h4>
+                            <p class="text-gray-200 mt-1 text-base md:text-lg">
+                                Jirón Pomabamba 1305 <br>
+                                Domingo 21 de Septiembre, 2025 - 8:00 PM
+                            </p>
+                            <a href="https://maps.app.goo.gl/HHfYTp8kg7ahBDeZA" target="_blank" class="inline-block mt-3 bg-white text-black font-semibold px-4 md:px-6 py-2 rounded-full hover:bg-gray-100 transition-colors text-sm md:text-base">Ver Ubicación</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Galería de Fotos -->
+            <section class="my-16 fade-in delay-3">
+                <div class="glass-effect p-8 rounded-2xl">
+                    <h2 class="font-great-vibes text-4xl md:text-5xl text-white text-center mb-8">Galería</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <img src="https://placehold.co/400x600/a3a3a3/171717?text=Foto+1" alt="Foto de Zimei 1" class="rounded-lg shadow-md hover:scale-105 transition-transform">
+                        <img src="https://placehold.co/400x400/d4d4d4/171717?text=Foto+2" alt="Foto de Zimei 2" class="rounded-lg shadow-md hover:scale-105 transition-transform">
+                        <img src="https://placehold.co/400x600/a3a3a3/171717?text=Foto+3" alt="Foto de Zimei 3" class="rounded-lg shadow-md hover:scale-105 transition-transform">
+                        <img src="https://placehold.co/400x400/d4d4d4/171717?text=Foto+4" alt="Foto de Zimei 4" class="rounded-lg shadow-md hover:scale-105 transition-transform col-span-2 md:col-span-1">
+                        <img src="https://placehold.co/400x600/a3a3a3/171717?text=Foto+5" alt="Foto de Zimei 5" class="rounded-lg shadow-md hover:scale-105 transition-transform">
+                        <img src="https://placehold.co/400x400/d4d4d4/171717?text=Foto+6" alt="Foto de Zimei 6" class="rounded-lg shadow-md hover:scale-105 transition-transform">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Información Adicional: Vestimenta y Regalo -->
+            <section class="grid md:grid-cols-2 gap-8 md:gap-12 my-16 text-center">
+                <div class="card-shadow p-6 md:p-8 rounded-2xl fade-in delay-1">
+                    <h3 class="font-great-vibes text-3xl md:text-4xl text-white mb-3">Código de Vestimenta</h3>
+                    <p class="text-lg md:text-xl text-white font-semibold">Formal</p>
+                    <p class="text-gray-200 mt-2 text-sm md:text-base">Tu presencia es mi mejor regalo, pero si deseas obsequiarme algo, que sea con mucho estilo.</p>
+                    <button onclick="openModal('https://placehold.co/400x600/a3a3a3/171717?text=Ejemplo+Vestimenta')" class="mt-4 bg-gray-500 bg-opacity-70 text-white px-4 md:px-5 py-2 rounded-full hover:bg-gray-400 hover:bg-opacity-70 transition-colors text-sm font-semibold">Ver Ejemplo</button>
+                </div>
+                <div class="card-shadow p-6 md:p-8 rounded-2xl fade-in delay-2">
+                    <h3 class="font-great-vibes text-3xl md:text-4xl text-white mb-3">Sugerencia de Regalo</h3>
+                    <p class="text-lg md:text-xl text-white font-semibold">Lluvia de Sobres</p>
+                    <p class="text-gray-200 mt-2 text-sm md:text-base">Tu cariño y buenos deseos son lo más importante para mí en este día tan especial.</p>
+                    <button onclick="openModal('https://placehold.co/400x600/d4d4d4/171717?text=Ejemplo+Sobre')" class="mt-4 bg-gray-500 bg-opacity-70 text-white px-4 md:px-5 py-2 rounded-full hover:bg-gray-400 hover:bg-opacity-70 transition-colors text-sm font-semibold">Ver Ejemplo</button>
+                </div>
+            </section>
+            
+            <!-- Confirmar Asistencia (RSVP) -->
+            <section class="text-center my-16 fade-in delay-3">
+                <div class="glass-effect p-8 rounded-2xl">
+                    <h2 class="font-great-vibes text-4xl md:text-5xl text-white mb-4">¡Te espero!</h2>
+                    <p class="text-base md:text-lg lg:text-xl text-gray-200 mb-8">
+                        Por favor, confirma tu asistencia para poder contar contigo en esta noche mágica.
+                    </p>
+                    <a href="https://wa.me/51941703026?text=¡Hola!%20Confirmo%20mi%20asistencia%20a%20los%2015%20de%20Zimei.%20Mi%20nombre%20es%3A%20" target="_blank" class="inline-block bg-green-500 text-white px-6 md:px-8 py-3 md:py-4 rounded-full text-base md:text-lg font-semibold hover:bg-green-600 transition-colors shadow-md">
+                        Confirmar por WhatsApp
+                    </a>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="text-center py-12 bg-black bg-opacity-50">
+            <p class="text-lg md:text-xl text-gray-300">Con mucho cariño</p>
+            <h2 class="font-great-vibes text-5xl md:text-6xl text-white">Zimei</h2>
+        </footer>
+    </div>
+
+    <!-- ESTRUCTURA DE LA VENTANA MODAL -->
+    <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-gray-800 bg-opacity-90 p-4 rounded-lg shadow-2xl max-w-lg w-full relative backdrop-filter backdrop-blur-sm">
+            <button onclick="closeModal()" class="absolute -top-4 -right-4 bg-white text-gray-900 rounded-full h-10 w-10 flex items-center justify-center text-2xl font-bold shadow-lg hover:bg-gray-100 transition-colors">&times;</button>
+            <img id="modalImage" src="" alt="Imagen de ejemplo" class="w-full h-auto rounded-md">
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURACIÓN DEL CONTADOR
+        const countdownDate = new Date("September 21, 2025 20:00:00").getTime();
+
+        const countdownFunction = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+
+            // Cálculos de tiempo
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Mostrar el resultado en los elementos
+            document.getElementById("days").innerText = Math.max(0, days).toString().padStart(2, '0');
+            document.getElementById("hours").innerText = Math.max(0, hours).toString().padStart(2, '0');
+            document.getElementById("minutes").innerText = Math.max(0, minutes).toString().padStart(2, '0');
+            document.getElementById("seconds").innerText = Math.max(0, seconds).toString().padStart(2, '0');
+
+            // Si la cuenta regresiva termina
+            if (distance < 0) {
+                clearInterval(countdownFunction);
+                document.getElementById("countdown").innerHTML = "<div class='text-xl md:text-2xl font-bold text-white'>¡El gran día ha llegado!</div>";
+            }
+        }, 1000);
+
+        // LÓGICA DE LA VENTANA MODAL
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+
+        function openModal(imageUrl) {
+            modalImage.src = imageUrl;
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevenir scroll del body
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto'; // Restaurar scroll del body
+        }
+
+        // Cierra el modal si se hace clic fuera de la imagen
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Cierra el modal con la tecla Escape
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+    </script>
+
+</body>
+</html>
