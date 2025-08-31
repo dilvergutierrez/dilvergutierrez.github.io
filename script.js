@@ -85,13 +85,6 @@ for (let i = 0; i < 50; i++) {
     createParticle();
 }
 
-// Añadir partículas adicionales periódicamente
-setInterval(() => {
-    if (document.querySelectorAll('.particle').length < 60) {
-        createParticle();
-    }
-}, 2000);
-
 // Efecto de brillo al mover el mouse
 document.addEventListener('mousemove', (e) => {
     const sparkle = document.createElement('div');
@@ -115,3 +108,4 @@ document.addEventListener('mousemove', (e) => {
         }
     }, 1500);
 });
+
