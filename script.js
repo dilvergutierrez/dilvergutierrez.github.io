@@ -1,5 +1,5 @@
 // CONFIGURACIÓN DEL CONTADOR
-const countdownDate = new Date("September 21, 2025 20:00:00").getTime();
+const countdownDate = new Date("September 20, 2025 21:00:00").getTime();
 
 const countdownFunction = setInterval(function() {
     const now = new Date().getTime();
