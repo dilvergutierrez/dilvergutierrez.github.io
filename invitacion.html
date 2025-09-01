@@ -56,6 +56,19 @@
                         <p class="text-xs md:text-sm">Segundos</p>
                     </div>
                 </div>
+				<!-- HTML: Elemento de audio y botón de control -->
+				<audio id="backgroundMusic" loop preload="auto">
+					<source src="musica-fondo.mp3" type="audio/mpeg">
+					<source src="musica-fondo.ogg" type="audio/ogg">
+					Tu navegador no soporta el elemento de audio.
+				</audio>
+
+				<!-- Botón de control de audio (colocar donde desees en la página) -->
+				<button id="audioToggle" class="fixed bottom-6 right-6 bg-gray-800 bg-opacity-70 text-white p-3 rounded-full shadow-lg hover:bg-gray-700 hover:bg-opacity-70 transition-colors z-50 backdrop-filter backdrop-blur-sm">
+					<svg id="audioIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+						<path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.804L4.828 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.828l3.555-3.804A1 1 0 019.383 3.076zM12 6.414c0-.894.894-1.561 1.75-.957a5 5 0 010 9.086c-.856.604-1.75-.063-1.75-.957V6.414zm0 4.828c0-.547.547-.961 1.067-.683a2 2 0 010 3.682c-.52.278-1.067-.136-1.067-.683v-2.316z" clip-rule="evenodd" />
+					</svg>
+				</button>
             </div>
         </header>
 

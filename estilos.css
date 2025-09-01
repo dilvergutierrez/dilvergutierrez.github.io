@@ -303,3 +303,19 @@ body {
 .h-ico {
     height: 2.5rem;
 }
+
+#audioToggle {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#audioToggle:hover {
+    transform: scale(1.05);
+}
+
+.muted #audioIcon {
+    opacity: 0.5;
+}
+
+.muted #audioIcon path {
+    fill: #ef4444;
+}

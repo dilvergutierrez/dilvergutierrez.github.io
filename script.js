@@ -109,3 +109,70 @@ document.addEventListener('mousemove', (e) => {
     }, 1500);
 });
 
+// JavaScript para controlar el audio
+document.addEventListener('DOMContentLoaded', function() {
+    const audio = document.getElementById('backgroundMusic');
+    const toggleButton = document.getElementById('audioToggle');
+    const audioIcon = document.getElementById('audioIcon');
+    let isPlaying = false;
+    let isMuted = false;
+	
+
+    // Iconos SVG
+    const soundOnIcon = `<path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.804L4.828 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.828l3.555-3.804A1 1 0 019.383 3.076zM12 6.414c0-.894.894-1.561 1.75-.957a5 5 0 010 9.086c-.856.604-1.75-.063-1.75-.957V6.414zm0 4.828c0-.547.547-.961 1.067-.683a2 2 0 010 3.682c-.52.278-1.067-.136-1.067-.683v-2.316z" clip-rule="evenodd" />`;
+    
+    const soundOffIcon = `<path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.804L4.828 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.828l3.555-3.804A1 1 0 019.383 3.076z" clip-rule="evenodd" /><path d="M15.707 6.293a1 1 0 010 1.414L13.414 10l2.293 2.293a1 1 0 01-1.414 1.414L12 11.414l-2.293 2.293a1 1 0 01-1.414-1.414L10.586 10 8.293 7.707a1 1 0 011.414-1.414L12 8.586l2.293-2.293a1 1 0 011.414 0z" />`;
+
+	audioIcon.innerHTML = soundOffIcon;
+	toggleButton.classList.add('muted');
+    // Función para alternar entre reproducir y silenciar
+    function toggleAudio() {
+        if (!isPlaying && !isMuted) {
+            // Primera vez: comenzar a reproducir
+            audio.play().then(() => {
+                isPlaying = true;
+                updateButton();
+            }).catch(error => {
+                console.log('Error al reproducir audio:', error);
+            });
+        } else if (isPlaying && !isMuted) {
+            // Silenciar
+            audio.muted = true;
+            isMuted = true;
+            toggleButton.classList.add('muted');
+            updateButton();
+        } else if (isMuted) {
+            // Reactivar sonido
+            audio.muted = false;
+            isMuted = false;
+            toggleButton.classList.remove('muted');
+            updateButton();
+        }
+    }
+
+    // Actualizar el icono del botón
+    function updateButton() {
+        if (isMuted) {
+            audioIcon.innerHTML = soundOffIcon;
+        } else {
+            audioIcon.innerHTML = soundOnIcon;
+        }
+    }
+
+    // Event listener para el botón
+    toggleButton.addEventListener('click', toggleAudio);
+
+    // Configurar volumen inicial (opcional)
+    audio.volume = 0.3; // 30% del volumen máximo
+
+    // Auto-reproducir después de una interacción del usuario (recomendado)
+    // Descomenta las siguientes líneas si quieres auto-reproducir:
+    /*
+    document.addEventListener('click', function startAudio() {
+        if (!isPlaying) {
+            toggleAudio();
+        }
+        document.removeEventListener('click', startAudio);
+    }, { once: true });
+    */
+});
