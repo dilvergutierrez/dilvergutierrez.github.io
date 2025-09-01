@@ -92,7 +92,7 @@ body {
 /* Destellos luminosos integrados */
 .particle {
     position: fixed;
-    background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0.6) 40%, transparent 70%);
+    background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0.6) 100%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
     z-index: -1;
@@ -173,7 +173,7 @@ body {
 .content-overlay {
     position: relative;
     z-index: 1;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(1px);
 }
 
