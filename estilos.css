@@ -228,7 +228,6 @@ body {
 }
 
 .timeline-item::before {
-    content: '';
     position: absolute;
     left: -8px;
     top: 50%;
@@ -295,5 +294,13 @@ body {
     .date-year {
         font-size: 1.5rem;
     }
+}
+
+.w-ico {
+    width: 2.5rem;
+}
+
+.h-ico {
+    height: 2.5rem;
 }
 
