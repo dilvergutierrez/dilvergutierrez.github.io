@@ -56,20 +56,107 @@
                         <p class="text-xs md:text-sm">Segundos</p>
                     </div>
                 </div>
-				<!-- HTML: Elemento de audio y botón de control -->
-				<audio id="backgroundMusic" loop preload="auto">
-					<source src="musica-fondo.mp3" type="audio/mpeg">
-					<source src="musica-fondo.ogg" type="audio/ogg">
-					Tu navegador no soporta el elemento de audio.
-				</audio>
-
-				<!-- Botón de control de audio (colocar donde desees en la página) -->
-				<button id="audioToggle" class="fixed bottom-6 right-6 bg-gray-800 bg-opacity-70 text-white p-3 rounded-full shadow-lg hover:bg-gray-700 hover:bg-opacity-70 transition-colors z-50 backdrop-filter backdrop-blur-sm">
-					<svg id="audioIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-						<path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.804L4.828 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.828l3.555-3.804A1 1 0 019.383 3.076zM12 6.414c0-.894.894-1.561 1.75-.957a5 5 0 010 9.086c-.856.604-1.75-.063-1.75-.957V6.414zm0 4.828c0-.547.547-.961 1.067-.683a2 2 0 010 3.682c-.52.278-1.067-.136-1.067-.683v-2.316z" clip-rule="evenodd" />
-					</svg>
-				</button>
+				
+				
+				
             </div>
+			
+			<div>
+			<br>
+			<!-- Control de Música Personalizado -->
+				<div id="musicPlayerContainer" class="music-player-container ">
+				  <div class="music-player">
+					<!-- Visualizador de frecuencias -->
+					<div class="visualizer-container">
+					  <canvas id="visualizer" width="300" height="100"></canvas>
+					  <div class="visualizer-bars" id="visualizerBars">
+						<div class="bar"></div>
+						<div class="bar"></div>
+						<div class="bar"></div>
+						<div class="bar"></div>
+						<div class="bar"></div>
+						<div class="bar"></div>
+						<div class="bar"></div>
+						<div class="bar"></div>
+						<div class="bar"></div>
+						<div class="bar"></div>
+						<div class="bar"></div>
+						<div class="bar"></div>
+						<div class="bar"></div>
+						<div class="bar"></div>
+						<div class="bar"></div>
+						<div class="bar"></div>
+						<div class="bar"></div>
+						<div class="bar"></div>
+						<div class="bar"></div>
+						<div class="bar"></div>
+					  </div>
+					</div>
+					
+					<!-- Información de la canción -->
+					<div class="song-info">
+					  <div class="song-title" id="songTitle">Cold Heart (PNAU Remix)</div>
+					  <div class="song-artist" id="songArtist">Elton John, Dua Lipa</div>
+					</div>
+					
+					<!-- Controles de reproducción -->
+					<div class="player-controls">
+					  <button class="control-btn" id="prevBtn">
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+						  <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+						</svg>
+					  </button>
+					  
+					  <button class="control-btn play-pause-btn" id="playPauseBtn">
+						<svg class="play-icon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+						  <path d="m7 4 10 8L7 20V4z"/>
+						</svg>
+						<svg class="pause-icon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+						  <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+						</svg>
+					  </button>
+					  
+					  <button class="control-btn" id="nextBtn">
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+						  <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+						</svg>
+					  </button>
+					</div>
+					
+					<!-- Barra de progreso -->
+					<div class="progress-container">
+					  <div class="progress-bar">
+						<div class="progress-fill" id="progressFill"></div>
+						<div class="progress-handle" id="progressHandle"></div>
+					  </div>
+					  <div class="time-info">
+						<span id="currentTime">0:00</span>
+						<span id="duration">0:00</span>
+					  </div>
+					</div>
+					
+					<!-- Control de volumen -->
+					<div class="volume-container">
+					  <button class="volume-btn" id="volumeBtn">
+						<svg class="volume-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+						  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+						</svg>
+					  </button>
+					  <div class="volume-bar">
+						<div class="volume-fill" id="volumeFill"></div>
+						<div class="volume-handle" id="volumeHandle"></div>
+					  </div>
+					</div>
+				  </div>
+				</div>
+				
+				<!-- Audio element (oculto) -->
+				<audio id="audioPlayer" preload="metadata">
+				  <!-- Agrega aquí tus archivos de audio -->
+				  <source src="musica-fondo.mp3" type="audio/mpeg">
+				  Tu navegador no soporta el elemento de audio.
+				</audio>
+			</div>
         </header>
 
         <!-- CONTENIDO PRINCIPAL -->
@@ -446,3 +533,4 @@
 
 </body>
 </html>
+
