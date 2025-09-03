@@ -303,7 +303,7 @@ body {
 .h-ico {
     height: 2.5rem;
 }
-
+/*
 #audioToggle {
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -318,4 +318,67 @@ body {
 
 .muted #audioIcon path {
     fill: #ef4444;
+}
+*/
+
+/* Estilos para el panel de audio */
+#audioPanel {
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Estilo para el slider de volumen */
+.volume-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Animaciones para el visualizador */
+#audioVisualizer {
+    background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.2) 0%, rgba(0, 0, 0, 0.8) 70%);
+}
+
+/* Estados activos de los botones */
+.active {
+    background: linear-gradient(45deg, #10b981, #059669) !important;
+    transform: scale(1.05);
+}
+
+.loop-active {
+    background: linear-gradient(45deg, #10b981, #059669) !important;
+}
+
+.muted {
+    background: linear-gradient(45deg, #ef4444, #dc2626) !important;
+}
+
+/* Efectos de pulsación en botones */
+button:active {
+    transform: scale(0.95);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #audioPanel {
+        top: 4px;
+        right: 4px;
+        min-width: 260px;
+    }
 }
