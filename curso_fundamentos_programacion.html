@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curso de Fundamentos de Programación y Robótica</title>
+    <!-- Chosen Palette: Tech Horizon -->
+    <!-- Application Structure Plan: The SPA is structured as a single-page scrolling narrative designed for parents. It starts with a compelling hero section, moves to the core benefits ("¿Por qué?"), explains the unique methodology (RAPTOR + Gamification), details the curriculum via an interactive accordion ("La Aventura"), visually demonstrates the reward system with a chart and interactive badges ("Sistema de Recompensas"), and ends with details and a clear call to action. This top-down funnel structure is chosen to first build value and excitement, then provide details, making it more persuasive and easier to navigate than a simple text document. -->
+    <!-- Visualization & Content Choices: 
+        - Course Benefits -> Goal: Inform -> Method: Responsive cards with icons. Interaction: None, for clarity. Justification: Quickly communicates the key value propositions. Method: HTML/Tailwind.
+        - 4-Week Syllabus -> Goal: Organize -> Method: Interactive accordion. Interaction: Click to expand/collapse weeks. Justification: Presents a dense curriculum in a clean, user-controlled way, preventing information overload. Method: HTML/Tailwind/JS.
+        - Gamification Levels -> Goal: Change/Compare -> Method: Line chart showing XP progression. Interaction: Tooltips on hover showing required XP. Justification: Visually represents the student's journey and effort required, making the concept of "levels" tangible. Library: Chart.js (Canvas).
+        - Gamification Badges -> Goal: Inform/Organize -> Method: Grid of badges. Interaction: Tooltip on hover showing badge name and criteria. Justification: Showcases the variety of achievements in a visually engaging way. Method: HTML/Tailwind/JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-700">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-cyan-600">
+                <span>Code<span class="text-slate-800">Futures</span></span>
+            </div>
+            <div class="hidden md:flex space-x-6 lg:space-x-8 text-sm font-semibold">
+                <a href="#beneficios" class="hover:text-cyan-600 transition-colors">Beneficios</a>
+                <a href="#metodologia" class="hover:text-cyan-600 transition-colors">Metodología</a>
+                <a href="#aventura" class="hover:text-cyan-600 transition-colors">El Curso</a>
+                <a href="#recompensas" class="hover:text-cyan-600 transition-colors">Gamificación</a>
+            </div>
+            <a href="https://wa.me/51941703026?text=¡Hola!%20Quiero%20inscribirme%20al%20curso%20de%20fundamentos%20de%20Programacion.%20Mi%20nombre%20es:%20" target="_blank" class="bg-cyan-500 text-white font-bold px-5 py-2 rounded-full hover:bg-cyan-600 transition-transform hover:scale-105 shadow-md text-sm">Inscribirse</a>
+			
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="relative pt-20 pb-24 text-center bg-white">
+            <div class="container mx-auto px-6">
+                <div class="absolute inset-0 bg-grid-slate-200 [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
+                <div class="relative">
+                    <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 leading-tight">
+                        ¡Prepara a tu hijo para el futuro!
+                    </h1>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600">
+                        Transforma la curiosidad por la tecnología en una habilidad fundamental para el siglo XXI con nuestro curso de Fundamentos de Programación.
+                    </p>
+                    <div class="mt-8 flex justify-center gap-4">
+                        <a href="#aventura" class="bg-slate-900 text-white font-bold px-8 py-3 rounded-full hover:bg-slate-700 transition-transform hover:scale-105">Ver Contenido</a>
+                        <a href="https://wa.me/51941703026?text=¡Hola!%20Quiero%20inscribirme%20al%20curso%20de%20fundamentos%20de%20Programacion.%20Mi%20nombre%20es:%20" target="_blank" class="bg-white text-slate-900 font-bold px-8 py-3 rounded-full ring-1 ring-slate-300 hover:bg-slate-100 transition-transform hover:scale-105">Inscribir Ahora</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Beneficios Section -->
+        <section id="beneficios" class="py-20 bg-slate-50">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">¿Por Qué Aprender a Programar Hoy?</h2>
+                    <p class="mt-3 max-w-2xl mx-auto text-slate-600">Más que código, la programación desarrolla habilidades esenciales para la vida y el futuro profesional de tu hijo.</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+                        <h3 class="text-xl font-semibold text-slate-900">🧠 Desarrollo del Pensamiento Lógico</h3>
+                        <p class="mt-2 text-slate-600">Aprenderá a analizar problemas, dividirlos en partes y diseñar soluciones paso a paso, una habilidad clave en matemáticas y ciencias.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+                        <h3 class="text-xl font-semibold text-slate-900">💡 Resolución de Problemas Complejos</h3>
+                        <p class="mt-2 text-slate-600">Ganará la confianza para enfrentar desafíos y la resiliencia para encontrar soluciones creativas cuando las cosas no salen como se espera.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+                        <h3 class="text-xl font-semibold text-slate-900">🎨 Fomento de la Creatividad</h3>
+                        <p class="mt-2 text-slate-600">Descubrirá que puede crear, inventar y dar vida a sus propias ideas, desde un simple cálculo hasta el cerebro de un robot.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+                        <h3 class="text-xl font-semibold text-slate-900">🚀 Preparación para Carreras STEAM</h3>
+                        <p class="mt-2 text-slate-600">Adquirirá una base sólida para las profesiones con mayor demanda en los campos de la ciencia, tecnología, ingeniería y artes.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+                        <h3 class="text-xl font-semibold text-slate-900">🐍 Base para Python y Robótica</h3>
+                        <p class="mt-2 text-slate-600">Este curso es el trampolín perfecto hacia lenguajes más avanzados y el emocionante mundo de las competencias de robótica.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+                        <h3 class="text-xl font-semibold text-slate-900">💪 Confianza y Autonomía</h3>
+                        <p class="mt-2 text-slate-600">Al dominar nuevas habilidades tecnológicas, su autoestima y capacidad para aprender de forma independiente se verán fortalecidas.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Metodología Section -->
+        <section id="metodologia" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Nuestra Metodología Única</h2>
+                    <p class="mt-3 max-w-2xl mx-auto text-slate-600">Entendemos que la mejor manera de aprender es divirtiéndose. Nuestro enfoque se basa en dos pilares innovadores.</p>
+                </div>
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="bg-slate-50 p-8 rounded-xl border border-slate-200">
+                        <h3 class="text-2xl font-bold text-slate-900 mb-4">1. La Lógica Antes que el Código</h3>
+                        <p class="mb-4 text-slate-600">En lugar de empezar con lenguajes complejos, usamos <strong>RAPTOR</strong>, una herramienta visual que permite a tu hijo concentrarse en lo más importante: <strong>cómo pensar como un programador</strong>. Diseñará soluciones lógicas de manera intuitiva, construyendo una base mental sólida sin la frustración de la sintaxis.</p>
+                        <div class="bg-white p-4 rounded-lg shadow-inner border border-slate-200 text-center text-sm font-mono text-slate-500">
+                            <p>Inicio</p>
+                            <p class="ml-4">↓</p>
+                            <p class="border border-slate-300 rounded p-2">[Asignar: variable = valor]</p>
+                            <p class="ml-4">↓</p>
+                            <p class="border border-slate-300 rounded p-2">[Imprimir: "Hola, Mundo"]</p>
+                            <p class="ml-4">↓</p>
+                            <p>Fin</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-8 rounded-xl border border-slate-200">
+                        <h3 class="text-2xl font-bold text-slate-900 mb-4">2. Aprender es un Juego (Gamificación)</h3>
+                        <p class="text-slate-600">Abandonamos las clases tradicionales y transformamos el curso en una emocionante misión. Con nuestro sistema de gamificación, los estudiantes se mantienen motivados celebrando cada uno de sus logros a través de:</p>
+                        <ul class="mt-4 space-y-2 list-disc list-inside text-slate-600">
+                            <li><strong>Puntos de Experiencia (XP)</strong> por cada desafío resuelto.</li>
+                            <li><strong>Niveles progresivos</strong> que marcan su avance.</li>
+                            <li><strong>Insignias temáticas</strong> por dominar nuevas habilidades.</li>
+                            <li><strong>Un podio de ganadores</strong> para una sana competencia.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Aventura Section / Syllabus -->
+        <section id="aventura" class="py-20 bg-slate-50">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">La Aventura del Aprendizaje</h2>
+                    <p class="mt-3 max-w-2xl mx-auto text-slate-600">Un viaje de 4 semanas que lleva a los estudiantes desde cero hasta la creación de sus propios algoritmos complejos.</p>
+                </div>
+                <div id="syllabus-accordion" class="max-w-3xl mx-auto space-y-4">
+                    <!-- Accordion items will be inserted here by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Recompensas Section / Gamification -->
+        <section id="recompensas" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Sistema de Recompensas</h2>
+                    <p class="mt-3 max-w-2xl mx-auto text-slate-600">Visualiza el camino de tu hijo de Recluta a Maestro de RAPTOR y las insignias que puede ganar.</p>
+                </div>
+                
+                <div class="grid lg:grid-cols-5 gap-8">
+                    <div class="lg:col-span-3">
+                        <h3 class="text-2xl font-bold text-slate-900 mb-4">Progresión de Niveles por XP</h3>
+                        <p class="text-slate-600 mb-4">A medida que los estudiantes completan ejercicios, ganan Puntos de Experiencia (XP) para subir de nivel. Este gráfico muestra el camino que deben recorrer. Cada nivel es un hito que demuestra su creciente dominio.</p>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <div class="chart-container">
+                                <canvas id="xp-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-2">
+                        <h3 class="text-2xl font-bold text-slate-900 mb-4">Insignias por Habilidad</h3>
+                        <p class="text-slate-600 mb-4">Las insignias son reconocimientos especiales por dominar conceptos clave. ¡Coloca el cursor sobre cada una para saber más!</p>
+                        <div id="badges-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-4">
+                            <!-- Badges will be inserted here by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="badge-tooltip" class="hidden absolute z-10 bg-slate-800 text-white text-sm px-3 py-1.5 rounded-md shadow-lg"></div>
+        </section>
+
+        <!-- Inscripcion Section -->
+        <section id="inscripcion" class="py-20 bg-cyan-600 text-white">
+            <div class="container mx-auto px-6 text-center">
+                 <h2 class="text-3xl md:text-4xl font-bold">¡Dale a tu hijo las herramientas para construir el mañana!</h2>
+                 <p class="mt-4 max-w-2xl mx-auto text-cyan-100">Los cupos son limitados para garantizar una atención personalizada. ¡Inscríbelo hoy!</p>
+                 <div class="mt-8">
+                     <a href="https://wa.me/51941703026?text=¡Hola!%20Quiero%20inscribirme%20al%20curso%20de%20fundamentos%20de%20Programacion.%20Mi%20nombre%20es:%20" target="_blank" class="bg-white text-cyan-600 font-extrabold text-lg px-10 py-4 rounded-full hover:bg-slate-100 transition-transform hover:scale-105 shadow-2xl inline-block">¡Quiero Inscribir a mi Hijo!</a>
+                 </div>
+
+                 <div class="mt-12 pt-8 border-t border-cyan-500 max-w-4xl mx-auto grid md:grid-cols-3 gap-8 text-left">
+                     <div>
+                         <h4 class="font-bold text-lg">Detalles del Curso</h4>
+                         <ul class="mt-2 space-y-1 text-cyan-100 text-sm">
+                             <li><strong>Edad:</strong> 11 a 16 años</li>
+                             <li><strong>Nivel:</strong> Principiantes</li>
+                             <li><strong>Duración:</strong> 1 Mes</li>
+                             <li><strong>Modalidad:</strong> Híbrido</li>
+                         </ul>
+                     </div>
+                     <div>
+                         <h4 class="font-bold text-lg">Contacto</h4>
+                         <ul class="mt-2 space-y-1 text-cyan-100 text-sm">
+                             <li><strong>Teléfono:</strong> 941703026</li>
+                             <li><strong>Email:</strong> dilver.gutierrez@gmail.com</li>
+                         </ul>
+                     </div>
+                      <div>
+                         <h4 class="font-bold text-lg">Próximo Inicio</h4>
+                         <p class="mt-2 text-cyan-100 text-sm">Consulta las próximas fechas de inicio y asegura tu lugar.</p>
+                     </div>
+                 </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-800 text-slate-400 text-sm">
+        <div class="container mx-auto px-6 py-6 text-center">
+            <p>&copy; 2025 CodeFutures Academy. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Data for the application
+            const syllabus = [
+                {
+                    week: 1,
+                    title: "Los Cimientos del Código",
+                    content: "¿Qué es un algoritmo? Daremos los primeros pasos para pensar de forma estructurada. Aprenderemos sobre variables y cómo dar y recibir información en un programa."
+                },
+                {
+                    week: 2,
+                    title: "Tomando Decisiones Inteligentes",
+                    content: "Nuestros programas comenzarán a 'pensar'. Exploraremos la lógica y las estructuras condicionales para que los algoritmos puedan tomar decisiones y reaccionar a diferentes situaciones."
+                },
+                {
+                    week: 3,
+                    title: "El Poder de la Repetición",
+                    content: "Descubriremos los bucles, la herramienta más poderosa de la programación para automatizar tareas repetitivas. ¡Aquí es donde la magia realmente comienza!"
+                },
+                {
+                    week: 4,
+                    title: "¡Construyendo Soluciones Reales!",
+                    content: "Aprenderemos a organizar nuestro código con funciones y aplicaremos todo lo aprendido en un proyecto final épico: diseñar el algoritmo que controlará un robot virtual."
+                }
+            ];
+
+            const levels = {
+                "Nivel 1: Recluta": 0,
+                "Nivel 2: Aprendiz": 100,
+                "Nivel 3: Cadete": 250,
+                "Nivel 4: Piloto": 450,
+                "Nivel 5: Arquitecto": 700,
+                "Nivel 6: Maestro": 1000
+            };
+
+            const badges = {
+                "Primer Contacto": "Completa el primer 'Hola, Mundo'.",
+                "Maestro de Variables": "Usa variables de diferentes tipos.",
+                "Detector de Sensores": "Completa un programa con if-else.",
+                "Maestro de Ciclos": "Crea tu primer bucle funcional.",
+                "Ingeniero de Datos": "Utiliza un arreglo para almacenar datos.",
+                "Arquitecto de Funciones": "Crea y llama a tu primera función.",
+                "Depurador Experto": "Soluciona un error difícil.",
+                "Proyecto Finalizado": "Completa con éxito el proyecto final."
+            };
+
+            // 1. Syllabus Accordion
+            const accordionContainer = document.getElementById('syllabus-accordion');
+            if (accordionContainer) {
+                syllabus.forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.classList.add('bg-white', 'rounded-xl', 'shadow-md', 'overflow-hidden');
+                    div.innerHTML = `
+                        <button class="accordion-toggle w-full flex justify-between items-center text-left p-6 font-semibold text-slate-800">
+                            <span>Semana ${item.week}: ${item.title}</span>
+                            <span class="transform transition-transform duration-300 text-cyan-500 text-2xl">+</span>
+                        </button>
+                        <div class="accordion-content max-h-0 overflow-hidden transition-max-height duration-500 ease-in-out">
+                            <p class="p-6 pt-0 text-slate-600">${item.content}</p>
+                        </div>
+                    `;
+                    accordionContainer.appendChild(div);
+                });
+
+                accordionContainer.addEventListener('click', function(e) {
+                    const toggle = e.target.closest('.accordion-toggle');
+                    if (toggle) {
+                        const content = toggle.nextElementSibling;
+                        const icon = toggle.querySelector('span:last-child');
+                        
+                        // Close all others
+                        this.querySelectorAll('.accordion-content').forEach(c => {
+                            if (c !== content) {
+                                c.style.maxHeight = null;
+                                c.previousElementSibling.querySelector('span:last-child').classList.remove('rotate-45');
+                                c.previousElementSibling.querySelector('span:last-child').textContent = '+';
+                            }
+                        });
+
+                        // Toggle clicked one
+                        if (content.style.maxHeight) {
+                            content.style.maxHeight = null;
+                            icon.classList.remove('rotate-45');
+                            icon.textContent = '+';
+                        } else {
+                            content.style.maxHeight = content.scrollHeight + "px";
+                            icon.classList.add('rotate-45');
+                            icon.textContent = '+';
+                        }
+                    }
+                });
+            }
+
+            // 2. XP Chart
+            const ctx = document.getElementById('xp-chart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: Object.keys(levels),
+                        datasets: [{
+                            label: 'XP Requerido por Nivel',
+                            data: Object.values(levels),
+                            fill: true,
+                            backgroundColor: 'rgba(14, 165, 233, 0.1)', // cyan-500/10
+                            borderColor: 'rgb(14, 165, 233)', // cyan-500
+                            tension: 0.1,
+                            pointBackgroundColor: 'rgb(14, 165, 233)',
+                            pointRadius: 5,
+                            pointHoverRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return ` XP Requerido: ${context.parsed.y}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Puntos de Experiencia (XP)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 3. Badges Grid & Tooltip
+            const badgesGrid = document.getElementById('badges-grid');
+            const tooltip = document.getElementById('badge-tooltip');
+            if(badgesGrid && tooltip) {
+                Object.entries(badges).forEach(([name, description]) => {
+                    const div = document.createElement('div');
+                    div.classList.add('badge', 'bg-slate-100', 'p-3', 'rounded-lg', 'text-center', 'cursor-pointer', 'hover:bg-slate-200', 'transition-colors');
+                    div.dataset.name = name;
+                    div.dataset.description = description;
+                    div.innerHTML = `<div class="text-3xl">🏅</div><div class="text-xs mt-1 font-semibold">${name}</div>`;
+                    badgesGrid.appendChild(div);
+                });
+
+                badgesGrid.addEventListener('mouseover', function(e) {
+                    const badge = e.target.closest('.badge');
+                    if (badge) {
+                        tooltip.textContent = `${badge.dataset.name}: ${badge.dataset.description}`;
+                        tooltip.classList.remove('hidden');
+                        
+                        const rect = badge.getBoundingClientRect();
+                        tooltip.style.left = `${rect.left + window.scrollX}px`;
+                        tooltip.style.top = `${rect.top + window.scrollY - tooltip.offsetHeight - 8}px`;
+                    }
+                });
+                badgesGrid.addEventListener('mouseout', function(e) {
+                    const badge = e.target.closest('.badge');
+                    if (badge) {
+                        tooltip.classList.add('hidden');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+
