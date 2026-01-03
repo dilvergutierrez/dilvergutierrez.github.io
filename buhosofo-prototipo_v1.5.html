@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Prototipo Buhósofo v1.5</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Quicksand', sans-serif; background-color: #f0f4f8; }
+        .app-container {
+            max-width: 414px; /* iPhone Max width approx */
+            height: 100vh;
+            margin: 0 auto;
+            background-color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        .scroll-content {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        /* Hide Scrollbar */
+        .scroll-content::-webkit-scrollbar { display: none; }
+        
+        .book-cover-gradient { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .book-cover-orange { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
+        .book-cover-blue { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); }
+        .book-cover-green { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); }
+        
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Gráfica de Barras Simple */
+        .bar-container { display: flex; align-items: flex-end; justify-content: space-between; height: 100px; gap: 4px; }
+        .bar { width: 100%; border-radius: 4px 4px 0 0; position: relative; transition: height 0.5s ease; }
+        .bar:hover { opacity: 0.8; }
+
+        /* --- Estilos para Modales (Spec 2) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 100;
+            display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(2px);
+        }
+        .modal-content {
+            background: white; width: 90%; max-width: 350px;
+            border-radius: 1.5rem; padding: 1.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            animation: bounceIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Animación XP Flotante */
+        .xp-float {
+            position: absolute; color: #fbbf24; font-weight: 900; font-size: 2.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            animation: floatUp 1.5s ease-out forwards; pointer-events: none; z-index: 150;
+            left: 50%; top: 50%; transform: translate(-50%, -50%);
+        }
+        @keyframes floatUp {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            20% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            100% { transform: translate(-50%, -150%) scale(1); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app" class="app-container">
+    <!-- El contenido se inyecta vía JS -->
+</div>
+
+<!-- ================= MODALES (Spec 2) ================= -->
+<!-- 1. Modal Vocabulario -->
+<div id="modal-vocab" class="modal-overlay hidden">
+    <div class="modal-content">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-feather text-indigo-500 mr-2"></i>Palabra Nueva</h3>
+            <button onclick="closeModal('modal-vocab')" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-times text-xl"></i></button>
+        </div>
+        
+        <div class="space-y-3">
+            <input type="text" id="input-word" placeholder="¿Qué palabra encontraste?" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 focus:border-indigo-500 outline-none font-bold text-slate-700">
+            <textarea id="input-meaning" placeholder="Significado breve..." class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 focus:border-indigo-500 outline-none text-sm h-20 resize-none"></textarea>
+            <div class="bg-yellow-50 p-3 rounded-xl border border-yellow-100">
+                <p class="text-xs text-yellow-700 font-bold mb-1">Tu oración de ejemplo:</p>
+                <input type="text" id="input-sentence" placeholder="Escribe una oración..." class="w-full bg-transparent outline-none text-sm text-slate-700 border-b border-yellow-200 pb-1">
+            </div>
+            <button onclick="saveVocabulary()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-indigo-200 transition transform active:scale-95">
+                Guardar (+50 XP)
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 2. Modal Fin de Sesión -->
+<div id="modal-finish" class="modal-overlay hidden">
+    <div class="modal-content text-center">
+        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-flag-checkered text-3xl text-green-500"></i>
+        </div>
+        <h3 class="text-xl font-bold text-slate-800 mb-2">¡Sesión Terminada!</h3>
+        <p class="text-slate-500 text-sm mb-6">Para registrar tu progreso, dinos en qué página quedaste.</p>
+        
+        <div class="flex items-center justify-center gap-3 mb-6">
+            <div class="text-right">
+                <p class="text-xs text-slate-400 uppercase font-bold">Anterior</p>
+                <p class="text-lg font-bold text-slate-600" id="prev-page-display">0</p>
+            </div>
+            <i class="fa-solid fa-arrow-right text-slate-300"></i>
+            <div>
+                 <p class="text-xs text-indigo-500 uppercase font-bold">Nueva</p>
+                 <input type="number" id="input-page" class="w-20 p-2 text-center text-2xl font-bold bg-slate-50 rounded-lg border-2 border-indigo-200 focus:border-indigo-500 outline-none text-indigo-700">
+            </div>
+        </div>
+        
+        <button onclick="confirmFinish()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl shadow-lg shadow-green-200 transition transform active:scale-95">
+            Confirmar Progreso
+        </button>
+    </div>
+</div>
+
+
+<script>
+    // --- ESTADO Y DATOS ---
+    const users = [
+        { id: 1, name: "Lucas", level: 5, xp: 850, color: "bg-blue-100 text-blue-600", badges: ["Ratón de Biblioteca", "Primer Libro"], reading: [102, 104] },
+        { id: 2, name: "Sofía", level: 12, xp: 2400, color: "bg-pink-100 text-pink-600", badges: ["Exploradora", "Maratón 3h", "Fantasía"], reading: [101] },
+        { id: 3, name: "Papá", level: 20, xp: 5000, color: "bg-green-100 text-green-600", badges: ["Maestro", "Erudito", "Historiador", "100 Libros"], reading: [103] }
+    ];
+
+    const worldUsers = [
+        { id: 4, name: "Ana_Reads", level: 30, xp: 8000, color: "bg-purple-100 text-purple-600", badges: ["Lector Voraz"] },
+        { id: 5, name: "BookWorm99", level: 28, xp: 7500, color: "bg-orange-100 text-orange-600", badges: [] },
+        { id: 6, name: "LectoraX", level: 25, xp: 6200, color: "bg-teal-100 text-teal-600", badges: ["Crítico"] }
+    ];
+
+    const books = [
+        { id: 101, title: "El Principito", author: "Saint-Exupéry", pages: 96, read: 45, coverClass: "book-cover-gradient", rating: 5, wishlist: false, genre: "Fantasía" },
+        { id: 102, title: "Harry Potter 1", author: "J.K. Rowling", pages: 300, read: 120, coverClass: "book-cover-orange", rating: 4.5, wishlist: false, genre: "Magia" },
+        { id: 103, title: "Cien Años de Soledad", author: "García Márquez", pages: 450, read: 0, coverClass: "bg-slate-700", rating: 5, wishlist: true, genre: "Realismo" },
+        { id: 104, title: "El Hobbit", author: "Tolkien", pages: 310, read: 10, coverClass: "book-cover-blue", rating: 4.8, wishlist: false, genre: "Aventura" },
+        { id: 105, title: "Momo", author: "Michael Ende", pages: 250, read: 0, coverClass: "book-cover-green", wishlist: true, genre: "Filosofía" },
+        { id: 106, title: "Matilda", author: "Roald Dahl", pages: 180, read: 180, coverClass: "book-cover-orange", rating: 5, wishlist: false, genre: "Infantil" }
+    ];
+
+    const weeklyStats = [20, 45, 0, 30, 60, 15, 50]; 
+    const days = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+
+    let state = {
+        screen: 'profile-select',
+        currentUser: null,
+        viewedUser: null,
+        currentBook: null,
+        socialTab: 'house',
+        homeTab: 'reading', // reading | finished | wishlist
+        timerInterval: null,
+        seconds: 0,
+        isPaused: false,
+        vocabulary: [] 
+    };
+
+    // --- RENDERIZADO ---
+    const app = document.getElementById('app');
+
+    function render() {
+        app.innerHTML = '';
+        
+        switch(state.screen) {
+            case 'profile-select': renderProfileSelect(); break;
+            case 'home': renderHome(); break;
+            case 'detail': renderBookDetail(); break;
+            case 'reading': renderReadingMode(); break;
+            case 'social': renderSocial(); break;
+            case 'profile': renderMyProfile(); break;
+            case 'reader-card': renderReaderCard(); break;
+        }
+        
+        if (['home', 'detail', 'social', 'profile', 'reader-card'].includes(state.screen)) {
+            renderBottomNav();
+        }
+    }
+
+    // --- PANTALLAS ---
+
+    function renderProfileSelect() {
+        let html = `
+        <div class="flex flex-col items-center justify-center h-full p-6 fade-in bg-slate-50">
+            <div class="mb-8 text-center">
+                <i class="fa-solid fa-owl text-6xl text-indigo-600 mb-4"></i>
+                <h1 class="text-3xl font-bold text-slate-800">Buhósofo</h1>
+                <p class="text-slate-500">¿Quién va a leer hoy?</p>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-6 w-full max-w-xs">
+                ${users.map(u => `
+                    <div onclick="selectUser(${u.id})" class="flex flex-col items-center cursor-pointer transition transform hover:scale-105">
+                        <div class="w-24 h-24 rounded-full ${u.color} flex items-center justify-center text-4xl shadow-md mb-2">
+                            <i class="fa-solid fa-face-smile"></i>
+                        </div>
+                        <span class="font-bold text-slate-700 text-lg">${u.name}</span>
+                        <span class="text-xs text-slate-400">Nivel ${u.level}</span>
+                    </div>
+                `).join('')}
+                
+                <div class="flex flex-col items-center cursor-pointer opacity-70 hover:opacity-100">
+                    <div class="w-24 h-24 rounded-full bg-slate-200 flex items-center justify-center text-3xl text-slate-500 shadow-inner mb-2 border-2 border-dashed border-slate-400">
+                        <i class="fa-solid fa-plus"></i>
+                    </div>
+                    <span class="font-bold text-slate-500">Agregar</span>
+                </div>
+            </div>
+        </div>`;
+        app.innerHTML = html;
+    }
+
+    // [CORREGIDO] Home con Pestañas (Tabs) estilo V1.0
+    function renderHome() {
+        // Filtrado de libros según pestaña
+        let displayBooks = [];
+        const myReadingIds = state.currentUser.reading || [];
+
+        if (state.homeTab === 'reading') {
+            displayBooks = books.filter(b => myReadingIds.includes(b.id) && b.read < b.pages && !b.wishlist);
+        } else if (state.homeTab === 'finished') {
+             // Simulamos libros terminados (paginas leidas = total)
+            displayBooks = books.filter(b => b.read === b.pages);
+        } else if (state.homeTab === 'wishlist') {
+            displayBooks = books.filter(b => b.wishlist);
+        }
+
+        const activeTabClass = "border-b-2 border-indigo-600 font-bold text-indigo-600";
+        const inactiveTabClass = "text-slate-400";
+
+        let html = `
+        <div class="scroll-content fade-in pb-20">
+            <!-- Header -->
+            <div class="bg-indigo-600 p-6 rounded-b-3xl shadow-lg mb-6">
+                <div class="flex justify-between items-center text-white">
+                    <div>
+                        <p class="opacity-80 text-sm">Bienvenido de nuevo,</p>
+                        <h2 class="text-2xl font-bold">${state.currentUser.name}</h2>
+                    </div>
+                    <div class="bg-indigo-500 px-3 py-1 rounded-full flex items-center gap-2 cursor-pointer" onclick="changeScreen('profile')">
+                        <i class="fa-solid fa-star text-yellow-300"></i>
+                        <span class="font-bold">Nvl ${state.currentUser.level}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="px-6 mb-4 flex gap-4 border-b border-slate-200">
+                <button onclick="setHomeTab('reading')" class="pb-2 transition ${state.homeTab === 'reading' ? activeTabClass : inactiveTabClass}">Mis Libros</button>
+                <button onclick="setHomeTab('finished')" class="pb-2 transition ${state.homeTab === 'finished' ? activeTabClass : inactiveTabClass}">Terminados</button>
+                <button onclick="setHomeTab('wishlist')" class="pb-2 transition ${state.homeTab === 'wishlist' ? activeTabClass : inactiveTabClass}">Deseados</button>
+            </div>
+
+            <!-- Book List -->
+            <div class="px-6 grid gap-4">
+                ${displayBooks.length > 0 ? displayBooks.map(b => {
+                    const percent = Math.round((b.read / b.pages) * 100);
+                    return `
+                    <div onclick="selectBook(${b.id})" class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex gap-4 cursor-pointer active:bg-slate-50 transition transform hover:scale-[1.02]">
+                        <div class="w-16 h-24 rounded-lg shadow-md ${b.coverClass} flex items-center justify-center text-white text-xs text-center p-1 font-bold leading-tight">
+                            ${b.title}
+                        </div>
+                        <div class="flex-1 flex flex-col justify-center">
+                            <h3 class="font-bold text-slate-800 text-lg mb-1">${b.title}</h3>
+                            <p class="text-sm text-slate-500 mb-3">${b.author}</p>
+                            
+                            <!-- Progress Bar -->
+                            ${state.homeTab !== 'wishlist' ? `
+                            <div class="w-full bg-slate-100 rounded-full h-2 mb-1">
+                                <div class="bg-indigo-500 h-2 rounded-full" style="width: ${percent}%"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-slate-400">
+                                <span>${percent}% Leído</span>
+                                <span>${b.read}/${b.pages} pág</span>
+                            </div>
+                            ` : `<button class="text-indigo-600 text-xs font-bold px-3 py-1 bg-indigo-50 rounded-lg w-max mt-2">Empezar a leer</button>`}
+                        </div>
+                    </div>
+                    `;
+                }).join('') : `
+                <div class="text-center py-10 opacity-50">
+                    <i class="fa-solid fa-book-open text-4xl mb-2 text-slate-300"></i>
+                    <p>No hay libros aquí aún.</p>
+                </div>
+                `}
+            </div>
+            
+            <!-- FAB -->
+            <button onclick="alert('Aquí se abriría el escáner o formulario manual')" class="absolute bottom-24 right-6 w-14 h-14 bg-pink-500 hover:bg-pink-600 text-white rounded-full shadow-xl flex items-center justify-center text-2xl transition transform hover:scale-110 z-50">
+                <i class="fa-solid fa-barcode"></i>
+            </button>
+        </div>`;
+        app.innerHTML = html;
+    }
+
+    // [CORREGIDO] Detalle de Libro con Grilla de Estadísticas estilo V1.0
+    function renderBookDetail() {
+        const b = state.currentBook;
+        
+        let html = `
+        <div class="scroll-content fade-in pb-20 bg-white">
+            <!-- Navbar Back -->
+            <div class="p-4 flex items-center gap-4">
+                <button onclick="changeScreen('home')" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <span class="font-bold text-slate-800">Detalle del Libro</span>
+            </div>
+
+            <!-- Hero -->
+            <div class="flex flex-col items-center p-6">
+                <div class="w-32 h-48 rounded-lg shadow-2xl ${b.coverClass} flex items-center justify-center text-white text-center p-4 font-bold text-xl mb-6 transform hover:scale-105 transition">
+                    ${b.title}
+                </div>
+                <h1 class="text-2xl font-bold text-slate-800 text-center mb-1">${b.title}</h1>
+                <p class="text-lg text-slate-500 mb-6">${b.author}</p>
+
+                <!-- Stats Grid (Restaurado) -->
+                <div class="grid grid-cols-3 gap-4 w-full mb-8">
+                    <div class="bg-slate-50 p-3 rounded-xl text-center border border-slate-100">
+                        <p class="text-indigo-600 font-bold text-xl">${b.pages}</p>
+                        <p class="text-xs text-slate-400">Páginas</p>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl text-center border border-slate-100">
+                        <p class="text-indigo-600 font-bold text-xl">${b.rating} <i class="fa-solid fa-star text-yellow-400 text-xs"></i></p>
+                        <p class="text-xs text-slate-400">Valoración</p>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl text-center border border-slate-100">
+                        <div class="flex items-center justify-center h-7"><i class="fa-solid fa-feather-pointed text-indigo-600 text-xl"></i></div>
+                        <p class="text-xs text-slate-400 mt-0.5 truncate">${b.genre || 'General'}</p>
+                    </div>
+                </div>
+
+                <!-- CTA -->
+                <button onclick="startReading()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-indigo-200 text-lg flex items-center justify-center gap-2 mb-4 transition transform active:scale-95">
+                    <i class="fa-solid fa-book-open"></i>
+                    LEER AHORA
+                </button>
+                
+                <div class="flex gap-4 w-full">
+                    <button class="flex-1 py-3 border border-slate-200 rounded-xl text-slate-600 font-bold hover:bg-slate-50 transition">Editar</button>
+                    <button class="flex-1 py-3 border border-slate-200 rounded-xl text-slate-600 font-bold hover:bg-slate-50 transition">Vocabulario</button>
+                </div>
+            </div>
+        </div>`;
+        app.innerHTML = html;
+    }
+
+    function renderReadingMode() {
+        let html = `
+        <div class="h-full bg-slate-900 text-white flex flex-col items-center justify-between p-8 fade-in relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none"><i class="fa-solid fa-book text-9xl absolute -top-10 -right-10"></i></div>
+            <div class="w-full flex justify-between items-center z-10">
+                <div class="flex flex-col"><span class="text-slate-400 text-sm">Leyendo ahora</span><span class="font-bold text-lg truncate w-48">${state.currentBook.title}</span></div>
+            </div>
+            <div class="flex flex-col items-center z-10 my-10">
+                <div class="text-7xl font-mono font-bold tracking-wider mb-2" id="timerDisplay">00:00</div>
+                <p class="text-slate-400 text-sm animate-pulse" id="timerStatus">Registrando tiempo...</p>
+            </div>
+            
+            <div class="w-full flex flex-col gap-4 z-10">
+                <button onclick="openVocabModal()" class="w-full bg-slate-800 hover:bg-slate-700 py-3 rounded-xl text-indigo-300 font-bold border border-slate-700 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-feather"></i> Palabra Nueva (+50 XP)
+                </button>
+                
+                <div class="flex gap-4 mt-4">
+                    <button onclick="togglePause()" id="btnPause" class="flex-1 bg-orange-500 hover:bg-orange-600 py-4 rounded-xl font-bold shadow-lg text-white flex flex-col items-center justify-center gap-1">
+                        <i class="fa-solid fa-pause text-2xl"></i><span>Pausar</span>
+                    </button>
+                    <button onclick="openFinishModal()" class="flex-1 bg-red-500 hover:bg-red-600 py-4 rounded-xl font-bold shadow-lg text-white flex flex-col items-center justify-center gap-1">
+                        <i class="fa-solid fa-stop text-2xl"></i><span>Terminar</span>
+                    </button>
+                </div>
+            </div>
+        </div>`;
+        app.innerHTML = html;
+        startTimer();
+    }
+
+    function renderSocial() {
+        const isHouse = state.socialTab === 'house';
+        const displayUsers = isHouse ? [...users].sort((a,b) => b.xp - a.xp) : [...worldUsers, ...users].sort((a,b) => b.xp - a.xp).slice(0, 10);
+        
+        let html = `
+        <div class="scroll-content fade-in pb-20 bg-slate-50">
+            <div class="p-6">
+                <h2 class="text-2xl font-bold text-slate-800 mb-6">Ranking Buhósofo</h2>
+                <div class="flex bg-white p-1 rounded-xl shadow-sm mb-6">
+                    <button onclick="setSocialTab('house')" class="flex-1 py-2 rounded-lg text-sm font-bold transition ${isHouse ? 'bg-indigo-100 text-indigo-700' : 'text-slate-500'}">Mi Casa</button>
+                    <button onclick="setSocialTab('world')" class="flex-1 py-2 rounded-lg text-sm font-bold transition ${!isHouse ? 'bg-indigo-100 text-indigo-700' : 'text-slate-500'}">Mundo Buhósofo</button>
+                </div>
+
+                ${displayUsers.length >= 3 ? `
+                <div class="flex justify-center items-end gap-2 mb-10 h-44">
+                    <!-- 2nd -->
+                    <div onclick="viewUser(${displayUsers[1].id})" class="flex flex-col items-center cursor-pointer">
+                        <div class="w-14 h-14 rounded-full ${displayUsers[1].color || 'bg-slate-200'} flex items-center justify-center text-xl shadow-md mb-2 border-4 border-slate-200"><i class="fa-solid fa-face-smile"></i></div>
+                        <div class="w-16 h-20 bg-slate-300 rounded-t-lg flex flex-col items-center justify-end pb-2">
+                            <span class="font-bold text-slate-600 text-sm truncate w-14 text-center">${displayUsers[1].name}</span>
+                            <span class="text-xs text-slate-500">2º</span>
+                        </div>
+                    </div>
+                    <!-- 1st -->
+                    <div onclick="viewUser(${displayUsers[0].id})" class="flex flex-col items-center cursor-pointer z-10">
+                        <i class="fa-solid fa-crown text-yellow-500 text-xl mb-1 animate-bounce"></i>
+                        <div class="w-16 h-16 rounded-full ${displayUsers[0].color || 'bg-slate-200'} flex items-center justify-center text-2xl shadow-lg mb-2 border-4 border-yellow-400"><i class="fa-solid fa-face-smile"></i></div>
+                        <div class="w-20 h-28 bg-yellow-400 rounded-t-lg flex flex-col items-center justify-end pb-2 shadow-lg">
+                            <span class="font-bold text-white text-sm truncate w-18 text-center">${displayUsers[0].name}</span>
+                            <span class="text-xs text-yellow-100">1º</span>
+                        </div>
+                    </div>
+                    <!-- 3rd -->
+                    <div onclick="viewUser(${displayUsers[2].id})" class="flex flex-col items-center cursor-pointer">
+                        <div class="w-14 h-14 rounded-full ${displayUsers[2].color || 'bg-slate-200'} flex items-center justify-center text-xl shadow-md mb-2 border-4 border-slate-200"><i class="fa-solid fa-face-smile"></i></div>
+                        <div class="w-16 h-16 bg-orange-300 rounded-t-lg flex flex-col items-center justify-end pb-2">
+                            <span class="font-bold text-white text-sm truncate w-14 text-center">${displayUsers[2].name}</span>
+                            <span class="text-xs text-orange-100">3º</span>
+                        </div>
+                    </div>
+                </div>` : ''}
+
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-4">
+                    ${displayUsers.map((u, i) => `
+                    <div onclick="viewUser(${u.id})" class="flex items-center justify-between py-3 border-b border-slate-100 last:border-0 cursor-pointer hover:bg-slate-50">
+                        <div class="flex items-center gap-3">
+                            <span class="font-bold text-slate-400 w-4 text-center text-sm">${i + 1}</span>
+                            <div class="w-8 h-8 rounded-full ${u.color || 'bg-slate-200'} flex items-center justify-center text-xs"><i class="fa-solid fa-user"></i></div>
+                            <span class="text-slate-700 font-medium text-sm">${u.name}</span>
+                        </div>
+                        <span class="font-bold text-indigo-600 text-sm">${u.xp} XP</span>
+                    </div>`).join('')}
+                </div>
+            </div>
+        </div>`;
+        app.innerHTML = html;
+    }
+
+    function renderReaderCard() {
+        const u = state.viewedUser;
+        const currentReadingIds = Array.isArray(u.reading) ? u.reading : (u.reading ? [u.reading] : []);
+        const readingBooks = books.filter(b => currentReadingIds.includes(b.id));
+        const wishBooks = books.filter(b => b.wishlist); 
+
+        let html = `
+        <div class="scroll-content fade-in pb-20 bg-slate-50">
+            <!-- Header -->
+            <div class="p-4 flex items-center gap-4 bg-white shadow-sm sticky top-0 z-20">
+                <button onclick="changeScreen('social')" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <span class="font-bold text-slate-800">Tarjeta de Lector</span>
+            </div>
+
+            <!-- Profile Info -->
+            <div class="bg-white p-6 mb-4 flex flex-col items-center border-b border-slate-100">
+                <div class="w-24 h-24 rounded-full ${u.color || 'bg-slate-200'} flex items-center justify-center text-4xl shadow-md mb-3 border-4 border-white">
+                     <i class="fa-solid fa-face-smile"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800">${u.name}</h2>
+                <span class="text-indigo-600 font-bold bg-indigo-50 px-3 py-1 rounded-full text-sm mt-1">Nivel ${u.level}</span>
+                
+                <div class="flex gap-8 mt-6 w-full justify-center">
+                    <div class="text-center">
+                        <div class="text-xl font-bold text-slate-800">${u.xp}</div>
+                        <div class="text-xs text-slate-400">Puntos XP</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xl font-bold text-slate-800">${(u.badges || []).length}</div>
+                        <div class="text-xs text-slate-400">Insignias</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Insignias -->
+            <div class="px-6 mb-6">
+                <h3 class="font-bold text-slate-700 mb-3">Insignias Recientes</h3>
+                <div class="flex gap-3 overflow-x-auto pb-2">
+                    ${(u.badges || ['Lector Novato']).map(badge => `
+                        <div class="flex-shrink-0 bg-white p-3 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center w-24">
+                            <i class="fa-solid fa-medal text-yellow-400 text-2xl mb-2"></i>
+                            <span class="text-xs text-center font-bold text-slate-600 leading-tight">${badge}</span>
+                        </div>
+                    `).join('')}
+                    ${(!u.badges || u.badges.length === 0) ? '<p class="text-sm text-slate-400 italic">Aún no tiene insignias.</p>' : ''}
+                </div>
+            </div>
+
+            <!-- Leyendo Ahora -->
+            <div class="px-6 mb-6">
+                <h3 class="font-bold text-slate-700 mb-3">Leyendo Ahora</h3>
+                <div class="flex flex-col gap-3">
+                    ${readingBooks.map(b => `
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex gap-4">
+                        <div class="w-12 h-16 rounded shadow ${b.coverClass}"></div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-slate-800 text-sm">${b.title}</h4>
+                            <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2">
+                                <div class="bg-green-500 h-1.5 rounded-full" style="width: 45%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    `).join('')}
+                    ${readingBooks.length === 0 ? '<p class="text-sm text-slate-400 italic">No está leyendo nada actualmente.</p>' : ''}
+                </div>
+            </div>
+            
+             <!-- Wishlist (Spec 3) -->
+            <div class="px-6 mb-6">
+                <h3 class="font-bold text-slate-700 mb-3">Lista de Deseos</h3>
+                <div class="flex gap-3 overflow-x-auto pb-2">
+                    ${wishBooks.map(b => `
+                    <div class="flex-shrink-0 w-20 bg-white p-2 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center">
+                        <div class="w-16 h-20 rounded shadow-sm ${b.coverClass} mb-2"></div>
+                        <span class="text-[10px] text-center font-bold text-slate-600 leading-tight truncate w-full">${b.title}</span>
+                    </div>
+                    `).join('')}
+                </div>
+            </div>
+            
+             <!-- Biblioteca Leída -->
+            <div class="px-6 mb-6">
+                <h3 class="font-bold text-slate-700 mb-3">Biblioteca Leída</h3>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-col gap-3">
+                     <div class="flex gap-4 items-center">
+                        <div class="w-10 h-14 rounded shadow bg-slate-600"></div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-slate-800 text-sm">El Hobbit</h4>
+                            <div class="flex text-yellow-400 text-xs gap-0.5">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+        app.innerHTML = html;
+    }
+
+    function renderMyProfile() {
+        const u = state.currentUser;
+        const maxVal = Math.max(...weeklyStats);
+        
+        let html = `
+        <div class="scroll-content fade-in pb-20 bg-slate-50">
+             <div class="bg-white p-6 rounded-b-3xl shadow-sm mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-slate-800">Mi Búho</h2>
+                    <button onclick="changeScreen('profile-select')" class="text-sm font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Cambiar</button>
+                </div>
+                <div class="flex items-center gap-4 mb-6">
+                     <div class="w-20 h-20 rounded-full ${u.color} flex items-center justify-center text-3xl shadow-md border-4 border-slate-100"><i class="fa-solid fa-face-smile"></i></div>
+                     <div><h3 class="font-bold text-xl text-slate-800">${u.name}</h3><p class="text-slate-500 text-sm">Palabras aprendidas: <strong>${state.vocabulary.length}</strong></p></div>
+                </div>
+
+                <!-- Circular Progress -->
+                <div class="bg-slate-900 rounded-2xl p-4 text-white flex items-center justify-between">
+                    <div>
+                        <p class="text-indigo-300 text-xs font-bold uppercase tracking-wider">Nivel Actual</p>
+                        <p class="text-3xl font-bold">${u.level}</p>
+                        <p class="text-xs text-slate-400">Siguiente nivel en 150 XP</p>
+                    </div>
+                    <div class="relative w-16 h-16 flex items-center justify-center">
+                        <svg class="w-full h-full transform -rotate-90">
+                            <circle cx="32" cy="32" r="28" stroke="currentColor" stroke-width="4" fill="transparent" class="text-slate-700" />
+                            <circle cx="32" cy="32" r="28" stroke="currentColor" stroke-width="4" fill="transparent" stroke-dasharray="175" stroke-dashoffset="40" class="text-indigo-500" />
+                        </svg>
+                        <i class="fa-solid fa-star absolute text-yellow-400"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Chart -->
+            <div class="px-6 mb-6">
+                <h3 class="font-bold text-slate-700 mb-4">Tu Lectura (Últimos 7 días)</h3>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <div class="bar-container mb-2">
+                        ${weeklyStats.map(val => `<div class="flex flex-col items-center w-full gap-1 h-full justify-end"><div class="bar bg-indigo-500" style="height: ${(val / maxVal) * 100}%"></div></div>`).join('')}
+                    </div>
+                    <div class="flex justify-between text-xs text-slate-400 font-bold px-1 mt-2">
+                        ${days.map(d => `<span>${d}</span>`).join('')}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Grid -->
+            <div class="px-6 grid grid-cols-2 gap-4">
+                 <button class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center gap-2 hover:bg-slate-50">
+                    <i class="fa-solid fa-book-open-reader text-2xl text-pink-500"></i><span class="font-bold text-slate-600 text-sm">Mi Diccionario</span>
+                </button>
+                 <button class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center gap-2 hover:bg-slate-50">
+                    <i class="fa-solid fa-gear text-2xl text-slate-400"></i><span class="font-bold text-slate-600 text-sm">Ajustes</span>
+                </button>
+            </div>
+        </div>`;
+        app.innerHTML = html;
+    }
+
+    function renderBottomNav() {
+        const activeClass = "text-indigo-600";
+        const inactiveClass = "text-slate-400 hover:text-slate-600";
+        const navHtml = `
+        <div class="absolute bottom-0 w-full bg-white border-t border-slate-200 flex justify-around items-center h-16 shadow-lg z-50">
+            <button onclick="changeScreen('home')" class="flex flex-col items-center ${state.screen === 'home' || state.screen === 'detail' ? activeClass : inactiveClass}"><i class="fa-solid fa-book text-xl mb-1"></i><span class="text-xs font-bold">Libros</span></button>
+            <button onclick="changeScreen('social')" class="flex flex-col items-center ${state.screen === 'social' || state.screen === 'reader-card' ? activeClass : inactiveClass}"><i class="fa-solid fa-trophy text-xl mb-1"></i><span class="text-xs font-bold">Ranking</span></button>
+            <button onclick="changeScreen('profile')" class="flex flex-col items-center ${state.screen === 'profile' ? activeClass : inactiveClass}"><i class="fa-solid fa-user-graduate text-xl mb-1"></i><span class="text-xs font-bold">Mi Búho</span></button>
+        </div>`;
+        const navContainer = document.createElement('div');
+        navContainer.innerHTML = navHtml;
+        app.appendChild(navContainer.firstElementChild);
+    }
+
+    // --- LÓGICA BASE ---
+    function selectUser(id) { state.currentUser = users.find(u => u.id === id); changeScreen('home'); }
+    function selectBook(id) { state.currentBook = books.find(b => b.id === id); changeScreen('detail'); }
+    function viewUser(id) { const all = [...users, ...worldUsers]; state.viewedUser = all.find(u => u.id === id); changeScreen('reader-card'); }
+    function setSocialTab(tab) { state.socialTab = tab; render(); }
+    function setHomeTab(tab) { state.homeTab = tab; render(); }
+    function changeScreen(s) { state.screen = s; render(); }
+
+    function startReading() { state.seconds = 0; state.isPaused = false; changeScreen('reading'); }
+    function togglePause() {
+        state.isPaused = !state.isPaused;
+        const btn = document.getElementById('btnPause');
+        const status = document.getElementById('timerStatus');
+        if (state.isPaused) {
+            btn.innerHTML = '<i class="fa-solid fa-play text-2xl"></i><span>Reanudar</span>'; btn.classList.replace('bg-orange-500', 'bg-green-500'); status.innerText = "Pausado"; status.classList.remove('animate-pulse');
+        } else {
+            btn.innerHTML = '<i class="fa-solid fa-pause text-2xl"></i><span>Pausar</span>'; btn.classList.replace('bg-green-500', 'bg-orange-500'); status.innerText = "Registrando tiempo..."; status.classList.add('animate-pulse');
+        }
+    }
+    function startTimer() {
+        if (state.timerInterval) clearInterval(state.timerInterval);
+        state.timerInterval = setInterval(() => {
+            if (!state.isPaused) { state.seconds++; if(document.getElementById('timerDisplay')) document.getElementById('timerDisplay').innerText = formatTime(state.seconds); }
+        }, 1000);
+    }
+    function formatTime(t) { const m = Math.floor(t / 60).toString().padStart(2, '0'); const s = (t % 60).toString().padStart(2, '0'); return `${m}:${s}`; }
+
+    // --- SPEC 2 LOGIC ---
+    function openVocabModal() { document.getElementById('modal-vocab').classList.remove('hidden'); }
+    function openFinishModal() {
+        clearInterval(state.timerInterval); 
+        document.getElementById('modal-finish').classList.remove('hidden');
+        document.getElementById('prev-page-display').innerText = state.currentBook.read;
+        document.getElementById('input-page').value = state.currentBook.read; 
+    }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    function saveVocabulary() {
+        const word = document.getElementById('input-word').value;
+        if (word.trim() === "") { alert("¡Escribe una palabra!"); return; }
+        state.vocabulary.push(word); state.currentUser.xp += 50; 
+        closeModal('modal-vocab'); showFloatingXP('+50 XP');
+        document.getElementById('input-word').value = ""; document.getElementById('input-meaning').value = ""; document.getElementById('input-sentence').value = "";
+    }
+    function confirmFinish() {
+        const inputPage = parseInt(document.getElementById('input-page').value);
+        if (isNaN(inputPage) || inputPage <= state.currentBook.read || inputPage > state.currentBook.pages) { alert("Página inválida."); return; }
+        state.currentBook.read = inputPage;
+        const minutes = Math.floor(state.seconds / 60); const timeXP = (minutes > 0 ? minutes : 1) * 10; state.currentUser.xp += timeXP;
+        closeModal('modal-finish'); alert(`¡Genial! Ganaste ${timeXP} XP.`); changeScreen('home');
+    }
+    function showFloatingXP(text) {
+        const el = document.createElement('div'); el.className = 'xp-float'; el.innerText = text; document.body.appendChild(el); setTimeout(() => el.remove(), 1500);
+    }
+
+    render();
+</script>
+</body>
+</html>
