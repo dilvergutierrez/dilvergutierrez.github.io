@@ -1,0 +1,208 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+
+<template>
+
+	<mainmenu
+		headline="Inicio"
+		idlecolor="0x000000"
+		selectcolor="0xFFFFFF"
+		menuidlecolor="0xFFFFFF"
+		menuhovercolor="0xD01A55"
+		bgimage="backgrounds/bg13.jpg"
+		module="welcome.swf"
+		modulexml="xml/welcome.xml"
+		moduleorientation="center"
+		modulewidth="960"
+		moduleheight="530"
+	></mainmenu>
+
+	<mainmenu
+		headline="Nuestros Productos"
+		idlecolor="0x000000"
+		selectcolor="0xFFFFFF"
+		menuidlecolor="0xFFFFFF"
+		menuhovercolor="0xD01A55"
+	>
+		<submenu
+			headline="Facility Management - AFM"
+			bgimage="backgrounds/bg11.jpg"
+			module="contentpage.swf"
+			modulexml="xml/contentpage.xml"
+			moduleorientation="topleft"
+		/>
+		<submenu
+			headline="Twindocs"
+			bgimage="backgrounds/bg3.jpg"
+			module="contentpage.swf"
+			modulexml="xml/contentpage2.xml"
+			moduleorientation="topleft"
+		/>
+<!--
+		<submenu
+			headline="Consultoria"
+			bgimage="backgrounds/bg1.jpg"
+			module="contentpage.swf"
+			modulexml="xml/contentpage3.xml"
+			moduleorientation="topleft"
+		/>
+		<submenu
+			headline="Proteccion Contra Incendios"
+			bgimage="backgrounds/bg11.jpg"
+			module="contentpage.swf"
+			modulexml="xml/contentpage4.xml"
+			moduleorientation="topleft"
+		/>
+		<submenu
+			headline="Proteccion Personal"
+			bgimage="backgrounds/bg3.jpg"
+			module="contentpage.swf"
+			modulexml="xml/contentpage5.xml"
+			moduleorientation="topleft"
+		/>
+		<submenu
+			headline="Proteccion Anti-Intrusion"
+			bgimage="backgrounds/bg1.jpg"
+			module="contentpage.swf"
+			modulexml="xml/contentpage6.xml"
+			moduleorientation="topleft"
+		/>
+-->
+	</mainmenu>
+	
+	<mainmenu
+		headline="Noticias"
+		module="news.swf"
+		modulexml="xml/news.xml"
+		bgimage="backgrounds/bg12.jpg"
+		idlecolor="0x000000"
+		selectcolor="0xFFFFFF"
+		menuidlecolor="0xFFFFFF"
+		menuhovercolor="0x0099CC"
+		moduleorientation="center"
+		verticalorientation="center"
+		modulewidth="800"
+		moduleheight="480"
+	></mainmenu>
+
+<!--	
+	<mainmenu
+		headline="Show Reel"
+		idlecolor="0x000000"
+		selectcolor="0xFFFFFF"
+		menuidlecolor="0xFFFFFF"
+		menuhovercolor="0x000000"
+		bgimage="backgrounds/bg9.jpg"
+		module="cwplayer.swf"
+		modulexml="xml/video.xml"
+		moduleorientation="center"
+		verticalorientation="center"
+		modulewidth="768"
+		moduleheight="432"
+	></mainmenu>
+	
+	<mainmenu
+		headline="Nuestro Clientes"
+		module="clientlist.swf"
+		modulexml="xml/clientlist.xml"
+		moduleorientation="topleft"
+		idlecolor="0x000000"
+		selectcolor="0xFFFFFF"
+		menuidlecolor="0xFFFFFF"
+		menuhovercolor="0x000000"
+		bgimage="backgrounds/bg16.jpg"
+	></mainmenu>
+	
+	<mainmenu
+		headline="Fotos"
+		module="gallery.swf"
+		modulexml="xml/gallery.xml"
+		moduleorientation="topleft"
+		idlecolor="0x000000"
+		selectcolor="0xFFFFFF"
+		menuidlecolor="0xFFFFFF"
+		menuhovercolor="0x000000"
+		bgimage="backgrounds/bg4.jpg"
+	></mainmenu>
+	
+	<mainmenu
+		headline="Videos"
+		idlecolor="0x000000"
+		selectcolor="0xFFFFFF"
+		menuidlecolor="0xFFFFFF"
+		menuhovercolor="0x000000"
+		module="cwvideogallery.swf"
+		modulexml="xml/videogal.xml"
+		bgimage="backgrounds/bg14.jpg"
+		moduleorientation="center"
+		verticalorientation="center"
+		modulewidth="896"
+		moduleheight="432"
+	></mainmenu>
+
+-->
+<!--	
+	<mainmenu
+		headline="Links"
+		idlecolor="0x000000"
+		selectcolor="0xFFFFFF"
+		menuidlecolor="0xFFFFFF"
+		menuhovercolor="0x000000"
+	>
+		<submenu
+			headline="ActiveDen"
+			urllink="http://activeden.net"
+			urltarget="_blank"
+		/>
+		<submenu
+			headline="AudioJungle"
+			urllink="http://audiojungle.net"
+			urltarget="_blank"
+		/>
+		<submenu
+			headline="ThemeForest"
+			urllink="http://themeforest.net"
+			urltarget="_blank"
+		/>
+		<submenu
+			headline="VideoHive"
+			urllink="http://videohive.net"
+			urltarget="_blank"
+		/>
+		<submenu
+			headline="GraphicRiver"
+			urllink="http://graphicriver.net"
+			urltarget="_blank"
+		/>
+	</mainmenu>
+	
+	<mainmenu
+		headline="Load Your SWF"
+		bgimage="backgrounds/bg7.jpg"
+		module="swfexample.swf"
+		idlecolor="0x000000"
+		selectcolor="0xFFFFFF"
+		menuidlecolor="0xFFFFFF"
+		menuhovercolor="0x000000"
+		moduleorientation="center"
+		verticalorientation="center"
+		modulewidth="900"
+		moduleheight="500"
+	></mainmenu>
+-->
+	
+	<mainmenu
+		headline="Contactenos"
+		bgimage="backgrounds/bg10.jpg"
+		module="contact.swf"
+		modulexml="xml/contact.xml"
+		idlecolor="0x0099CC"
+		selectcolor="0xFFFFFF"
+		menuidlecolor="0xFFFFFF"
+		menuhovercolor="0x0099CC"
+		moduleorientation="center"
+		verticalorientation="center"
+		modulewidth="800"
+		moduleheight="300"
+	></mainmenu>
+	
+</template>

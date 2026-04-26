@@ -1,0 +1,30 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+
+<musicplayer 
+	activated="false"
+	autoplay="false"
+	volumecolor="0x3399FF"
+>
+	<track urllink="mp3/wm_follow_me.mp3">1. Various artists - Follow me</track>
+	<track urllink="mp3/wm_far_away.mp3">2. Various artists - Far away</track>
+	<track urllink="mp3/wm_ghetto_funk.mp3">3. Various artists - Ghetto funk</track>
+	<track urllink="mp3/wm_rock_the_show.mp3">4. Various artists - Rock the show</track>
+	<track urllink="mp3/wm_spacekeys.mp3">5. Various artists - Spacekeys</track>
+	<track urllink="mp3/wm_sticks_and_chains.mp3">6. Various artists - Sticks and chains</track>
+	<track urllink="mp3/wm_superlate.mp3">7. Various artists - Superlate</track>
+	<track urllink="mp3/wm_synch_this.mp3">8. Various artists - Synch this</track>
+	<track urllink="mp3/wm_u_let_me_down_again.mp3">9. Various artists - U let me down again</track>
+	<track urllink="mp3/wm_uncharted.mp3">10. Various artists - Uncharted</track>
+	<track urllink="mp3/wm_wakingUp.mp3">11. Various artists - Waking up</track>
+</musicplayer>
+
+
+
+
+
+
+
+
+
+
+

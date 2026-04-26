@@ -1,0 +1,68 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+
+<gallery
+	xoffset="20"
+	yoffset="20"
+	menuspacing="10"
+	menuthumbspacing="0"
+	thumbdimensions="200"
+	thumbxspacing="30"
+	thumbyspacing="-30"
+>
+
+	<category
+		headline="Algunos de los clientes para los cuales hemos trabajado"
+	>
+	
+		<entry 
+			urllink="http://www.google.com" 
+			urltarget="_blank"
+			thumblink="thumbs/activeden.jpg"
+			bgcolor="0x3399ff"
+		><text6>Cliente 1</text6></entry>
+		
+		<entry 
+			urllink="http://www.google.com" 
+			urltarget="_blank"
+			thumblink="thumbs/themeforest.jpg"
+			bgcolor="0x3399ff"
+		><text6>Cliente 2</text6></entry>
+		
+		<entry 
+			urllink="http://www.google.com" 
+			urltarget="_blank"
+			thumblink="thumbs/graphicriver.jpg"
+			bgcolor="0x3399ff"
+		><text6>Cliente 3</text6></entry>
+		
+		<entry 
+			urllink="http://www.google.com" 
+			urltarget="_blank"
+			thumblink="thumbs/videohive.jpg"
+			bgcolor="0x3399ff"
+		><text6>Cliente 4</text6></entry>
+		
+		<entry 
+			urllink="http://www.google.com" 
+			urltarget="_blank"
+			thumblink="thumbs/codecanyon.jpg"
+			bgcolor="0x3399ff"
+		><text6>Cliente 5</text6></entry>
+		
+		<entry 
+			urllink="http://www.google.com" 
+			urltarget="_blank"
+			thumblink="thumbs/3docean.jpg"
+			bgcolor="0x3399ff"
+		><text6>Cliente 6</text6></entry>
+		
+		<entry 
+			urllink="http://www.google.com" 
+			urltarget="_blank"
+			thumblink="thumbs/audiojungle.jpg"
+			bgcolor="0xeeeeee"
+		>Cliente 7<br/>Cliente 7</entry>
+		
+	</category>
+
+</slideshow>

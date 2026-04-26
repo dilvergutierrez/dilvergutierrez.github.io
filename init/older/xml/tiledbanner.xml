@@ -1,0 +1,57 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+
+<slideshow 
+	width="960" 
+	height="260"
+	autostart="true"
+	timerbarvisible="true"
+	timerbarcolor="0xFFFFFF"
+	buttonsvisible="true"
+	tilecount="5"
+>
+
+<slide
+	piclink="images/slide6.jpg" 
+	showtime="5" 
+	urllink="http://www.google.com"
+	urltarget="_blank"
+	fontsize="22"
+	fontcolor="0xFFFFFF"
+	bgcolor="0x0099CC"
+	bgopacity="100"
+	captionxoffset="50"
+	captionyoffset="100"	
+	transition="horizontal"
+>PERSONAL *break* Confidencial *break* Seguro *break* Ecológico</slide>
+
+
+<slide
+	piclink="images/slide6.jpg" 
+	showtime="5" 
+	urllink="http://www.google.com"
+	urltarget="_blank"
+	fontsize="20"
+	fontcolor="0xFFFFFF"
+	bgcolor="0x0099CC"
+	bgopacity="100"
+	captionxoffset="50"
+	captionyoffset="100"
+	transition="random"
+>PERSONAL *break* Confidencial *break* Seguro *break* Ecológico</slide>
+<!--
+<slide
+	piclink="images/slide1.jpg" 
+	showtime="8" 
+	urllink="http://www.google.com"
+	urltarget="_blank"
+	fontsize="20"
+	fontcolor="0x000000"
+	bgcolor="0xFFFFFF"
+	bgopacity="80"
+	captionxoffset="80"
+	captionyoffset="50"
+	transition="random"
+>TEXTO 3A *break* *break* texto 3b *break* texto 3c *break* texto 3d *break* texto 3e *break* texto 3f </slide>
+-->
+
+</slideshow>

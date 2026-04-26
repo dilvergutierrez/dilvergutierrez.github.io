@@ -1,0 +1,47 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+
+<main>
+<options
+	websitetitle="Innovarit S.A.C."
+	logourl="images/logo.png"
+	logoorientation="right"
+	logopadding="0px"
+	
+	preloadercolor="0x0099CC"
+	
+	menuorientation="center"
+	menuspeed="0.2"
+	menuxoffset="0"
+	horizontalmenuspacing="1"
+	verticalmenuspacing="1"
+	buttonbgspacing="0"
+	menuheight="26"
+	menuspacingmod="11"
+	submenuheight="26"
+	submenuspacingmod="-10"
+	menubgopacity="100"
+	menubgcolor="0xEEEEEE"
+	
+	bgimageoverlay="false"
+	
+	headerminheight="40"
+	headermaxheight="150"
+	headerbgopacity="100"
+	headerbgcolor="0xFFFFFF"
+	
+	bodybgcolor="0xFFFFFF"
+	
+	footerheight="30"
+	footerbgopacity="100"
+	footerbgcolor="0x0099CC"
+	utilidlecolor="0x333333"
+	utilselectcolor="0xFFFFFF"
+><ft>© 2012 by Itamultimedia - Innovarit S.A.C.</ft></options>
+<sociallinks>
+	<link logo="icons/facebook.png" link="http://www.facebook.com">Nuestro Facebook</link>
+	<link logo="icons/twitter.png" link="http://www.twitter.com">Siguenos En X</link>
+	<link logo="icons/flickr.png" link="http://www.flickr.com">Ve nuestras imagenes en Flickr</link>
+	<link logo="icons/wordpress.png" link="http://www.wordpress.com">Visita nuestro Blog</link>
+	<link logo="icons/feed.png" link="">Subscribete en nuestro Blog's RSS feed</link>
+</sociallinks>
+</main>

@@ -1,0 +1,53 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+
+<slideshow 
+	width="960" 
+	height="260"
+	autostart="true"
+	timerbarvisible="true"
+	timerbarcolor="0xFFFFFF"
+	buttonsvisible="true"
+>
+
+<slide
+	piclink="images/slide4.jpg" 
+	showtime="5" 
+	urllink="http://www.google.com"
+	urltarget="_blank"
+	fontsize="25"
+	fontcolor="0xFFFFFF"
+	bgcolor="0xD01A55"
+	bgopacity="100"
+	captionxoffset="540"
+	captionyoffset="50"
+>EXPERIENCIA *break* Productividad *break* Organización</slide>
+
+<!--
+<slide
+	piclink="images/slide5.jpg" 
+	showtime="7" 
+	urllink="http://www.google.com"
+	urltarget="_blank"
+	fontsize="20"
+	fontcolor="0xFFFFFF"
+	bgcolor="0x000000"
+	bgopacity="100"
+	captionxoffset="50"
+	captionyoffset="40"
+>TEXTO 2A *break* texto 2b *break* texto 2c *break* texto 2d *break* texto 2e *break* texto 2f</slide>
+
+<slide
+	piclink="images/slide6.jpg" 
+	showtime="4" 
+	urllink="http://www.google.com"
+	urltarget="_blank"
+	fontsize="40"
+	fontcolor="0xFFFFFF"
+	bgcolor="0x3399FF"
+	bgopacity="95"
+	captionxoffset="30"
+	captionyoffset="50"
+>TEXTO 3A *break* TEXTO 3B</slide>
+
+-->
+</slideshow>

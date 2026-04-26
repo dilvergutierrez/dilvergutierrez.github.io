@@ -1,0 +1,66 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+
+<videogallery
+	videowidth="768"
+	videoheight="432"
+	thumbwidth="128"
+	thumbheight="72"
+	
+	scalemode="fit"
+	buffertime="0.1"
+	autostart="false"
+	videobgcolor="0xEEEEEE"
+	highlightcolor="0x3399FF"
+	controlshidetime="4"
+	startingvolume="7"
+
+	captionfontcolor="0xFFFFFF"
+	captionbgcolor="0x3399FF"
+>
+
+<video
+	videourl="video/video.flv"
+	previewimage="previewimage/elegantpreview.jpg"
+><b>Video1:</b><br/>Titulo</video>
+
+<video
+	videourl="video/video.flv"
+	previewimage="previewimage/elegantpreview.jpg"
+><b>Video2:</b><br/>Titulo</video>
+
+<video
+	videourl="video/video.flv"
+	previewimage="previewimage/elegantpreview.jpg"
+><b>Video3:</b><br/>Titulo</video>
+
+<video
+	videourl="video/video.flv"
+	previewimage="previewimage/elegantpreview.jpg"
+><b>Video4:</b><br/>Titulo</video>
+
+<video
+	videourl="video/video.flv"
+	previewimage="previewimage/elegantpreview.jpg"
+><b>Video5:</b><br/>Titulo</video>
+
+<video
+	videourl="video/video.flv"
+	previewimage="previewimage/elegantpreview.jpg"
+><b>Video6:</b><br/>Titulo</video>
+
+<video
+	videourl="video/video.flv"
+	previewimage="previewimage/elegantpreview.jpg"
+><b>Video7:</b><br/>Titulo</video>
+
+<video
+	videourl="video/video.flv"
+	previewimage="previewimage/elegantpreview.jpg"
+><b>Video8:</b><br/>Titulo</video>
+
+<video
+	videourl="video/video.flv"
+	previewimage="previewimage/elegantpreview.jpg"
+><b>Video9:</b><br/>Titulo</video>
+
+</videogallery>

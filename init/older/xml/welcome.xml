@@ -1,0 +1,66 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+
+<slideshow 
+	autostart="true"
+	timerbarvisible="true"
+	buttonsvisible="true"
+	
+	captionbuildtime="1"
+	captionremovetime="0.8"
+	slidefadetime="1"
+>
+
+<slide
+	piclink="images/slide1.jpg" 
+	showtime="8" 
+	captionxoffset="30" 
+	captionyoffset="150" 
+	urllink=""
+	urltarget="_blank"
+>
+		<text fontsize="40" fontcolor="0xFFFFFF" bgcolor="0xD01A55" bgopacity="100">INNOVACION</text>
+		<text fontsize="16" fontcolor="0xFFFFFF" bgcolor="0x0099CC" bgopacity="100">SOLUCIONES</text>
+</slide>
+
+<!--
+<slide
+	piclink="images/slide2.jpg" 
+	showtime="8" 
+	captionxoffset="100" 
+	captionyoffset="60" 
+	urllink=""
+	urltarget="_blank"
+>
+		<text fontsize="22" fontcolor="0xFFFFFF" bgcolor="0xFF00FF" bgopacity="100">PROFESIONALISMO</text>
+		<text fontsize="18" fontcolor="0xCC00FF" bgcolor="0xFFFFFF" bgopacity="100">FLEXIBILIDAD</text>
+		<text fontsize="18" fontcolor="0xCC00FF" bgcolor="0xFFFFFF" bgopacity="100">INTEGRACION</text>
+		<text fontsize="18" fontcolor="0xCC00FF" bgcolor="0xFFFFFF" bgopacity="100">TEXTO 2D</text>
+		<text fontsize="18" fontcolor="0xCC00FF" bgcolor="0xFFFFFF" bgopacity="100">TEXTO 2E</text>
+</slide>
+-->
+
+<slide
+	piclink="images/slide3.jpg"
+	showtime="6" 
+	captionxoffset="600" 
+	captionyoffset="50" 
+	urllink=""
+	urltarget="_blank"
+>
+		<text fontsize="24" fontcolor="0xFFFFFF" bgcolor="0xD01A55" bgopacity="100">PROFESIONALISMO</text>
+		<text fontsize="16" fontcolor="0xFFFFFF" bgcolor="0xD01A55" bgopacity="100">FLEXIBILIDAD</text>
+		<text fontsize="20" fontcolor="0xFFFFFF" bgcolor="0x0099CC" bgopacity="100">INTEGRACION</text>
+</slide>
+
+</slideshow>
+<welcomeline>Bienvenido a Innovarit S.A.C.</welcomeline>
+<teaser1
+	iconlink="images/mision-12.jpg"
+><h3>1. Misión</h3>Hacer de nuestros productos y servicios en software una herramienta que apoye a nuestros clientes en la optimización de sus recursos.
+<br/><a href="index.html#/Our-Services-02-01/" target="_top">> LEER MAS</a></teaser1>
+<teaser2
+	iconlink="images/vision-12.jpg"
+><h3>2. Visión</h3>Ser una empresa líder a nivel nacional e internacional en el desarrollo, comercialización y despliegue de software de gestión para empresas.<br/><a href="index.html#/Our-Services-02-02/" target="_top">> LEER MAS</a></teaser2>
+<teaser3
+	iconlink="images/objetivos.jpg"
+><h3>3. Objetivos</h3>Ser una empresa líder a nivel nacional e internacional en el desarrollo, comercialización y despliegue de software de gestion para empresas. <br/><a href="index.html#/Our-Services-02-03/" target="_top">> LEER MAS</a></teaser3>

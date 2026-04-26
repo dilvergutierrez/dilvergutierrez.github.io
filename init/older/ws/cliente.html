@@ -1,0 +1,6 @@
+<?php
+        require_once('lib/nusoap.php');
+        $cliente = new nusoap_client('https://www.app.minsa.gob.pe/wssectorsalud/ServiceSalud.asmx?WSDL');
+        $resultado = $cliente->call('http://tempuri.org/GetListaEstablecimientoSalud', array('Ubigeo' => '10', 'CodDisaRedMicroRed' => '', 'CodCentroPoblado' => '', 'DescripcionEntidadSectorial' => '', 'CodigoSectorial' => ''));
+        print_r($resultado);
+?>

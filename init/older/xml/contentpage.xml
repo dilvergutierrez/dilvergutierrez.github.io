@@ -1,0 +1,22 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+
+<project>
+	<projecttext><h1>Facility Management - AFM</h1><br/><quotetext>"Es la solución tecnológica que cubre todas las necesidades funcionales, para una Gestión Integral de los Inmuebles y Servicios de las Organizaciones."</quotetext><br/><br/>
+ <img src="images/service1.jpg"/><contenttext>Este sistema esta adaptado para su integración con otros sistemas corporativos, es personalizable, flexible y fácilmente parametrizable, le ofrecemos una solución modular por funcionalidades con total adaptabilidad a las necesidades del cliente y la posibilidad de disponer del sistema implantado en sus instalaciones o en la opción NET (en la nube).<br/><br/>
+		<text4>
+<!-- <h2>List elements</h2><br/>
+		<text4>
+		<ul>
+		<li>Lorem ipsum dolor sit amet</li>
+		<li>consectetuer adipiscing elit</li>
+		<li>sed diam nonummy nibh euismod tincidunt</li> 
+		<li>ut laoreet dolore magna aliquam erat volutpat.</li> 
+		<li>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. </li>
+		</ul>
+-->
+		</text4>Facility Management es un conjunto de estrategias destinadas a una Gestión Integral de Inmuebles, Infraestructuras y/o Bienes Patrimoniales de las Organizaciones, así como de los Recursos, Procesos y Servicios Generales asociados a los mismos, con el objetivo de racionalizar y optimizar su uso, aumentando la productividad de los procesos de trabajo de la Organización y reduciendo los costes que se desprenden de los mismos.
+
+</contenttext>
+	</projecttext>
+	<slideshow height="260" slideshowtype="stylishbanner.swf" slideshowxml="xml/stylishbanner.xml"/>
+</project>

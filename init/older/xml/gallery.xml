@@ -1,0 +1,186 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+
+<gallery
+	xoffset="20"
+	yoffset="20"
+	menuspacing="10"
+	menuthumbspacing="0"
+	thumbdimensions="200"
+	thumbxspacing="30"
+	thumbyspacing="-30"
+>
+
+	<category
+		headline="Categoria 1"
+	>
+	
+		<entry 
+			piclink="images/p1.jpg" 
+			thumblink="thumbs/p1.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p2.jpg" 
+			thumblink="thumbs/p2.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p3.jpg" 
+			thumblink="thumbs/p3.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p4.jpg" 
+			thumblink="thumbs/p4.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p5.jpg" 
+			thumblink="thumbs/p5.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p6.jpg" 
+			thumblink="thumbs/p6.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p7.jpg" 
+			thumblink="thumbs/p7.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p8.jpg" 
+			thumblink="thumbs/p8.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p9.jpg" 
+			thumblink="thumbs/p9.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p10.jpg" 
+			thumblink="thumbs/p10.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p11.jpg" 
+			thumblink="thumbs/p11.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p12.jpg" 
+			thumblink="thumbs/p12.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+				<entry 
+			piclink="images/p1.jpg" 
+			thumblink="thumbs/p1.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p2.jpg" 
+			thumblink="thumbs/p2.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p3.jpg" 
+			thumblink="thumbs/p3.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p4.jpg" 
+			thumblink="thumbs/p4.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p5.jpg" 
+			thumblink="thumbs/p5.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p6.jpg" 
+			thumblink="thumbs/p6.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p7.jpg" 
+			thumblink="thumbs/p7.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p8.jpg" 
+			thumblink="thumbs/p8.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p9.jpg" 
+			thumblink="thumbs/p9.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p10.jpg" 
+			thumblink="thumbs/p10.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p11.jpg" 
+			thumblink="thumbs/p11.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p12.jpg" 
+			thumblink="thumbs/p12.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+	</category>
+	
+	<category
+		headline="Categoria 2"
+	>
+	
+		<entry 
+			piclink="images/p1.jpg" 
+			thumblink="thumbs/p1.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p2.jpg" 
+			thumblink="thumbs/p2.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p3.jpg" 
+			thumblink="thumbs/p3.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p4.jpg" 
+			thumblink="thumbs/p4.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p5.jpg" 
+			thumblink="thumbs/p5.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p6.jpg" 
+			thumblink="thumbs/p6.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p7.jpg" 
+			thumblink="thumbs/p7.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+		<entry 
+			piclink="images/p8.jpg" 
+			thumblink="thumbs/p8.jpg"
+		>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto <a href="http://www.google.com" target="_blank">CLICK AQUI</a></entry>
+		
+	</category>
+
+
+</slideshow>

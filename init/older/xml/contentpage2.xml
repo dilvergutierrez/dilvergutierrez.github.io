@@ -1,0 +1,22 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+
+<project>
+	<projecttext><h1>Twindocs</h1><br/><quotetext>"Twindocs es tu archivador personal para recibir y archivar todas tus cosas de forma segura."</quotetext><br/><br/>
+ <img src="images/service2.jpg"/><contenttext>Recibe toda tu documentación (clasificada automáticamente) en un único sitio. Olvídate de ordenar y clasificar facturas, contratos, etc., de buscar papeles, claves de acceso, o de rastrear el email en busca de documentos perdidos, tendrás todo organizado y en un solo sitio.<br/><br/>
+		<text4>
+<!--<h2>List elements</h2><br/>
+		<text4>
+		<ul>
+		<li>Lorem ipsum dolor sit amet</li>
+		<li>consectetuer adipiscing elit</li>
+		<li>sed diam nonummy nibh euismod tincidunt</li> 
+		<li>ut laoreet dolore magna aliquam erat volutpat.</li> 
+		<li>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. </li>
+		</ul>
+-->
+		</text4>Súbete todo aquello que desees conservar. Desde tus archivos más importantes, hasta las copias de escrituras, contratos, manuales, catálogos, garantías... etc.Lo encontrarás siempre Seguro.
+No más olvidos. Todos tus archivos siempre disponibles y al alcance de la palma de tu mano. Podrás consultarlos en cualquier momento con cualquier dispositivo móvil. 
+</contenttext>
+	</projecttext>
+	<slideshow height="260" slideshowtype="tiledbanner.swf" slideshowxml="xml/tiledbanner.xml"/>
+</project>

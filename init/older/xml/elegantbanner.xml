@@ -1,0 +1,43 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+
+<slideshow 
+	width="960" 
+	height="260"
+	autostart="true"
+	timerbarvisible="true"
+	buttonsvisible="true"
+	
+	captionbuildtime="1"
+	captionremovetime="0.8"
+	slidefadetime="1"
+>
+
+<slide
+	piclink="images/slide1.jpg" 
+	showtime="4" 
+	captionxoffset="20" 
+	captionyoffset="150" 
+	urllink="http://activeden.net"
+	urltarget="_blank"
+>
+		<text fontsize="35" fontcolor="0xFFFFFF" bgcolor="0xCC00FF" bgopacity="100">ELEGANT BANNER ROTATOR</text>
+		<text fontsize="20" fontcolor="0xFFFFFF" bgcolor="0xFF00FF" bgopacity="100">WITH MULTI LINE CAPTIONS</text>
+</slide>
+
+<slide
+	piclink="images/slide2.jpg" 
+	showtime="6" 
+	captionxoffset="320" 
+	captionyoffset="50" 
+	urllink=""
+	urltarget="_blank"
+>
+		<text fontsize="20" fontcolor="0xFFFFFF" bgcolor="0xFF00FF" bgopacity="100">OPTIONS:</text>
+		<text fontsize="16" fontcolor="0xFF00FF" bgcolor="0xFFFFFF" bgopacity="100">Horizontal and vertical position</text>
+		<text fontsize="16" fontcolor="0xFF00FF" bgcolor="0xFFFFFF" bgopacity="100">Animation duration</text>
+		<text fontsize="16" fontcolor="0xFF00FF" bgcolor="0xFFFFFF" bgopacity="100">Slide fade time</text>
+		<text fontsize="16" fontcolor="0xFF00FF" bgcolor="0xFFFFFF" bgopacity="100">Font size/color</text>
+		<text fontsize="16" fontcolor="0xFF00FF" bgcolor="0xFFFFFF" bgopacity="100">Background color/opacity</text>
+</slide>
+
+</slideshow>

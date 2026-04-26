@@ -1,0 +1,27 @@
+@charset "utf-8";
+/* CSS Document */
+ul{font:normal 13px Tahoma, Geneva, sans-serif; color:#CCC; }
+li{font:normal 12px Tahoma, Geneva, sans-serif; color:#09C;}
+
+*{margin:0; padding: 0; border:0 none;}
+/*#contenido{width:100%; height:500px; left:50%; top: 50%; overflow:hidden; margin:0 auto;}*/
+#cont-info{width:500px;height:100px; text-align:center; position:absolute; top:50%;left:50%; margin-left:-250px;margin-top:-50px}
+#cont-info ul{color:#000; font-size:30px}
+.logo{ width:560px; height:150px; text-align:center; background:url(../img/logo.png) no-repeat; margin-left:120px}
+.info-empresa{width:560px; height:130px ;margin-top:30px; margin-left:120px; float:left; overflow:hidden}
+.cont-text{width:260px; height:80px; float:left; overflow:hidden; text-align:left;}
+.cont-text ul{color:#525252}
+.separacion{width:1px;height:80px ; margin-left:17px;overflow:hidden; float:left ;background:#f2a2a9}
+.cont-text2{width:260px; height:80px; margin-left:17px; float:left; overflow:hidden; text-align:left;}
+.cont-text2 ul{color:#525252}
+.cont-text3{width:300px; height:30px; margin-top:10px;margin-left:130px; float:left; overflow:hidden; text-align:center;}
+.cont-text3 ul{color:#525252}
+.facebook{width:525px; height:255px; float:left; overflow:hidden; margin-left:140px;margin-top:30px; )}
+
+#pie{width:100%; height:46px; background:url(../img/bg-pie.jpg) bottom; position:absolute; bottom:0; }
+
+.cont-pie{width:800px; margin:0 auto; padding-top:15px;overflow:hidden;text-align:center; color:#FFF}
+.cont-pie ul{list-style:none}
+.cont-pie ul li{ display:inline;}
+.cont-pie ul li a{display:inline; text-decoration:none; color:#c8c8c8}
+.cont-pie ul li a:hover{display:inline; text-decoration:underline; color:#c8c8c8}

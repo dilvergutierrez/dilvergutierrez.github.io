@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<contactform imageurl="images/findus.jpg">
+	<infotext><h2>Como ubicarnos:</h2><br/>Si tiene alguna consulta acerca de nuestros productos y/o servicios, no dude en ponerse en contacto con nosotros, con gusto le atenderemos.<br/><br/><text5>Direccion:</text5>Calle Marquez Talledo 122 - Bellavista <br/><text5>Telefono:</text5> 4987661<br/><text5>Cel:</text5> 994547565<br/><text5>Email:</text5><a href="mailto:">arturo.diaz@innovarit.com.pe</a><br/><text5>Website:</text5><a href="http://www.innovarit.com.pe">www.innovarit.com.pe</a></infotext>
+	<name>Nombre</name>
+	<email>Email</email>
+	<message>Su mensaje para nosotros</message>
+	<sendmail>ENVIAR</sendmail>
+	<errorname>Por favor ingrese su nombre<br/></errorname>
+	<erroremail>Por favor ingrese un email valido<br/></erroremail>
+	<errorfield>Por favor ingrese un mensaje<br/></errorfield>
+	<finished>Gracias, el Email ha sido enviado<br/></finished>
+	<notfinished>Error enviando el Email!<br/></notfinished>
+</contactform>

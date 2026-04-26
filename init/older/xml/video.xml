@@ -1,0 +1,20 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+
+<videoplayer
+	videourl="video/video.flv"
+	previewimage="previewimage/elegantpreview.jpg"
+	width="768"
+	height="432"
+	scalemode="fit"
+	buffertime="0.1"
+	autostart="false"
+	videobgcolor="0xEEEEEE"
+	highlightcolor="0x3399FF"
+	controlshidetime="5"
+	startingvolume="7"
+
+	captionfontsize="14"
+	captionfontcolor="0xFFFFFF"
+	captionbgcolor="0x3399FF"
+	captionbgopacity="100"
+>Usted esta viendo nuestro video institucional</videoplayer>
