@@ -109,10 +109,26 @@ const SGT = {
     return months < 12 ? `${months}m` : `${Math.floor(months / 12)}a ${months % 12}m`;
   },
 
+  /* ── Mobile Sidebar Toggle ── */
+  toggleSidebar() {
+    const sidebar = document.getElementById('app-sidebar');
+    let overlay = document.getElementById('sidebar-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'sidebar-overlay';
+      overlay.className = 'sidebar-overlay';
+      overlay.addEventListener('click', () => this.toggleSidebar());
+      document.body.appendChild(overlay);
+    }
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+  },
+
   /* ── Sidebar HTML ── */
   renderSidebar(activeLink) {
     return `
     <aside class="sidebar" id="app-sidebar">
+      <button class="btn btn-ghost btn-icon mobile-menu-close" onclick="SGT.toggleSidebar()" style="display:none;position:absolute;right:0.5rem;top:0.5rem;font-size:1.1rem;z-index:1001">✕</button>
       <div class="sidebar-section">
         <div style="padding:0 .75rem;margin-bottom:1.5rem">
           <a href="dashboard.html" style="font-size:1.25rem;font-weight:800;color:var(--text-accent);display:flex;align-items:center;gap:.5rem">
@@ -152,17 +168,20 @@ const SGT = {
     const user = this.state.currentUser;
     const name = user ? user.nombre : 'Usuario';
     return `
-    <div class="flex items-center justify-between mb-6" style="padding-bottom:1rem;border-bottom:1px solid var(--glass-border)">
-      <div></div>
+    <div class="flex items-center justify-between mb-6 mobile-topbar" style="padding-bottom:1rem;border-bottom:1px solid var(--glass-border)">
+      <div class="flex items-center gap-2">
+        <button class="btn btn-ghost btn-icon mobile-menu-btn" onclick="SGT.toggleSidebar()" style="display:none;font-size:1.25rem">☰</button>
+        <span class="mobile-logo" style="display:none;font-size:1.25rem;font-weight:800;color:var(--text-accent)">🐓 SGT</span>
+      </div>
       <div class="flex items-center gap-4">
         <div class="mode-toggle">
           <button class="mode-option" data-mode="aficionado">👁 Aficionado</button>
           <button class="mode-option" data-mode="propietario">🔧 Propietario</button>
         </div>
-        <span style="font-size:.875rem;color:var(--text-secondary)">Hola, <strong style="color:var(--text-primary)">${name}</strong></span>
+        <span class="user-greeting" style="font-size:.875rem;color:var(--text-secondary)">Hola, <strong style="color:var(--text-primary)">${name}</strong></span>
       </div>
     </div>`;
   }
-};
+}
 
 document.addEventListener('DOMContentLoaded', () => SGT.init());

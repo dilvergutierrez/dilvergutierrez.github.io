@@ -105,6 +105,58 @@
 .sidebar-link.active{background:rgba(212,160,23,.12);color:var(--text-accent)}
 .main-content{flex:1;padding:2rem;min-width:0}
 
+/* Mobile Sidebar & Overlay Drawer */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+  display: none;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+.sidebar-overlay.active {
+  display: block;
+  opacity: 1;
+}
+
+@media(max-width:768px){
+  .sidebar {
+    position: fixed;
+    left: -240px;
+    top: 0;
+    z-index: 1000;
+    transition: left var(--transition-base);
+    box-shadow: var(--shadow-xl);
+  }
+  .sidebar.active {
+    left: 0;
+  }
+  .main-content {
+    padding: 1.25rem 1rem;
+  }
+  .mobile-menu-btn {
+    display: inline-flex !important;
+  }
+  .mobile-logo {
+    display: inline-block !important;
+  }
+  .user-greeting {
+    display: none !important;
+  }
+  .mobile-topbar {
+    margin-bottom: 1rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+  .page-header {
+    margin-bottom: 1.5rem;
+  }
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+}
+
 /* Page header */
 .page-header{margin-bottom:2rem}
 .page-header h1{font-size:1.75rem;font-weight:800;letter-spacing:-0.5px}
