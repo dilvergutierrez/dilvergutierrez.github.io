@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Ejemplares — SGT</title>
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebar-container"></div>
+    <main class="main-content">
+      <div id="topbar-container"></div>
+      <div class="page-header flex items-center justify-between">
+        <div><h1>🐔 Ejemplares</h1><p>Registro y gestión de aves</p></div>
+        <button class="btn btn-primary" onclick="openNewBird()">+ Registrar Ave</button>
+      </div>
+
+      <!-- Filters -->
+      <div class="card mb-4" style="padding:1rem">
+        <div class="flex gap-4 items-center" style="flex-wrap:wrap">
+          <select class="form-select" id="filter-sexo" onchange="renderBirds()" style="width:auto;min-width:120px">
+            <option value="">Todos los sexos</option>
+            <option value="Macho">Macho</option>
+            <option value="Hembra">Hembra</option>
+            <option value="Pendiente">Pendiente</option>
+          </select>
+          <select class="form-select" id="filter-rol" onchange="renderBirds()" style="width:auto;min-width:120px">
+            <option value="">Todos los roles</option>
+            <option value="Pollo">Pollo</option>
+            <option value="Pelea">Pelea</option>
+            <option value="Padrillo">Padrillo</option>
+            <option value="Madrilla">Madrilla</option>
+            <option value="Descarte">Descarte</option>
+            <option value="Retirado">Retirado</option>
+          </select>
+          <input type="text" class="form-input" id="filter-search" placeholder="Buscar por nombre o placa..." onkeyup="renderBirds()" style="flex:1;min-width:200px">
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrapper" id="birds-table-wrapper"></div>
+
+      <!-- Modal -->
+      <div id="modal-bird" class="modal-overlay hidden" style="display:none">
+        <div class="modal" style="max-width:640px">
+          <div class="modal-header">
+            <h3 id="modal-bird-title">Registrar Ave</h3>
+            <button class="btn btn-ghost btn-icon" onclick="SGT.closeModal('modal-bird')">✕</button>
+          </div>
+          <div class="modal-body">
+            <form onsubmit="saveBird(event)">
+              <input type="hidden" id="bird-edit-placa">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Placa de Ala *</label>
+                  <input type="text" class="form-input" id="bird-placa" placeholder="Ej: GC-007" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Nombre *</label>
+                  <input type="text" class="form-input" id="bird-nombre" placeholder="Ej: Rayo" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Fecha Nacimiento</label>
+                  <input type="date" class="form-input" id="bird-fecha">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Sexo</label>
+                  <select class="form-select" id="bird-sexo">
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Macho">Macho</option>
+                    <option value="Hembra">Hembra</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Rol</label>
+                  <select class="form-select" id="bird-rol">
+                    <option value="Pollo">Pollo</option>
+                    <option value="Pelea">Pelea</option>
+                    <option value="Padrillo">Padrillo</option>
+                    <option value="Madrilla">Madrilla</option>
+                    <option value="Descarte">Descarte</option>
+                    <option value="Retirado">Retirado</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Línea Genética</label>
+                  <input type="text" class="form-input" id="bird-linea" placeholder="Ej: Kelso, Hatch, Sweater">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Origen</label>
+                  <select class="form-select" id="bird-origen" onchange="toggleOrigen()">
+                    <option value="Nacido">Nacido en criadero</option>
+                    <option value="Comprado">Comprado (Gen. 0)</option>
+                  </select>
+                </div>
+                <div class="form-group" id="ext-criadero-group" style="display:none">
+                  <label class="form-label">Criadero Externo</label>
+                  <input type="text" class="form-input" id="bird-criadero-ext" placeholder="Nombre del criadero">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Padre (placa)</label>
+                  <input type="text" class="form-input" id="bird-padre" placeholder="Placa del padre">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Madre (placa)</label>
+                  <input type="text" class="form-input" id="bird-madre" placeholder="Placa de la madre">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Visibilidad</label>
+                <select class="form-select" id="bird-vis">
+                  <option value="Privado">Privado</option>
+                  <option value="Publico">Público</option>
+                </select>
+              </div>
+              <div class="modal-footer" style="padding:1rem 0 0;border:none">
+                <button type="button" class="btn btn-ghost" onclick="SGT.closeModal('modal-bird')">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if (!SGT.requireAuth()) throw 'no auth';
+    document.getElementById('sidebar-container').innerHTML = SGT.renderSidebar('ejemplares');
+    document.getElementById('topbar-container').innerHTML = SGT.renderTopBar();
+    SGT.init();
+
+    function toggleOrigen() {
+      const v = document.getElementById('bird-origen').value;
+      document.getElementById('ext-criadero-group').style.display = v === 'Comprado' ? '' : 'none';
+    }
+
+    function renderBirds() {
+      let birds = DB.getAll('ejemplares');
+      const sexo = document.getElementById('filter-sexo').value;
+      const rol = document.getElementById('filter-rol').value;
+      const q = document.getElementById('filter-search').value.toLowerCase();
+      if (sexo) birds = birds.filter(b => b.sexo === sexo);
+      if (rol) birds = birds.filter(b => b.rol === rol);
+      if (q) birds = birds.filter(b => b.nombre.toLowerCase().includes(q) || b.placa_ala.toLowerCase().includes(q));
+
+      document.getElementById('birds-table-wrapper').innerHTML = `
+        <table class="data-table">
+          <thead><tr>
+            <th>Placa</th><th>Nombre</th><th>Sexo</th><th>Rol</th><th>Línea</th><th>Edad</th><th>Visibilidad</th><th>Acciones</th>
+          </tr></thead>
+          <tbody>
+            ${birds.map(b => `<tr>
+              <td><strong style="color:var(--text-accent)">${b.placa_ala}</strong></td>
+              <td>${b.nombre}</td>
+              <td><span class="badge ${b.sexo==='Macho'?'badge-info':b.sexo==='Hembra'?'badge-warning':'badge-gold'}">${b.sexo}</span></td>
+              <td><span class="badge badge-gold">${b.rol}</span></td>
+              <td>${b.linea_genetica || '—'}</td>
+              <td>${SGT.calcAge(b.fecha_nacimiento)}</td>
+              <td><span class="badge ${b.visibilidad==='Publico'?'badge-success':'badge-info'}">${b.visibilidad}</span></td>
+              <td>
+                <div class="flex gap-2">
+                  <a href="ejemplar-detail.html?placa=${b.placa_ala}" class="btn btn-ghost btn-sm">👁</a>
+                  <a href="pedigree.html?placa=${b.placa_ala}" class="btn btn-ghost btn-sm">🌳</a>
+                  <button class="btn btn-ghost btn-sm" onclick="editBird('${b.placa_ala}')">✏️</button>
+                </div>
+              </td>
+            </tr>`).join('')}
+          </tbody>
+        </table>`;
+    }
+
+    function openNewBird() {
+      document.getElementById('bird-edit-placa').value = '';
+      document.getElementById('modal-bird-title').textContent = 'Registrar Ave';
+      document.querySelectorAll('#modal-bird input:not([type=hidden])').forEach(i => i.value = '');
+      document.getElementById('bird-placa').disabled = false;
+      SGT.openModal('modal-bird');
+    }
+
+    function editBird(placa) {
+      const b = DB.getById('ejemplares', placa, 'placa_ala');
+      if (!b) return;
+      document.getElementById('bird-edit-placa').value = placa;
+      document.getElementById('modal-bird-title').textContent = 'Editar Ave';
+      document.getElementById('bird-placa').value = b.placa_ala;
+      document.getElementById('bird-placa').disabled = true;
+      document.getElementById('bird-nombre').value = b.nombre;
+      document.getElementById('bird-fecha').value = b.fecha_nacimiento;
+      document.getElementById('bird-sexo').value = b.sexo;
+      document.getElementById('bird-rol').value = b.rol;
+      document.getElementById('bird-linea').value = b.linea_genetica;
+      document.getElementById('bird-origen').value = b.origen;
+      document.getElementById('bird-padre').value = b.padre_placa;
+      document.getElementById('bird-madre').value = b.madre_placa;
+      document.getElementById('bird-vis').value = b.visibilidad;
+      toggleOrigen();
+      SGT.openModal('modal-bird');
+    }
+
+    function saveBird(e) {
+      e.preventDefault();
+      const editPlaca = document.getElementById('bird-edit-placa').value;
+      const galpones = DB.getAll('galpones');
+      const galponId = galpones.length ? galpones[0].id : 'g-001';
+      const oldBird = editPlaca ? DB.getById('ejemplares', editPlaca, 'placa_ala') : null;
+      const newRol = document.getElementById('bird-rol').value;
+
+      const data = {
+        placa_ala: document.getElementById('bird-placa').value,
+        galpon_id: galponId,
+        nombre: document.getElementById('bird-nombre').value,
+        fecha_nacimiento: document.getElementById('bird-fecha').value,
+        sexo: document.getElementById('bird-sexo').value,
+        rol: newRol,
+        linea_genetica: document.getElementById('bird-linea').value,
+        origen: document.getElementById('bird-origen').value,
+        criadero_externo: document.getElementById('bird-criadero-ext').value,
+        padre_placa: document.getElementById('bird-padre').value,
+        madre_placa: document.getElementById('bird-madre').value,
+        visibilidad: document.getElementById('bird-vis').value,
+        fenotipo_json: oldBird ? oldBird.fenotipo_json : { plumaje:'', ojos:'', patas:'', cresta:'' }
+      };
+
+      // Historial de clasificación
+      if (oldBird && oldBird.rol !== newRol) {
+        const motivo = prompt(`Motivo del cambio de rol (${oldBird.rol} → ${newRol}):`);
+        DB.add('historial_clasificacion', {
+          id: 'h-' + SGT.uuid(),
+          placa_ala: editPlaca,
+          fecha: new Date().toISOString().split('T')[0],
+          rol_anterior: oldBird.rol,
+          rol_nuevo: newRol,
+          motivo: motivo || 'Sin motivo',
+          usuario_id: SGT.getUser().id
+        });
+      }
+
+      if (editPlaca) {
+        DB.update('ejemplares', editPlaca, data, 'placa_ala');
+        SGT.toast('Ave actualizada');
+      } else {
+        DB.add('ejemplares', data);
+        SGT.toast('Ave registrada exitosamente');
+      }
+      SGT.closeModal('modal-bird');
+      renderBirds();
+    }
+
+    renderBirds();
+  </script>
+</body>
+</html>

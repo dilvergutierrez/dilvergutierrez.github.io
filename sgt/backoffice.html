@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Backoffice — SGT</title>
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebar-container"></div>
+    <main class="main-content">
+      <div id="topbar-container"></div>
+      <div class="page-header flex items-center justify-between">
+        <div>
+          <span class="badge badge-danger mb-2" style="font-size:.7rem">🔒 PANEL INTERNO</span>
+          <h1>🔧 Backoffice</h1>
+          <p>Superadministración del SGT — Panel corporativo</p>
+        </div>
+      </div>
+
+      <!-- RBAC Tabs -->
+      <div class="tabs mb-6">
+        <button class="tab active" onclick="showBackTab('overview')">📊 Métricas</button>
+        <button class="tab" onclick="showBackTab('users')">👥 Usuarios</button>
+        <button class="tab" onclick="showBackTab('subs')">💳 Suscripciones</button>
+        <button class="tab" onclick="showBackTab('admins')">🔐 RBAC Admins</button>
+        <button class="tab" onclick="showBackTab('plans')">📋 Planes</button>
+      </div>
+
+      <!-- Métricas -->
+      <div id="tab-overview">
+        <div class="metric-grid stagger">
+          <div class="card metric-card">
+            <div class="text-sm" style="color:var(--text-secondary)">MRR (Ingresos Recurrentes)</div>
+            <div class="metric-value" id="mrr">$0</div>
+            <div class="metric-change up">↑ 12% vs mes anterior</div>
+          </div>
+          <div class="card metric-card">
+            <div class="text-sm" style="color:var(--text-secondary)">Usuarios Registrados</div>
+            <div class="metric-value" id="total-users">0</div>
+            <div class="metric-change up">↑ 5 esta semana</div>
+          </div>
+          <div class="card metric-card">
+            <div class="text-sm" style="color:var(--text-secondary)">Galpones Activos</div>
+            <div class="metric-value" id="total-galpones">0</div>
+            <div class="metric-change up">↑ 2 este mes</div>
+          </div>
+        </div>
+        <div class="grid grid-2 gap-6 mt-6">
+          <div class="card">
+            <div class="card-header"><span class="card-title">📈 Distribución de Planes</span></div>
+            <div id="plan-distribution"></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">📝 Logs Recientes</span></div>
+            <div id="recent-logs" style="max-height:300px;overflow-y:auto"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Usuarios -->
+      <div id="tab-users" class="hidden">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Todos los Usuarios</span>
+            <button class="btn btn-ghost btn-sm" onclick="SGT.toast('Contraseña reseteada (simulación)','info')">🔑 Reset Password</button>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Plan</th><th>Registro</th><th>Acciones</th></tr></thead>
+              <tbody id="users-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Suscripciones -->
+      <div id="tab-subs" class="hidden">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Gestión de Suscripciones</span>
+            <button class="btn btn-primary btn-sm" onclick="applyTrial()">🎁 Aplicar Cortesía (Trial)</button>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>ID</th><th>Usuario</th><th>Plan</th><th>Estado</th><th>Inicio</th><th>Fin</th><th>Acciones</th></tr></thead>
+              <tbody id="subs-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- RBAC Admins -->
+      <div id="tab-admins" class="hidden">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Roles Corporativos (RBAC)</span>
+            <button class="btn btn-primary btn-sm" onclick="addAdmin()">+ Nuevo Admin</button>
+          </div>
+          <div id="admins-list" class="stagger"></div>
+        </div>
+      </div>
+
+      <!-- Planes -->
+      <div id="tab-plans" class="hidden">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Configuración de Planes</span>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Plan</th><th>Precio Mensual</th><th>Precio Anual</th><th>Galpones</th><th>Aves</th><th>Delegados</th><th>Acciones</th></tr></thead>
+              <tbody id="plans-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if (!SGT.requireAuth()) throw 'no auth';
+    document.getElementById('sidebar-container').innerHTML = SGT.renderSidebar('backoffice');
+    document.getElementById('topbar-container').innerHTML = SGT.renderTopBar();
+    SGT.init();
+
+    function showBackTab(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+      ['overview','users','subs','admins','plans'].forEach(t => {
+        document.getElementById('tab-'+t).classList.toggle('hidden', t !== tab);
+      });
+    }
+
+    // ── Métricas ──
+    const users = DB.getAll('users');
+    const galpones = DB.getAll('galpones');
+    const subs = DB.getAll('suscripciones');
+    const plans = DB.getAll('planes');
+    const activeSubs = subs.filter(s => s.estado === 'Activa');
+
+    let mrr = 0;
+    activeSubs.forEach(s => {
+      const p = DB.getById('planes', s.plan_id);
+      if (p) mrr += p.precio_mensual;
+    });
+
+    document.getElementById('mrr').textContent = '$' + mrr.toLocaleString();
+    document.getElementById('total-users').textContent = users.length;
+    document.getElementById('total-galpones').textContent = galpones.length;
+
+    // Plan distribution
+    const distro = {};
+    plans.forEach(p => distro[p.nombre] = 0);
+    activeSubs.forEach(s => {
+      const p = DB.getById('planes', s.plan_id);
+      if (p) distro[p.nombre]++;
+    });
+    document.getElementById('plan-distribution').innerHTML = Object.entries(distro).map(([name, count]) => {
+      const total = activeSubs.length || 1;
+      const pct = Math.round((count / total) * 100);
+      return `
+        <div style="margin-bottom:.75rem">
+          <div class="flex justify-between text-sm mb-1"><span>${name}</span><span style="color:var(--text-accent)">${count} (${pct}%)</span></div>
+          <div style="height:8px;background:var(--bg-tertiary);border-radius:4px;overflow:hidden">
+            <div style="width:${pct}%;height:100%;background:linear-gradient(90deg,var(--gold-500),var(--gold-300));border-radius:4px;transition:width .5s ease"></div>
+          </div>
+        </div>`;
+    }).join('');
+
+    // Logs
+    document.getElementById('recent-logs').innerHTML = [
+      { time: '21:30', msg: 'Usuario Carlos Mendoza inició sesión', type: 'info' },
+      { time: '21:25', msg: 'Camada c-002 registrada en Galpón El Campeón', type: 'success' },
+      { time: '21:20', msg: 'Torneo Copa Lambayeque — Llaves sorteadas', type: 'info' },
+      { time: '21:15', msg: 'Suscripción premium activada para u-001', type: 'success' },
+      { time: '20:50', msg: 'Intento de login fallido: admin@test.com', type: 'error' },
+    ].map(l => `
+      <div style="padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;gap:.75rem">
+        <span class="text-xs" style="color:var(--text-tertiary);min-width:45px">${l.time}</span>
+        <span class="badge badge-${l.type === 'error' ? 'danger' : l.type === 'success' ? 'success' : 'info'}" style="font-size:.6rem">${l.type.toUpperCase()}</span>
+        <span class="text-sm">${l.msg}</span>
+      </div>
+    `).join('');
+
+    // ── Users table ──
+    document.getElementById('users-table').innerHTML = users.map(u => {
+      const p = DB.getById('planes', u.plan_id);
+      return `<tr>
+        <td class="text-xs" style="color:var(--text-tertiary)">${u.id}</td>
+        <td><strong>${u.nombre}</strong></td>
+        <td>${u.email || '—'}</td>
+        <td>${u.telefono || '—'}</td>
+        <td><span class="badge badge-gold">${p ? p.nombre : u.plan_id}</span></td>
+        <td>${SGT.formatDate(u.fecha_registro)}</td>
+        <td><button class="btn btn-ghost btn-sm" onclick="SGT.toast('Reseteo de contraseña enviado','info')">🔑</button></td>
+      </tr>`;
+    }).join('');
+
+    // ── Suscripciones table ──
+    document.getElementById('subs-table').innerHTML = subs.map(s => {
+      const u = DB.getById('users', s.usuario_id);
+      const p = DB.getById('planes', s.plan_id);
+      return `<tr>
+        <td class="text-xs" style="color:var(--text-tertiary)">${s.id}</td>
+        <td>${u ? u.nombre : s.usuario_id}</td>
+        <td>${p ? p.nombre : s.plan_id}</td>
+        <td><span class="badge ${s.estado === 'Activa' ? 'badge-success' : 'badge-danger'}">${s.estado}</span></td>
+        <td>${SGT.formatDate(s.fecha_inicio)}</td>
+        <td>${SGT.formatDate(s.fecha_fin)}</td>
+        <td>
+          <button class="btn btn-ghost btn-sm" onclick="cancelSub('${s.id}')">Cancelar</button>
+        </td>
+      </tr>`;
+    }).join('');
+
+    // ── Admins ──
+    const admins = DB.getAll('admins');
+    document.getElementById('admins-list').innerHTML = admins.map(a => `
+      <div class="flex items-center justify-between" style="padding:.75rem 0;border-bottom:1px solid rgba(255,255,255,.04)">
+        <div class="flex items-center gap-4">
+          <div style="width:40px;height:40px;border-radius:50%;background:var(--bg-elevated);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--text-accent)">${a.nombre.charAt(0)}</div>
+          <div>
+            <strong>${a.nombre}</strong>
+            <div class="text-xs" style="color:var(--text-secondary)">${a.email}</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="badge badge-gold">${a.rol}</span>
+          <div class="flex gap-1">
+            ${Object.entries(a.permisos).map(([k,v]) => `<span class="badge ${v ? 'badge-success' : 'badge-danger'}" style="font-size:.6rem">${k}</span>`).join('')}
+          </div>
+        </div>
+      </div>
+    `).join('') || '<p class="text-sm" style="color:var(--text-secondary)">Sin administradores</p>';
+
+    // ── Plans table ──
+    document.getElementById('plans-table').innerHTML = plans.map(p => `<tr>
+      <td><strong>${p.nombre}</strong></td>
+      <td>$${p.precio_mensual}</td>
+      <td>$${p.precio_anual}</td>
+      <td>${p.max_galpones}</td>
+      <td>${p.max_aves === 9999 ? '∞' : p.max_aves}</td>
+      <td>${p.max_delegados === 99 ? '∞' : p.max_delegados}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="editPlan('${p.id}')">✏️</button></td>
+    </tr>`).join('');
+
+    function cancelSub(id) {
+      if (!confirm('¿Cancelar esta suscripción?')) return;
+      DB.update('suscripciones', id, { estado: 'Cancelada' });
+      SGT.toast('Suscripción cancelada');
+      setTimeout(() => location.reload(), 500);
+    }
+
+    function applyTrial() {
+      const userId = prompt('ID del usuario para aplicar cortesía:');
+      if (!userId) return;
+      DB.add('suscripciones', {
+        id: 's-' + SGT.uuid(),
+        usuario_id: userId,
+        plan_id: 'premium',
+        estado: 'Activa',
+        fecha_inicio: new Date().toISOString().split('T')[0],
+        fecha_fin: '2025-12-31',
+        token_pago: 'trial_' + SGT.uuid()
+      });
+      SGT.toast('Cortesía Premium aplicada');
+      setTimeout(() => location.reload(), 500);
+    }
+
+    function addAdmin() {
+      const email = prompt('Email del nuevo admin:');
+      if (!email) return;
+      const nombre = prompt('Nombre:');
+      const rol = prompt('Rol (CEO, Soporte, Ventas):') || 'Soporte';
+      DB.add('admins', {
+        id: 'a-' + SGT.uuid(),
+        email: email,
+        nombre: nombre || email,
+        rol: rol,
+        permisos: {
+          finanzas: rol === 'CEO' || rol === 'Ventas',
+          soporte: rol === 'CEO' || rol === 'Soporte',
+          ventas: rol === 'CEO' || rol === 'Ventas'
+        }
+      });
+      SGT.toast('Admin agregado');
+      setTimeout(() => location.reload(), 500);
+    }
+
+    function editPlan(id) {
+      const p = DB.getById('planes', id);
+      const newPrice = prompt(`Precio mensual de ${p.nombre}:`, p.precio_mensual);
+      if (newPrice === null) return;
+      DB.update('planes', id, { precio_mensual: parseFloat(newPrice) });
+      SGT.toast('Precio actualizado');
+      setTimeout(() => location.reload(), 500);
+    }
+  </script>
+</body>
+</html>

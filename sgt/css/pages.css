@@ -1,0 +1,56 @@
+/* ── Page-specific styles ── */
+
+/* Landing / Hero */
+.hero{position:relative;padding:6rem 0 4rem;text-align:center;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(212,160,23,.12) 0%,transparent 70%);pointer-events:none}
+.hero h1{font-size:3.5rem;font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:1rem}
+.hero h1 span{background:linear-gradient(135deg,var(--gold-400),var(--gold-200));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:1.125rem;color:var(--text-secondary);max-width:600px;margin:0 auto 2rem}
+.hero-badges{display:flex;justify-content:center;gap:.75rem;flex-wrap:wrap;margin-bottom:2rem}
+.hero-visual{max-width:800px;margin:2rem auto 0;border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-xl);border:1px solid var(--glass-border)}
+
+/* Features grid */
+.features-section{padding:5rem 0}
+.feature-card{padding:2rem;text-align:center}
+.feature-card .icon{font-size:2.5rem;margin-bottom:1rem}
+.feature-card h3{font-size:1.125rem;font-weight:700;margin-bottom:.5rem}
+.feature-card p{font-size:.875rem;color:var(--text-secondary)}
+
+/* Pricing section */
+.pricing-section{padding:5rem 0}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;max-width:1000px;margin:2rem auto 0}
+@media(max-width:900px){.pricing-grid{grid-template-columns:1fr}}
+
+/* Login page */
+.auth-page{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem}
+.auth-card{width:100%;max-width:420px}
+.auth-logo{text-align:center;margin-bottom:2rem}
+.auth-logo h1{font-size:2rem;font-weight:900;color:var(--text-accent)}
+.auth-divider{display:flex;align-items:center;gap:1rem;margin:1.5rem 0;color:var(--text-tertiary);font-size:.8rem}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--glass-border)}
+.social-btn{display:flex;align-items:center;justify-content:center;gap:.75rem;width:100%;padding:12px;border-radius:var(--radius-md);font-size:.9rem;font-weight:600;border:1px solid var(--glass-border);background:var(--bg-tertiary);color:var(--text-primary);cursor:pointer;transition:all var(--transition-base)}
+.social-btn:hover{border-color:var(--gold-500);background:rgba(212,160,23,.08)}
+
+/* Dashboard */
+.dashboard-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+@media(max-width:900px){.dashboard-stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.dashboard-stats{grid-template-columns:1fr}}
+
+/* Feed cards */
+.feed-card{margin-bottom:1rem}
+.feed-card .feed-header{display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem}
+.feed-card .feed-avatar{width:40px;height:40px;border-radius:50%;background:var(--bg-elevated);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--text-accent)}
+.feed-card .feed-meta{font-size:.8rem;color:var(--text-secondary)}
+
+/* Backoffice specific */
+.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem}
+@media(max-width:768px){.metric-grid{grid-template-columns:1fr}}
+.metric-card{padding:1.5rem}
+.metric-value{font-size:2.25rem;font-weight:900;color:var(--text-accent)}
+.metric-change{font-size:.8rem;margin-top:.25rem}
+.metric-change.up{color:var(--success)}
+.metric-change.down{color:var(--danger)}
+
+/* Footer */
+.footer{border-top:1px solid var(--glass-border);padding:2rem 0;margin-top:4rem}
+.footer p{color:var(--text-tertiary);font-size:.8rem;text-align:center}

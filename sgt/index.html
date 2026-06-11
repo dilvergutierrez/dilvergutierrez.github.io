@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>SGT — Sistema de Gestión Gallística</title>
+  <meta name="description" content="Plataforma SaaS integral para la crianza profesional y competencia de gallos de pelea. Genética, criadero y torneos.">
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container flex items-center justify-between">
+      <a href="index.html" class="navbar-brand"><span class="icon">🐓</span> SGT</a>
+      <div class="navbar-links">
+        <a href="#features">Funcionalidades</a>
+        <a href="#pricing">Planes</a>
+        <a href="login.html" class="btn btn-secondary btn-sm">Iniciar Sesión</a>
+        <a href="register.html" class="btn btn-primary btn-sm">Registrarse</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="animate-slide-up">
+        <div class="hero-badges">
+          <span class="badge badge-gold">🇵🇪 Hecho para Perú</span>
+          <span class="badge badge-info">v1.0 Prototipo</span>
+        </div>
+        <h1>Gestión Gallística<br><span>de Clase Mundial</span></h1>
+        <p>Trazabilidad genética, control de consanguinidad, torneos con eliminación simple peruana y mesa de juez en tiempo real. Todo en una plataforma.</p>
+        <div class="flex justify-center gap-4">
+          <a href="register.html" class="btn btn-primary btn-lg">Comenzar Gratis</a>
+          <a href="#features" class="btn btn-secondary btn-lg">Ver Funcionalidades</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features-section" id="features">
+    <div class="container">
+      <h2 class="text-center" style="font-size:2rem;font-weight:800;margin-bottom:.5rem">Todo lo que necesitas</h2>
+      <p class="text-center text-sm" style="color:var(--text-secondary);max-width:500px;margin:0 auto 2rem">Desde el criadero hasta el coliseo, una sola plataforma para profesionalizar tu pasión.</p>
+      <div class="grid grid-3 gap-6 stagger">
+        <div class="card feature-card">
+          <div class="icon">🧬</div>
+          <h3>Genética & Pedigree</h3>
+          <p>Árbol genealógico de 3 generaciones, coeficiente de Wright y alertas de consanguinidad.</p>
+        </div>
+        <div class="card feature-card">
+          <div class="icon">🥚</div>
+          <h3>Camadas & Criadero</h3>
+          <p>Registro por lote, control de sexado, fenotipo completo y pesos evolutivos a 6, 9 y 12 meses.</p>
+        </div>
+        <div class="card feature-card">
+          <div class="icon">🏆</div>
+          <h3>Torneos Peruanos</h3>
+          <p>Eliminación simple, sorteo ciego, comodines, pases directos y desempate en tablas.</p>
+        </div>
+        <div class="card feature-card">
+          <div class="icon">⚖️</div>
+          <h3>Mesa de Juez</h3>
+          <p>Registro en caliente, cronómetro ascendente, dictamen y regla de tablas con gallos de reemplazo.</p>
+        </div>
+        <div class="card feature-card">
+          <div class="icon">👥</div>
+          <h3>Personal & Permisos</h3>
+          <p>Invita delegados con permisos granulares: balanza, genética, torneos y más.</p>
+        </div>
+        <div class="card feature-card">
+          <div class="icon">📊</div>
+          <h3>Dashboard Analítico</h3>
+          <p>Vista dual Aficionado/Propietario. Métricas de tu galpón y feed social en vivo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="pricing-section" id="pricing">
+    <div class="container">
+      <h2 class="text-center" style="font-size:2rem;font-weight:800;margin-bottom:.5rem">Planes & Precios</h2>
+      <p class="text-center text-sm" style="color:var(--text-secondary);margin-bottom:2rem">Empieza gratis. Escala cuando lo necesites.</p>
+      <div class="pricing-grid stagger">
+        <!-- Free -->
+        <div class="card pricing-card">
+          <div style="margin-bottom:1.5rem">
+            <span class="badge badge-info">GRATIS</span>
+          </div>
+          <h3 style="font-size:1.25rem;font-weight:700;margin-bottom:.25rem">Aficionado</h3>
+          <div style="margin-bottom:1.5rem">
+            <span class="pricing-price" style="color:var(--text-primary)">$0</span>
+            <span class="pricing-period">/siempre</span>
+          </div>
+          <ul style="list-style:none;font-size:.875rem;color:var(--text-secondary);margin-bottom:1.5rem">
+            <li style="padding:.4rem 0">✓ Feed social y torneos en vivo</li>
+            <li style="padding:.4rem 0">✓ Explorar galpones públicos</li>
+            <li style="padding:.4rem 0">✓ Ver pedigrees compartidos</li>
+            <li style="padding:.4rem 0;opacity:.4">✕ Sin gestión de criadero</li>
+            <li style="padding:.4rem 0;opacity:.4">✕ Sin torneos propios</li>
+          </ul>
+          <a href="register.html" class="btn btn-secondary btn-block">Registrarse</a>
+        </div>
+        <!-- Standard -->
+        <div class="card pricing-card featured">
+          <div style="margin-bottom:1.5rem">
+            <span class="badge badge-gold">POPULAR</span>
+          </div>
+          <h3 style="font-size:1.25rem;font-weight:700;margin-bottom:.25rem">Criador Estándar</h3>
+          <div style="margin-bottom:1.5rem">
+            <span class="pricing-price" style="color:var(--text-accent)">$29</span>
+            <span class="pricing-period">/mes</span>
+          </div>
+          <ul style="list-style:none;font-size:.875rem;color:var(--text-secondary);margin-bottom:1.5rem">
+            <li style="padding:.4rem 0">✓ 1 Galpón titular</li>
+            <li style="padding:.4rem 0">✓ Hasta 100 ejemplares</li>
+            <li style="padding:.4rem 0">✓ 1 Delegado adicional</li>
+            <li style="padding:.4rem 0">✓ Calculadora de consanguinidad</li>
+            <li style="padding:.4rem 0">✓ 1 Torneo simultáneo</li>
+          </ul>
+          <a href="register.html" class="btn btn-primary btn-block">Elegir Plan</a>
+        </div>
+        <!-- Premium -->
+        <div class="card pricing-card">
+          <div style="margin-bottom:1.5rem">
+            <span class="badge badge-warning">PRO</span>
+          </div>
+          <h3 style="font-size:1.25rem;font-weight:700;margin-bottom:.25rem">Galpón Premium</h3>
+          <div style="margin-bottom:1.5rem">
+            <span class="pricing-price" style="color:var(--text-primary)">$79</span>
+            <span class="pricing-period">/mes</span>
+          </div>
+          <ul style="list-style:none;font-size:.875rem;color:var(--text-secondary);margin-bottom:1.5rem">
+            <li style="padding:.4rem 0">✓ Hasta 5 galpones</li>
+            <li style="padding:.4rem 0">✓ Ejemplares ilimitados</li>
+            <li style="padding:.4rem 0">✓ Delegados ilimitados</li>
+            <li style="padding:.4rem 0">✓ Analítica genética avanzada</li>
+            <li style="padding:.4rem 0">✓ Torneos ilimitados</li>
+          </ul>
+          <a href="register.html" class="btn btn-secondary btn-block">Elegir Plan</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>© 2025 SGT — Sistema de Gestión Gallística. Todos los derechos reservados. 🇵🇪</p>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

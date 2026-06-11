@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Mesa de Juez — SGT</title>
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebar-container"></div>
+    <main class="main-content">
+      <div id="topbar-container"></div>
+      <div class="page-header">
+        <h1>⚖️ Mesa de Juez</h1>
+        <p>Control en vivo del torneo — Eliminación Simple Peruana</p>
+      </div>
+
+      <!-- Select fecha -->
+      <div class="card mb-6" style="padding:1rem">
+        <div class="flex gap-4 items-center">
+          <label class="form-label" style="margin:0;white-space:nowrap">Fecha de Evento:</label>
+          <select class="form-select" id="fecha-select" onchange="loadFecha(this.value)" style="flex:1"></select>
+        </div>
+      </div>
+
+      <!-- Bracket -->
+      <div class="card mb-6">
+        <div class="card-header"><span class="card-title">🏟️ Bracket de Eliminación</span></div>
+        <div id="bracket-container" class="bracket"></div>
+      </div>
+
+      <!-- Active fight -->
+      <div id="active-fight" class="hidden">
+        <div class="card" style="border:2px solid var(--gold-500)">
+          <div class="card-header">
+            <span class="card-title">🔥 Pelea Activa</span>
+            <span class="badge badge-danger animate-pulse">EN VIVO</span>
+          </div>
+
+          <!-- Combatants -->
+          <div class="grid grid-2 gap-6 mb-6" id="combatants"></div>
+
+          <!-- Cronómetro -->
+          <div class="cronometro" id="cronometro">00:00</div>
+
+          <!-- Controls -->
+          <div class="flex justify-center gap-4 mt-6">
+            <button class="btn btn-success btn-lg" id="btn-start" onclick="startCrono()">▶ Iniciar</button>
+            <button class="btn btn-secondary btn-lg" id="btn-pause" onclick="pauseCrono()" style="display:none">⏸ Pausar</button>
+            <button class="btn btn-danger btn-lg" id="btn-reset" onclick="resetCrono()">↺ Reiniciar</button>
+          </div>
+
+          <!-- Dictamen -->
+          <div style="border-top:1px solid var(--glass-border);margin-top:1.5rem;padding-top:1.5rem">
+            <h3 style="text-align:center;font-weight:700;margin-bottom:1rem">📋 Dictamen del Juez</h3>
+            <div class="flex justify-center gap-4">
+              <button class="btn btn-success btn-lg" onclick="dictamen('a')">✓ Ganó A</button>
+              <button class="btn btn-secondary btn-lg" onclick="dictamen('tablas')" style="border-color:var(--warning);color:var(--warning)">⚖ Tablas</button>
+              <button class="btn btn-success btn-lg" onclick="dictamen('b')">✓ Ganó B</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tablas modal -->
+      <div id="modal-tablas" class="modal-overlay hidden" style="display:none">
+        <div class="modal">
+          <div class="modal-header">
+            <h3>⚖️ Desempate — Tablas</h3>
+            <button class="btn btn-ghost btn-icon" onclick="SGT.closeModal('modal-tablas')">✕</button>
+          </div>
+          <div class="modal-body">
+            <div style="background:var(--warning-bg);border:1px solid var(--warning);border-radius:var(--radius-md);padding:1rem;margin-bottom:1.5rem">
+              <p class="text-sm" style="color:var(--warning)">⚠️ <strong>Regla Peruana de Tablas:</strong> Ambos galpones deben presentar un gallo de reemplazo nuevo. El combate se reinicia.</p>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Gallo Reemplazo A</label>
+                <input type="text" class="form-input" id="tablas-gallo-a" placeholder="Placa del nuevo gallo A" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Gallo Reemplazo B</label>
+                <input type="text" class="form-input" id="tablas-gallo-b" placeholder="Placa del nuevo gallo B" required>
+              </div>
+            </div>
+            <div class="modal-footer" style="padding:1rem 0 0;border:none">
+              <button class="btn btn-ghost" onclick="SGT.closeModal('modal-tablas')">Cancelar</button>
+              <button class="btn btn-primary" onclick="resolveTablas()">Reiniciar Combate</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if (!SGT.requireAuth()) throw 'no auth';
+    document.getElementById('sidebar-container').innerHTML = SGT.renderSidebar('mesa-juez');
+    document.getElementById('topbar-container').innerHTML = SGT.renderTopBar();
+    SGT.init();
+
+    let cronoInterval = null;
+    let cronoSeconds = 0;
+    let activeLlave = null;
+
+    // Populate fecha select
+    const fechas = DB.getAll('fechas_evento');
+    const sel = document.getElementById('fecha-select');
+    sel.innerHTML = '<option value="">— Seleccionar Fecha —</option>' + fechas.map(f => {
+      const c = DB.getById('campeonatos', f.campeonato_id);
+      return `<option value="${f.id}">${c ? c.nombre + ' — ' : ''}${f.nombre} (${SGT.formatDate(f.fecha_calendario)})</option>`;
+    }).join('');
+
+    // Check URL param
+    const params = new URLSearchParams(window.location.search);
+    const initialFecha = params.get('fecha');
+    if (initialFecha) { sel.value = initialFecha; loadFecha(initialFecha); }
+
+    function getParticipantName(id) {
+      const p = DB.getById('participantes', id);
+      return p ? p.nombre_galpon : '?';
+    }
+
+    function loadFecha(fechaId) {
+      if (!fechaId) return;
+      const llaves = DB.filter('llaves', l => l.fecha_id === fechaId);
+      const rounds = {};
+      llaves.forEach(l => { if (!rounds[l.ronda]) rounds[l.ronda] = []; rounds[l.ronda].push(l); });
+
+      const roundNames = { 1: 'Primera Ronda', 2: 'Semifinal', 3: 'Final' };
+      const container = document.getElementById('bracket-container');
+      container.innerHTML = Object.keys(rounds).sort().map(r => `
+        <div class="bracket-round">
+          <div class="bracket-round-title">${roundNames[r] || 'Ronda ' + r}</div>
+          ${rounds[r].map(l => `
+            <div class="bracket-match ${l.estado === 'Activo' ? 'active' : ''}" style="cursor:pointer" onclick="openFight('${l.id}')">
+              <div class="bracket-team ${l.ganador_id === l.participante_a_id ? 'winner' : l.ganador_id ? 'loser' : ''}">
+                <span>${getParticipantName(l.participante_a_id)}</span>
+                <span class="text-xs">${l.gallo_a_placa || '—'}</span>
+              </div>
+              <div class="bracket-team ${l.ganador_id === l.participante_b_id ? 'winner' : l.ganador_id ? 'loser' : ''}">
+                <span>${getParticipantName(l.participante_b_id)}</span>
+                <span class="text-xs">${l.gallo_b_placa || '—'}</span>
+              </div>
+              <div style="text-align:center;padding:4px;font-size:.7rem;color:var(--text-tertiary)">${l.estado}</div>
+            </div>
+          `).join('')}
+        </div>
+      `).join('') || '<div class="empty-state" style="flex:1"><p>No hay llaves sorteadas para esta fecha</p></div>';
+    }
+
+    function openFight(llaveId) {
+      activeLlave = DB.getById('llaves', llaveId);
+      if (!activeLlave) return;
+
+      // Register gallos (hot registration)
+      if (!activeLlave.gallo_a_placa) {
+        const placaA = prompt(`Registro en Caliente — Placa del gallo de ${getParticipantName(activeLlave.participante_a_id)}:`);
+        if (!placaA) return;
+        activeLlave.gallo_a_placa = placaA;
+      }
+      if (!activeLlave.gallo_b_placa) {
+        const placaB = prompt(`Registro en Caliente — Placa del gallo de ${getParticipantName(activeLlave.participante_b_id)}:`);
+        if (!placaB) return;
+        activeLlave.gallo_b_placa = placaB;
+      }
+
+      DB.update('llaves', llaveId, { gallo_a_placa: activeLlave.gallo_a_placa, gallo_b_placa: activeLlave.gallo_b_placa, estado: 'Activo' });
+      activeLlave.estado = 'Activo';
+
+      // Show fight UI
+      document.getElementById('active-fight').classList.remove('hidden');
+      document.getElementById('combatants').innerHTML = `
+        <div class="card" style="text-align:center;border-left:3px solid var(--info)">
+          <h3 style="color:var(--info);font-weight:800;font-size:1.25rem">🅰️ ${getParticipantName(activeLlave.participante_a_id)}</h3>
+          <p class="text-sm mt-2" style="color:var(--text-secondary)">Gallo: <strong style="color:var(--text-accent)">${activeLlave.gallo_a_placa}</strong></p>
+        </div>
+        <div class="card" style="text-align:center;border-left:3px solid var(--danger)">
+          <h3 style="color:var(--danger);font-weight:800;font-size:1.25rem">🅱️ ${getParticipantName(activeLlave.participante_b_id)}</h3>
+          <p class="text-sm mt-2" style="color:var(--text-secondary)">Gallo: <strong style="color:var(--text-accent)">${activeLlave.gallo_b_placa}</strong></p>
+        </div>`;
+
+      resetCrono();
+      loadFecha(activeLlave.fecha_id);
+    }
+
+    // Cronómetro ascendente
+    function startCrono() {
+      document.getElementById('btn-start').style.display = 'none';
+      document.getElementById('btn-pause').style.display = '';
+      document.getElementById('cronometro').classList.add('running');
+      cronoInterval = setInterval(() => {
+        cronoSeconds++;
+        const m = String(Math.floor(cronoSeconds / 60)).padStart(2, '0');
+        const s = String(cronoSeconds % 60).padStart(2, '0');
+        document.getElementById('cronometro').textContent = `${m}:${s}`;
+      }, 1000);
+    }
+
+    function pauseCrono() {
+      clearInterval(cronoInterval);
+      document.getElementById('btn-start').style.display = '';
+      document.getElementById('btn-pause').style.display = 'none';
+      document.getElementById('cronometro').classList.remove('running');
+    }
+
+    function resetCrono() {
+      clearInterval(cronoInterval);
+      cronoSeconds = 0;
+      document.getElementById('cronometro').textContent = '00:00';
+      document.getElementById('cronometro').classList.remove('running');
+      document.getElementById('btn-start').style.display = '';
+      document.getElementById('btn-pause').style.display = 'none';
+    }
+
+    function dictamen(result) {
+      if (!activeLlave) return;
+      pauseCrono();
+
+      if (result === 'tablas') {
+        // Tablas: request replacement roosters
+        DB.update('llaves', activeLlave.id, { estado: 'Empate-Pendiente' });
+        SGT.openModal('modal-tablas');
+        return;
+      }
+
+      const ganadorId = result === 'a' ? activeLlave.participante_a_id : activeLlave.participante_b_id;
+      DB.update('llaves', activeLlave.id, { ganador_id: ganadorId, estado: 'Finalizado', duracion_segundos: cronoSeconds });
+
+      const ganadorNombre = getParticipantName(ganadorId);
+      SGT.toast(`🏆 ¡${ganadorNombre} gana la pelea!`);
+
+      // Advance to next round
+      advanceWinner(activeLlave, ganadorId);
+
+      document.getElementById('active-fight').classList.add('hidden');
+      loadFecha(activeLlave.fecha_id);
+      activeLlave = null;
+    }
+
+    function resolveTablas() {
+      if (!activeLlave) return;
+      const galloA = document.getElementById('tablas-gallo-a').value;
+      const galloB = document.getElementById('tablas-gallo-b').value;
+      if (!galloA || !galloB) { SGT.toast('Ingresa ambos gallos de reemplazo', 'error'); return; }
+
+      // Save desempate record
+      const desempates = DB.getAll('desempates') || [];
+      DB.add('desempates', {
+        id: 'd-' + SGT.uuid(),
+        llave_id: activeLlave.id,
+        intento_numero: desempates.filter(d => d.llave_id === activeLlave.id).length + 1,
+        gallo_reemplazo_a: galloA,
+        gallo_reemplazo_b: galloB
+      });
+
+      // Update llave with new gallos
+      DB.update('llaves', activeLlave.id, { gallo_a_placa: galloA, gallo_b_placa: galloB, estado: 'Activo' });
+      activeLlave.gallo_a_placa = galloA;
+      activeLlave.gallo_b_placa = galloB;
+
+      SGT.closeModal('modal-tablas');
+      SGT.toast('⚖️ Combate reiniciado con nuevos gallos', 'info');
+      resetCrono();
+      openFight(activeLlave.id);
+    }
+
+    function advanceWinner(llave, ganadorId) {
+      const fechaId = llave.fecha_id;
+      const currentRound = llave.ronda;
+      const nextRound = currentRound + 1;
+
+      // Check if all matches in current round are done
+      const roundMatches = DB.filter('llaves', l => l.fecha_id === fechaId && l.ronda === currentRound);
+      const allDone = roundMatches.every(l => l.estado === 'Finalizado');
+      if (!allDone) return;
+
+      // Get winners
+      const winners = roundMatches.map(l => l.ganador_id).filter(Boolean);
+      if (winners.length < 2) return; // Final already
+
+      // Create next round matches
+      for (let i = 0; i < winners.length; i += 2) {
+        if (i + 1 < winners.length) {
+          DB.add('llaves', {
+            id: 'l-' + SGT.uuid(),
+            fecha_id: fechaId,
+            ronda: nextRound,
+            participante_a_id: winners[i],
+            participante_b_id: winners[i + 1],
+            gallo_a_placa: null,
+            gallo_b_placa: null,
+            ganador_id: null,
+            estado: 'Pendiente',
+            duracion_segundos: 0
+          });
+        }
+      }
+    }
+  </script>
+</body>
+</html>

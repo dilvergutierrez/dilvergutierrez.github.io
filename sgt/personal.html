@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Personal — SGT</title>
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebar-container"></div>
+    <main class="main-content">
+      <div id="topbar-container"></div>
+      <div class="page-header flex items-center justify-between">
+        <div><h1>👥 Personal</h1><p>Gestión de delegados y pastores con permisos granulares</p></div>
+        <button class="btn btn-primary" onclick="SGT.openModal('modal-delegado')">+ Invitar Delegado</button>
+      </div>
+
+      <!-- Plan limit info -->
+      <div class="card mb-6" id="plan-info" style="padding:1rem"></div>
+
+      <!-- Delegados list -->
+      <div id="delegados-list" class="stagger"></div>
+
+      <!-- Modal -->
+      <div id="modal-delegado" class="modal-overlay hidden" style="display:none">
+        <div class="modal">
+          <div class="modal-header">
+            <h3 id="modal-deleg-title">Invitar Delegado</h3>
+            <button class="btn btn-ghost btn-icon" onclick="SGT.closeModal('modal-delegado')">✕</button>
+          </div>
+          <div class="modal-body">
+            <form onsubmit="saveDelegado(event)">
+              <input type="hidden" id="deleg-edit-id">
+              <div class="form-group">
+                <label class="form-label">Nombre del delegado</label>
+                <input type="text" class="form-input" id="deleg-nombre" placeholder="Nombre completo" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Permisos Granulares</label>
+                <div class="checkbox-group" id="permisos-checkboxes">
+                  <div class="checkbox-item">
+                    <input type="checkbox" id="perm-create-birds" checked>
+                    <label for="perm-create-birds">can_create_birds — Registrar nuevas aves o camadas</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input type="checkbox" id="perm-edit-fenotipo">
+                    <label for="perm-edit-fenotipo">can_edit_fenotipo — Modificar características físicas</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input type="checkbox" id="perm-add-weights" checked>
+                    <label for="perm-add-weights">can_add_weights — Ingresar pesos evolutivos</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input type="checkbox" id="perm-manage-tournaments">
+                    <label for="perm-manage-tournaments">can_manage_tournaments — Crear y administrar torneos</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input type="checkbox" id="perm-view-finances">
+                    <label for="perm-view-finances">can_view_finances — Ver módulos de pago y suscripción</label>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer" style="padding:1rem 0 0;border:none">
+                <button type="button" class="btn btn-ghost" onclick="SGT.closeModal('modal-delegado')">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if (!SGT.requireAuth()) throw 'no auth';
+    document.getElementById('sidebar-container').innerHTML = SGT.renderSidebar('personal');
+    document.getElementById('topbar-container').innerHTML = SGT.renderTopBar();
+    SGT.init();
+
+    const user = SGT.getUser();
+    const plan = DB.getById('planes', user.plan_id);
+
+    document.getElementById('plan-info').innerHTML = `
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="text-sm" style="color:var(--text-secondary)">Plan actual: <strong style="color:var(--text-accent)">${plan ? plan.nombre : 'N/A'}</strong></span>
+        </div>
+        <div>
+          <span class="text-sm" style="color:var(--text-secondary)">Delegados: <strong>${DB.getAll('delegados').length}</strong> / ${plan ? (plan.max_delegados === 99 ? '∞' : plan.max_delegados) : '0'}</span>
+        </div>
+      </div>
+    `;
+
+    function renderDelegados() {
+      const delegados = DB.getAll('delegados');
+      document.getElementById('delegados-list').innerHTML = delegados.map(d => {
+        const perms = d.permisos || {};
+        return `
+        <div class="card mb-4">
+          <div class="card-header">
+            <div class="flex items-center gap-4">
+              <div style="width:48px;height:48px;border-radius:50%;background:var(--bg-elevated);display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:700;color:var(--text-accent)">${d.nombre.charAt(0)}</div>
+              <div>
+                <strong style="font-size:1rem">${d.nombre}</strong>
+                <div class="text-xs" style="color:var(--text-secondary)">ID: ${d.usuario_id || '—'}</div>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button class="btn btn-ghost btn-sm" onclick="editDelegado('${d.id}')">✏️ Editar</button>
+              <button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="removeDelegado('${d.id}')">🗑️</button>
+            </div>
+          </div>
+          <div class="flex gap-2" style="flex-wrap:wrap;margin-top:.5rem">
+            ${Object.entries(perms).map(([k, v]) => `<span class="badge ${v ? 'badge-success' : 'badge-danger'}" style="font-size:.7rem">${v ? '✓' : '✕'} ${k}</span>`).join('')}
+          </div>
+        </div>`;
+      }).join('') || '<div class="empty-state card"><div class="icon">👥</div><p>No hay delegados registrados</p></div>';
+    }
+
+    function saveDelegado(e) {
+      e.preventDefault();
+      const editId = document.getElementById('deleg-edit-id').value;
+      const data = {
+        nombre: document.getElementById('deleg-nombre').value,
+        galpon_id: DB.getAll('galpones')[0]?.id || 'g-001',
+        usuario_id: 'u-' + SGT.uuid(),
+        permisos: {
+          can_create_birds: document.getElementById('perm-create-birds').checked,
+          can_edit_fenotipo: document.getElementById('perm-edit-fenotipo').checked,
+          can_add_weights: document.getElementById('perm-add-weights').checked,
+          can_manage_tournaments: document.getElementById('perm-manage-tournaments').checked,
+          can_view_finances: document.getElementById('perm-view-finances').checked
+        }
+      };
+      if (editId) {
+        DB.update('delegados', editId, data);
+        SGT.toast('Delegado actualizado');
+      } else {
+        data.id = 'd-' + SGT.uuid();
+        DB.add('delegados', data);
+        SGT.toast('Delegado invitado exitosamente');
+      }
+      SGT.closeModal('modal-delegado');
+      renderDelegados();
+    }
+
+    function editDelegado(id) {
+      const d = DB.getById('delegados', id);
+      document.getElementById('deleg-edit-id').value = id;
+      document.getElementById('deleg-nombre').value = d.nombre;
+      document.getElementById('perm-create-birds').checked = d.permisos.can_create_birds;
+      document.getElementById('perm-edit-fenotipo').checked = d.permisos.can_edit_fenotipo;
+      document.getElementById('perm-add-weights').checked = d.permisos.can_add_weights;
+      document.getElementById('perm-manage-tournaments').checked = d.permisos.can_manage_tournaments;
+      document.getElementById('perm-view-finances').checked = d.permisos.can_view_finances;
+      document.getElementById('modal-deleg-title').textContent = 'Editar Delegado';
+      SGT.openModal('modal-delegado');
+    }
+
+    function removeDelegado(id) {
+      if (!confirm('¿Revocar acceso de este delegado?')) return;
+      DB.remove('delegados', id);
+      SGT.toast('Delegado eliminado', 'error');
+      renderDelegados();
+    }
+
+    renderDelegados();
+  </script>
+</body>
+</html>

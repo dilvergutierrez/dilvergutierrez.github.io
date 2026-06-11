@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Detalle Ejemplar — SGT</title>
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebar-container"></div>
+    <main class="main-content">
+      <div id="topbar-container"></div>
+      <div id="bird-detail"></div>
+    </main>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if (!SGT.requireAuth()) throw 'no auth';
+    document.getElementById('sidebar-container').innerHTML = SGT.renderSidebar('ejemplares');
+    document.getElementById('topbar-container').innerHTML = SGT.renderTopBar();
+    SGT.init();
+
+    const params = new URLSearchParams(window.location.search);
+    const placa = params.get('placa') || 'GC-001';
+    const bird = DB.getById('ejemplares', placa, 'placa_ala');
+
+    if (!bird) {
+      document.getElementById('bird-detail').innerHTML = '<div class="empty-state card"><div class="icon">🐔</div><p>Ave no encontrada</p><a href="ejemplares.html" class="btn btn-primary">Volver a Ejemplares</a></div>';
+    } else {
+      const pesos = DB.filter('pesos', w => w.placa_ala === placa);
+      const historial = DB.filter('historial_clasificacion', h => h.placa_ala === placa);
+      const f = bird.fenotipo_json || {};
+
+      document.getElementById('bird-detail').innerHTML = `
+        <div class="page-header flex items-center justify-between">
+          <div>
+            <a href="ejemplares.html" class="text-sm" style="color:var(--text-secondary)">← Volver a Ejemplares</a>
+            <h1 style="margin-top:.5rem">🐔 ${bird.nombre} <span style="font-size:1rem;color:var(--text-secondary)">${bird.placa_ala}</span></h1>
+          </div>
+          <div class="flex gap-2">
+            <a href="pedigree.html?placa=${placa}" class="btn btn-secondary">🌳 Pedigree</a>
+            <button class="btn btn-primary" onclick="window.location.href='ejemplares.html'">✏️ Editar</button>
+          </div>
+        </div>
+
+        <!-- Info cards -->
+        <div class="grid grid-3 gap-4 mb-6">
+          <div class="card stat-card">
+            <div class="stat-value">${bird.sexo}</div>
+            <div class="stat-label">Sexo</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-value">${bird.rol}</div>
+            <div class="stat-label">Rol Actual</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-value">${SGT.calcAge(bird.fecha_nacimiento)}</div>
+            <div class="stat-label">Edad</div>
+          </div>
+        </div>
+
+        <div class="grid grid-2 gap-6">
+          <!-- Fenotipo -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">🎨 Fenotipo</span>
+              <button class="btn btn-ghost btn-sm" onclick="editFenotipo()">Editar</button>
+            </div>
+            <div id="fenotipo-display" style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+              <div><span class="text-xs" style="color:var(--text-secondary)">Plumaje</span><br><strong>${f.plumaje || '—'}</strong></div>
+              <div><span class="text-xs" style="color:var(--text-secondary)">Ojos</span><br><strong>${f.ojos || '—'}</strong></div>
+              <div><span class="text-xs" style="color:var(--text-secondary)">Patas</span><br><strong>${f.patas || '—'}</strong></div>
+              <div><span class="text-xs" style="color:var(--text-secondary)">Cresta</span><br><strong>${f.cresta || '—'}</strong></div>
+            </div>
+          </div>
+
+          <!-- Información general -->
+          <div class="card">
+            <div class="card-header"><span class="card-title">📋 Información General</span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+              <div><span class="text-xs" style="color:var(--text-secondary)">Línea Genética</span><br><strong>${bird.linea_genetica}</strong></div>
+              <div><span class="text-xs" style="color:var(--text-secondary)">Origen</span><br><strong>${bird.origen}</strong></div>
+              <div><span class="text-xs" style="color:var(--text-secondary)">Padre</span><br><strong>${bird.padre_placa || '—'}</strong></div>
+              <div><span class="text-xs" style="color:var(--text-secondary)">Madre</span><br><strong>${bird.madre_placa || '—'}</strong></div>
+              <div><span class="text-xs" style="color:var(--text-secondary)">Nacimiento</span><br><strong>${SGT.formatDate(bird.fecha_nacimiento)}</strong></div>
+              <div><span class="text-xs" style="color:var(--text-secondary)">Visibilidad</span><br><span class="badge ${bird.visibilidad==='Publico'?'badge-success':'badge-info'}">${bird.visibilidad}</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pesos evolutivos -->
+        <div class="card mt-6">
+          <div class="card-header">
+            <span class="card-title">⚖️ Pesos Evolutivos</span>
+            <button class="btn btn-primary btn-sm" onclick="addWeight()">+ Registrar Peso</button>
+          </div>
+          ${pesos.length ? `
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Edad (meses)</th><th>Peso (g)</th><th>Fecha</th></tr></thead>
+              <tbody>${pesos.map(w => `<tr><td>${w.edad_meses} meses</td><td><strong>${w.peso_gramos}g</strong></td><td>${SGT.formatDate(w.fecha_pesaje)}</td></tr>`).join('')}</tbody>
+            </table>
+          </div>
+          <!-- Simple weight chart -->
+          <div style="margin-top:1rem;height:150px;display:flex;align-items:flex-end;gap:1rem;padding:0 1rem">
+            ${pesos.map(w => {
+              const max = Math.max(...pesos.map(p => p.peso_gramos));
+              const pct = (w.peso_gramos / max) * 100;
+              return `<div style="flex:1;text-align:center">
+                <div style="background:linear-gradient(180deg,var(--gold-400),var(--gold-600));height:${pct}%;border-radius:4px 4px 0 0;min-height:10px;transition:height .5s ease"></div>
+                <div class="text-xs mt-2" style="color:var(--text-secondary)">${w.edad_meses}m</div>
+                <div class="text-xs" style="color:var(--text-accent)">${w.peso_gramos}g</div>
+              </div>`;
+            }).join('')}
+          </div>
+          ` : '<div class="empty-state"><p>No hay pesos registrados</p></div>'}
+        </div>
+
+        <!-- Historial clasificación -->
+        <div class="card mt-6">
+          <div class="card-header"><span class="card-title">📜 Historial de Clasificación</span></div>
+          ${historial.length ? `
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Fecha</th><th>Cambio</th><th>Motivo</th></tr></thead>
+              <tbody>${historial.map(h => `<tr>
+                <td>${SGT.formatDate(h.fecha)}</td>
+                <td><span class="badge badge-danger">${h.rol_anterior}</span> → <span class="badge badge-success">${h.rol_nuevo}</span></td>
+                <td>${h.motivo}</td>
+              </tr>`).join('')}</tbody>
+            </table>
+          </div>` : '<p class="text-sm" style="color:var(--text-secondary);padding:.5rem 0">Sin cambios de rol registrados</p>'}
+        </div>
+      `;
+    }
+
+    function editFenotipo() {
+      const plumajes = ['Giro','Colorado','Cenizo','Jabado','Blanco','Negro','Pinto'];
+      const ojos = ['Perla','Rojo','Blanco','Gris'];
+      const patas = ['Amarillas','Verdes','Blancas','Negras'];
+      const crestas = ['Pea','Rosa','Simple','Nuez'];
+      const f = bird.fenotipo_json || {};
+
+      const newPlumaje = prompt('Plumaje (' + plumajes.join(', ') + '):', f.plumaje || '');
+      if (newPlumaje === null) return;
+      const newOjos = prompt('Color de Ojos (' + ojos.join(', ') + '):', f.ojos || '');
+      const newPatas = prompt('Color de Patas (' + patas.join(', ') + '):', f.patas || '');
+      const newCresta = prompt('Tipo de Cresta (' + crestas.join(', ') + '):', f.cresta || '');
+
+      DB.update('ejemplares', placa, {
+        fenotipo_json: { plumaje: newPlumaje, ojos: newOjos, patas: newPatas, cresta: newCresta }
+      }, 'placa_ala');
+      SGT.toast('Fenotipo actualizado');
+      location.reload();
+    }
+
+    function addWeight() {
+      const edad = prompt('Edad en meses (6, 9 o 12):');
+      if (!edad) return;
+      const peso = prompt('Peso en gramos:');
+      if (!peso) return;
+      DB.add('pesos', {
+        id: 'w-' + SGT.uuid(),
+        placa_ala: placa,
+        edad_meses: parseInt(edad),
+        peso_gramos: parseFloat(peso),
+        fecha_pesaje: new Date().toISOString().split('T')[0]
+      });
+      SGT.toast('Peso registrado');
+      location.reload();
+    }
+  </script>
+</body>
+</html>

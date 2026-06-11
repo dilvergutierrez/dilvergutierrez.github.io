@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Iniciar Sesión — SGT</title>
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card card animate-scale-in">
+      <div class="auth-logo">
+        <div style="font-size:3rem;margin-bottom:.5rem">🐓</div>
+        <h1>SGT</h1>
+        <p class="text-sm" style="color:var(--text-secondary)">Sistema de Gestión Gallística</p>
+      </div>
+
+      <!-- Social Login -->
+      <button class="social-btn" onclick="loginWithGoogle()" id="btn-google" style="margin-bottom:.75rem">
+        <span style="font-size:1.2rem">🔵</span> Continuar con Google
+      </button>
+      <button class="social-btn" onclick="loginWithPhone()" id="btn-phone">
+        <span style="font-size:1.2rem">📱</span> Continuar con Teléfono
+      </button>
+
+      <div class="auth-divider">o ingresa con email</div>
+
+      <!-- Email login -->
+      <form onsubmit="loginWithEmail(event)" id="login-form">
+        <div class="form-group">
+          <label class="form-label">Correo electrónico</label>
+          <input type="email" class="form-input" id="login-email" placeholder="tu@correo.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contraseña</label>
+          <input type="password" class="form-input" id="login-password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg">Iniciar Sesión</button>
+      </form>
+
+      <p class="text-center mt-6 text-sm" style="color:var(--text-secondary)">
+        ¿No tienes cuenta? <a href="register.html">Regístrate gratis</a>
+      </p>
+      <p class="text-center mt-2 text-sm">
+        <a href="index.html" style="color:var(--text-tertiary)">← Volver al inicio</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    function doLogin(user) {
+      SGT.setUser(user);
+      SGT.toast('¡Bienvenido, ' + user.nombre + '!');
+      setTimeout(() => window.location.href = 'dashboard.html', 500);
+    }
+
+    function loginWithGoogle() {
+      // Simulate Google auth
+      const users = DB.getAll('users');
+      if (users.length > 0) { doLogin(users[0]); }
+      else {
+        const u = { id: SGT.uuid(), nombre: 'Usuario Google', email: 'google@demo.com', telefono: '', plan_id: 'free', fecha_registro: new Date().toISOString().split('T')[0], vista_preferida: 'AFICIONADO' };
+        DB.add('users', u);
+        doLogin(u);
+      }
+    }
+
+    function loginWithPhone() {
+      const phone = prompt('Ingresa tu número de teléfono (9 dígitos):');
+      if (!phone) return;
+      const users = DB.getAll('users');
+      let user = users.find(u => u.telefono === phone);
+      if (!user) {
+        user = { id: SGT.uuid(), nombre: 'Usuario ' + phone.slice(-4), telefono: phone, email: '', plan_id: 'free', fecha_registro: new Date().toISOString().split('T')[0], vista_preferida: 'AFICIONADO' };
+        DB.add('users', user);
+      }
+      SGT.toast('OTP enviado a +51 ' + phone, 'info');
+      setTimeout(() => doLogin(user), 1000);
+    }
+
+    function loginWithEmail(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const users = DB.getAll('users');
+      let user = users.find(u => u.email === email);
+      if (!user) {
+        user = users[0] || { id: SGT.uuid(), nombre: 'Demo User', email: email, telefono: '', plan_id: 'free', fecha_registro: new Date().toISOString().split('T')[0], vista_preferida: 'AFICIONADO' };
+        if (!users.length) DB.add('users', user);
+      }
+      doLogin(user);
+    }
+  </script>
+</body>
+</html>

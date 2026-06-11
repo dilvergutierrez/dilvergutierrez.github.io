@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Feed Aficionado — SGT</title>
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebar-container"></div>
+    <main class="main-content">
+      <div id="topbar-container"></div>
+      <div class="page-header">
+        <h1>📡 Feed en Vivo</h1>
+        <p>Modo Aficionado — Explora galpones, torneos y pedigrees públicos</p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs mb-6">
+        <button class="tab active" onclick="showTab('torneos')">🏆 Torneos en Vivo</button>
+        <button class="tab" onclick="showTab('galpones')">🏠 Galpones Públicos</button>
+        <button class="tab" onclick="showTab('pedigrees')">🌳 Pedigrees</button>
+      </div>
+
+      <!-- Torneos en vivo -->
+      <div id="tab-torneos">
+        <div id="live-tournaments" class="stagger"></div>
+      </div>
+
+      <!-- Galpones públicos -->
+      <div id="tab-galpones" class="hidden">
+        <div id="public-galpones" class="grid grid-3 gap-4 stagger"></div>
+      </div>
+
+      <!-- Pedigrees públicos -->
+      <div id="tab-pedigrees" class="hidden">
+        <div class="card mb-4" style="padding:1rem">
+          <div class="flex gap-4 items-center">
+            <input type="text" class="form-input" placeholder="Buscar ave por placa o nombre..." id="search-pedigree" style="flex:1">
+            <button class="btn btn-primary btn-sm" onclick="searchPublicBirds()">Buscar</button>
+          </div>
+        </div>
+        <div id="public-birds" class="grid grid-2 gap-4"></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if (!SGT.requireAuth()) throw 'no auth';
+    document.getElementById('sidebar-container').innerHTML = SGT.renderSidebar('fan-feed');
+    document.getElementById('topbar-container').innerHTML = SGT.renderTopBar();
+    SGT.init();
+
+    function showTab(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+      ['torneos','galpones','pedigrees'].forEach(t => {
+        document.getElementById('tab-'+t).classList.toggle('hidden', t !== tab);
+      });
+    }
+
+    // Live tournaments
+    const camps = DB.getAll('campeonatos');
+    const fechas = DB.getAll('fechas_evento');
+    document.getElementById('live-tournaments').innerHTML = camps.map(c => {
+      const cFechas = fechas.filter(f => f.campeonato_id === c.id);
+      return `
+        <div class="card feed-card">
+          <div class="feed-header">
+            <div class="feed-avatar">🏆</div>
+            <div>
+              <strong>${c.nombre}</strong>
+              <div class="feed-meta">Pozo: S/ ${c.pozo_premio.toLocaleString()} · ${c.estado}</div>
+            </div>
+            <span class="badge badge-success" style="margin-left:auto">${c.estado}</span>
+          </div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            ${cFechas.map(f => `<div class="badge badge-info">${f.nombre} — ${SGT.formatDate(f.fecha_calendario)}</div>`).join('')}
+          </div>
+          <div style="margin-top:1rem">
+            <a href="mesa-juez.html" class="btn btn-primary btn-sm">Ver en Vivo →</a>
+          </div>
+        </div>`;
+    }).join('') || '<div class="empty-state"><div class="icon">🏟️</div><p>No hay torneos en vivo</p></div>';
+
+    // Public galpones
+    const galpones = DB.getAll('galpones');
+    document.getElementById('public-galpones').innerHTML = galpones.map(g => `
+      <div class="card" style="cursor:pointer" onclick="window.location.href='galpon.html'">
+        <div style="height:100px;background:linear-gradient(135deg,var(--bg-elevated),var(--bg-tertiary));border-radius:var(--radius-md);margin-bottom:1rem;display:flex;align-items:center;justify-content:center;font-size:2.5rem">🏠</div>
+        <h3 style="font-weight:700">${g.nombre}</h3>
+        <p class="text-sm" style="color:var(--text-secondary)">${g.ubicacion}</p>
+        <p class="text-xs mt-2" style="color:var(--text-tertiary)">${DB.filter('ejemplares', e => e.galpon_id === g.id && e.visibilidad === 'Publico').length} ejemplares públicos</p>
+      </div>
+    `).join('');
+
+    // Public birds search
+    function searchPublicBirds() {
+      const q = document.getElementById('search-pedigree').value.toLowerCase();
+      const birds = DB.filter('ejemplares', e => e.visibilidad === 'Publico' && (e.nombre.toLowerCase().includes(q) || e.placa_ala.toLowerCase().includes(q)));
+      document.getElementById('public-birds').innerHTML = birds.map(b => `
+        <div class="card" style="cursor:pointer" onclick="window.location.href='pedigree.html?placa=${b.placa_ala}'">
+          <div class="flex items-center gap-4">
+            <div style="width:50px;height:50px;border-radius:50%;background:var(--bg-elevated);display:flex;align-items:center;justify-content:center;font-size:1.5rem">🐓</div>
+            <div>
+              <strong>${b.nombre}</strong> <span class="text-xs" style="color:var(--text-secondary)">${b.placa_ala}</span>
+              <div class="flex gap-2 mt-1">
+                <span class="badge badge-gold">${b.linea_genetica}</span>
+                <span class="badge ${b.sexo==='Macho'?'badge-info':'badge-warning'}">${b.sexo}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('') || '<div class="empty-state"><p>No se encontraron aves públicas</p></div>';
+    }
+    searchPublicBirds(); // initial load
+  </script>
+</body>
+</html>

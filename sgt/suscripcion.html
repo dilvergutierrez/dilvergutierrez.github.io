@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Suscripción — SGT</title>
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebar-container"></div>
+    <main class="main-content">
+      <div id="topbar-container"></div>
+      <div class="page-header">
+        <h1>💎 Suscripción</h1>
+        <p>Gestiona tu plan y pagos</p>
+      </div>
+
+      <!-- Current plan -->
+      <div class="card mb-6" id="current-plan-card"></div>
+
+      <!-- Available plans -->
+      <h2 style="font-size:1.25rem;font-weight:700;margin-bottom:1rem">Planes disponibles</h2>
+      <div class="pricing-grid mb-6" id="plans-grid"></div>
+
+      <!-- Payment history -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">📄 Historial de Pagos</span></div>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead><tr><th>Fecha</th><th>Plan</th><th>Monto</th><th>Estado</th><th>Token</th></tr></thead>
+            <tbody id="payment-history"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if (!SGT.requireAuth()) throw 'no auth';
+    document.getElementById('sidebar-container').innerHTML = SGT.renderSidebar('suscripcion');
+    document.getElementById('topbar-container').innerHTML = SGT.renderTopBar();
+    SGT.init();
+
+    const user = SGT.getUser();
+    const plans = DB.getAll('planes');
+    const subs = DB.filter('suscripciones', s => s.usuario_id === user.id);
+    const currentSub = subs.find(s => s.estado === 'Activa');
+    const currentPlan = currentSub ? DB.getById('planes', currentSub.plan_id) : plans[0];
+
+    // Current plan card
+    document.getElementById('current-plan-card').innerHTML = `
+      <div class="flex items-center justify-between" style="padding:1.5rem">
+        <div>
+          <div class="text-sm" style="color:var(--text-secondary)">Plan actual</div>
+          <h2 style="font-size:1.75rem;font-weight:900;color:var(--text-accent)">${currentPlan ? currentPlan.nombre : 'Sin plan'}</h2>
+          ${currentSub ? `<div class="text-sm mt-2" style="color:var(--text-secondary)">Válido hasta: <strong>${SGT.formatDate(currentSub.fecha_fin)}</strong></div>` : ''}
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:2.5rem;font-weight:900;color:var(--text-accent)">$${currentPlan ? currentPlan.precio_mensual : 0}</div>
+          <div class="text-sm" style="color:var(--text-secondary)">/mes</div>
+          ${currentSub ? `<span class="badge badge-success mt-2">${currentSub.estado}</span>` : '<span class="badge badge-warning">Sin suscripción</span>'}
+        </div>
+      </div>
+      ${currentPlan ? `
+      <div style="padding:0 1.5rem 1.5rem;border-top:1px solid var(--glass-border);padding-top:1rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;text-align:center">
+        <div><div style="font-size:1.25rem;font-weight:700">${currentPlan.max_galpones === 0 ? '—' : currentPlan.max_galpones === 5 ? '5' : currentPlan.max_galpones}</div><div class="text-xs" style="color:var(--text-secondary)">Galpones</div></div>
+        <div><div style="font-size:1.25rem;font-weight:700">${currentPlan.max_aves === 0 ? '—' : currentPlan.max_aves === 9999 ? '∞' : currentPlan.max_aves}</div><div class="text-xs" style="color:var(--text-secondary)">Aves</div></div>
+        <div><div style="font-size:1.25rem;font-weight:700">${currentPlan.max_delegados === 0 ? '—' : currentPlan.max_delegados === 99 ? '∞' : currentPlan.max_delegados}</div><div class="text-xs" style="color:var(--text-secondary)">Delegados</div></div>
+      </div>` : ''}
+    `;
+
+    // Plans grid
+    document.getElementById('plans-grid').innerHTML = plans.map(p => {
+      const isCurrent = currentPlan && currentPlan.id === p.id;
+      return `
+      <div class="card pricing-card ${isCurrent ? 'featured' : ''}">
+        <div style="margin-bottom:1rem">
+          ${isCurrent ? '<span class="badge badge-gold">ACTUAL</span>' : ''}
+        </div>
+        <h3 style="font-size:1.125rem;font-weight:700">${p.nombre}</h3>
+        <div style="margin:.75rem 0">
+          <span style="font-size:2rem;font-weight:900;color:var(--text-accent)">$${p.precio_mensual}</span>
+          <span class="text-sm" style="color:var(--text-secondary)">/mes</span>
+        </div>
+        <ul style="list-style:none;font-size:.85rem;color:var(--text-secondary);margin-bottom:1.5rem">
+          <li style="padding:.3rem 0">${p.max_galpones || '—'} galpones</li>
+          <li style="padding:.3rem 0">${p.max_aves === 9999 ? '∞' : (p.max_aves || '—')} aves</li>
+          <li style="padding:.3rem 0">${p.max_delegados === 99 ? '∞' : (p.max_delegados || '—')} delegados</li>
+        </ul>
+        ${isCurrent
+          ? '<button class="btn btn-secondary btn-block" disabled>Plan Actual</button>'
+          : `<button class="btn btn-primary btn-block" onclick="upgradePlan('${p.id}')">Cambiar a este plan</button>`
+        }
+      </div>`;
+    }).join('');
+
+    // Payment history
+    document.getElementById('payment-history').innerHTML = subs.map(s => {
+      const p = DB.getById('planes', s.plan_id);
+      return `<tr>
+        <td>${SGT.formatDate(s.fecha_inicio)}</td>
+        <td>${p ? p.nombre : s.plan_id}</td>
+        <td style="color:var(--text-accent);font-weight:600">$${p ? p.precio_mensual : '?'}</td>
+        <td><span class="badge ${s.estado === 'Activa' ? 'badge-success' : 'badge-danger'}">${s.estado}</span></td>
+        <td class="text-xs" style="color:var(--text-tertiary)">${s.token_pago}</td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="5" class="text-center text-sm" style="color:var(--text-secondary);padding:2rem">Sin historial de pagos</td></tr>';
+
+    function upgradePlan(planId) {
+      if (!confirm('¿Cambiar al nuevo plan? (Simulación)')) return;
+      // Deactivate current
+      if (currentSub) DB.update('suscripciones', currentSub.id, { estado: 'Reemplazada' });
+      // Create new
+      DB.add('suscripciones', {
+        id: 's-' + SGT.uuid(),
+        usuario_id: user.id,
+        plan_id: planId,
+        estado: 'Activa',
+        fecha_inicio: new Date().toISOString().split('T')[0],
+        fecha_fin: '2027-06-10',
+        token_pago: 'tok_' + SGT.uuid()
+      });
+      // Update user
+      user.plan_id = planId;
+      SGT.setUser(user);
+      SGT.toast('¡Plan actualizado exitosamente!');
+      setTimeout(() => location.reload(), 800);
+    }
+  </script>
+</body>
+</html>

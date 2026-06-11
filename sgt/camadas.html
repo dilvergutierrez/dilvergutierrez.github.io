@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Camadas — SGT</title>
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebar-container"></div>
+    <main class="main-content">
+      <div id="topbar-container"></div>
+      <div class="page-header flex items-center justify-between">
+        <div><h1>🥚 Camadas</h1><p>Gestión de nidadas y coeficiente de Wright</p></div>
+        <button class="btn btn-primary" onclick="SGT.openModal('modal-camada')">+ Nueva Camada</button>
+      </div>
+
+      <div id="camadas-list" class="stagger"></div>
+
+      <!-- Modal nueva camada -->
+      <div id="modal-camada" class="modal-overlay hidden" style="display:none">
+        <div class="modal" style="max-width:600px">
+          <div class="modal-header">
+            <h3>Nueva Camada</h3>
+            <button class="btn btn-ghost btn-icon" onclick="SGT.closeModal('modal-camada')">✕</button>
+          </div>
+          <div class="modal-body">
+            <form onsubmit="saveCamada(event)">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Padrillo ♂</label>
+                  <select class="form-select" id="camada-padre" onchange="calcWright()" required>
+                    <option value="">— Seleccionar —</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Madrilla ♀</label>
+                  <select class="form-select" id="camada-madre" onchange="calcWright()" required>
+                    <option value="">— Seleccionar —</option>
+                  </select>
+                </div>
+              </div>
+              <!-- Coeficiente Wright -->
+              <div class="card mb-4" id="wright-result" style="padding:1rem;background:var(--bg-tertiary)">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm" style="color:var(--text-secondary)">Coeficiente de Wright (F)</span>
+                  <span id="wright-value" style="font-size:1.5rem;font-weight:800;color:var(--text-accent)">—</span>
+                </div>
+                <div id="wright-alert" class="hidden mt-2"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Fecha Incubación</label>
+                  <input type="date" class="form-input" id="camada-fecha" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Huevos Totales</label>
+                  <input type="number" class="form-input" id="camada-huevos" min="1" max="20" placeholder="8" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Notas</label>
+                <textarea class="form-textarea" id="camada-notas" placeholder="Observaciones de la nidada..."></textarea>
+              </div>
+              <div class="modal-footer" style="padding:1rem 0 0;border:none">
+                <button type="button" class="btn btn-ghost" onclick="SGT.closeModal('modal-camada')">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Registrar Camada</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal desplegar pollo -->
+      <div id="modal-pollo" class="modal-overlay hidden" style="display:none">
+        <div class="modal" style="max-width:500px">
+          <div class="modal-header">
+            <h3>🐣 Desplegar Pollo</h3>
+            <button class="btn btn-ghost btn-icon" onclick="SGT.closeModal('modal-pollo')">✕</button>
+          </div>
+          <div class="modal-body">
+            <p class="text-sm mb-4" style="color:var(--text-secondary)">Se pre-rellenarán los datos del padre, madre y fecha de nacimiento.</p>
+            <form onsubmit="savePollo(event)">
+              <input type="hidden" id="pollo-camada-id">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Placa de Ala *</label>
+                  <input type="text" class="form-input" id="pollo-placa" placeholder="Ej: GC-010" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Nombre *</label>
+                  <input type="text" class="form-input" id="pollo-nombre" placeholder="Nombre del pollo" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Padre</label>
+                <input type="text" class="form-input" id="pollo-padre" readonly>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Madre</label>
+                <input type="text" class="form-input" id="pollo-madre" readonly>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Fecha Nacimiento</label>
+                <input type="date" class="form-input" id="pollo-fecha" readonly>
+              </div>
+              <div class="modal-footer" style="padding:1rem 0 0;border:none">
+                <button type="button" class="btn btn-ghost" onclick="SGT.closeModal('modal-pollo')">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Registrar Pollo</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if (!SGT.requireAuth()) throw 'no auth';
+    document.getElementById('sidebar-container').innerHTML = SGT.renderSidebar('camadas');
+    document.getElementById('topbar-container').innerHTML = SGT.renderTopBar();
+    SGT.init();
+
+    // Populate selects
+    const machos = DB.filter('ejemplares', b => (b.sexo === 'Macho') && (b.rol === 'Padrillo' || b.rol === 'Pelea'));
+    const hembras = DB.filter('ejemplares', b => b.sexo === 'Hembra' && b.rol === 'Madrilla');
+    const padreSelect = document.getElementById('camada-padre');
+    const madreSelect = document.getElementById('camada-madre');
+    machos.forEach(m => { const o = document.createElement('option'); o.value = m.placa_ala; o.textContent = `${m.nombre} (${m.placa_ala})`; padreSelect.appendChild(o); });
+    hembras.forEach(h => { const o = document.createElement('option'); o.value = h.placa_ala; o.textContent = `${h.nombre} (${h.placa_ala})`; madreSelect.appendChild(o); });
+
+    // Wright calculation (simplified)
+    function calcWright() {
+      const p = document.getElementById('camada-padre').value;
+      const m = document.getElementById('camada-madre').value;
+      if (!p || !m) { document.getElementById('wright-value').textContent = '—'; return; }
+
+      // Simplified: check if they share parents
+      const padre = DB.getById('ejemplares', p, 'placa_ala');
+      const madre = DB.getById('ejemplares', m, 'placa_ala');
+      let F = 0;
+      if (padre && madre) {
+        // Check common ancestors at G1
+        if (padre.padre_placa && padre.padre_placa === madre.padre_placa) F += 0.125;
+        if (padre.madre_placa && padre.madre_placa === madre.madre_placa) F += 0.125;
+        if (padre.padre_placa && padre.padre_placa === madre.madre_placa) F += 0.0625;
+        if (padre.madre_placa && padre.madre_placa === madre.padre_placa) F += 0.0625;
+        // Half siblings
+        if (padre.placa_ala === madre.padre_placa || padre.placa_ala === madre.madre_placa) F = 0.25;
+      }
+
+      const display = (F * 100).toFixed(1) + '%';
+      document.getElementById('wright-value').textContent = display;
+      const alertEl = document.getElementById('wright-alert');
+      if (F >= 0.25) {
+        alertEl.className = 'mt-2';
+        alertEl.innerHTML = '<span class="badge badge-danger" style="font-size:.85rem;padding:6px 12px">🚨 INBREEDING SEVERO — F ≥ 25%</span>';
+      } else if (F > 0) {
+        alertEl.className = 'mt-2';
+        alertEl.innerHTML = '<span class="badge badge-warning" style="font-size:.85rem;padding:6px 12px">⚠️ Consanguinidad detectada</span>';
+      } else {
+        alertEl.className = 'hidden';
+      }
+    }
+
+    function renderCamadas() {
+      const camadas = DB.getAll('camadas');
+      document.getElementById('camadas-list').innerHTML = camadas.map(c => {
+        const padre = DB.getById('ejemplares', c.padrillo_placa, 'placa_ala');
+        const madre = DB.getById('ejemplares', c.madrilla_placa, 'placa_ala');
+        const pollos = DB.filter('ejemplares', b => b.padre_placa === c.padrillo_placa && b.madre_placa === c.madrilla_placa && b.origen === 'Nacido');
+        return `
+        <div class="card mb-4">
+          <div class="card-header">
+            <div>
+              <span class="card-title">Camada ${c.id}</span>
+              <div class="card-subtitle">${SGT.formatDate(c.fecha_incubacion)} · ${c.huevos_totales} huevos</div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="desplegarPollo('${c.id}')">🐣 Desplegar Pollo</button>
+          </div>
+          <div class="grid grid-2 gap-4">
+            <div>
+              <span class="text-xs" style="color:var(--text-secondary)">♂ Padrillo</span>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="badge badge-info">${c.padrillo_placa}</span>
+                <strong>${padre ? padre.nombre : c.padrillo_placa}</strong>
+              </div>
+            </div>
+            <div>
+              <span class="text-xs" style="color:var(--text-secondary)">♀ Madrilla</span>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="badge badge-warning">${c.madrilla_placa}</span>
+                <strong>${madre ? madre.nombre : c.madrilla_placa}</strong>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 mt-4" style="padding-top:.75rem;border-top:1px solid var(--glass-border)">
+            <span class="text-sm" style="color:var(--text-secondary)">F = ${(c.coeficiente_wright * 100).toFixed(1)}%</span>
+            <span class="text-sm" style="color:var(--text-secondary)">🐣 ${pollos.length} pollos registrados</span>
+            ${c.notas ? `<span class="text-sm" style="color:var(--text-tertiary);flex:1;text-align:right">${c.notas}</span>` : ''}
+          </div>
+        </div>`;
+      }).join('') || '<div class="empty-state card"><div class="icon">🥚</div><p>No hay camadas registradas</p></div>';
+    }
+
+    function saveCamada(e) {
+      e.preventDefault();
+      const galpones = DB.getAll('galpones');
+      const camada = {
+        id: 'c-' + SGT.uuid(),
+        galpon_id: galpones.length ? galpones[0].id : 'g-001',
+        padrillo_placa: document.getElementById('camada-padre').value,
+        madrilla_placa: document.getElementById('camada-madre').value,
+        fecha_incubacion: document.getElementById('camada-fecha').value,
+        coeficiente_wright: parseFloat(document.getElementById('wright-value').textContent) / 100 || 0,
+        huevos_totales: parseInt(document.getElementById('camada-huevos').value),
+        notas: document.getElementById('camada-notas').value
+      };
+      DB.add('camadas', camada);
+      SGT.closeModal('modal-camada');
+      SGT.toast('Camada registrada');
+      renderCamadas();
+    }
+
+    function desplegarPollo(camadaId) {
+      const c = DB.getById('camadas', camadaId);
+      document.getElementById('pollo-camada-id').value = camadaId;
+      document.getElementById('pollo-padre').value = c.padrillo_placa;
+      document.getElementById('pollo-madre').value = c.madrilla_placa;
+      document.getElementById('pollo-fecha').value = c.fecha_incubacion;
+      document.getElementById('pollo-placa').value = '';
+      document.getElementById('pollo-nombre').value = '';
+      SGT.openModal('modal-pollo');
+    }
+
+    function savePollo(e) {
+      e.preventDefault();
+      const galpones = DB.getAll('galpones');
+      const padre = document.getElementById('pollo-padre').value;
+      const madre = document.getElementById('pollo-madre').value;
+      const pBird = DB.getById('ejemplares', padre, 'placa_ala');
+      const mBird = DB.getById('ejemplares', madre, 'placa_ala');
+      const linea = (pBird ? pBird.linea_genetica : '') + '-' + (mBird ? mBird.linea_genetica : '');
+
+      DB.add('ejemplares', {
+        placa_ala: document.getElementById('pollo-placa').value,
+        galpon_id: galpones.length ? galpones[0].id : 'g-001',
+        nombre: document.getElementById('pollo-nombre').value,
+        fecha_nacimiento: document.getElementById('pollo-fecha').value,
+        sexo: 'Pendiente',
+        rol: 'Pollo',
+        linea_genetica: linea,
+        origen: 'Nacido',
+        criadero_externo: '',
+        padre_placa: padre,
+        madre_placa: madre,
+        visibilidad: 'Privado',
+        fenotipo_json: { plumaje: '', ojos: '', patas: '', cresta: '' }
+      });
+      SGT.closeModal('modal-pollo');
+      SGT.toast('Pollo registrado desde camada');
+      renderCamadas();
+    }
+
+    renderCamadas();
+  </script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Torneos — SGT</title>
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebar-container"></div>
+    <main class="main-content">
+      <div id="topbar-container"></div>
+      <div class="page-header flex items-center justify-between">
+        <div><h1>🏆 Torneos</h1><p>Campeonatos y fechas de evento</p></div>
+        <button class="btn btn-primary" onclick="SGT.openModal('modal-torneo')">+ Nuevo Campeonato</button>
+      </div>
+
+      <div id="torneos-list" class="stagger"></div>
+
+      <!-- Modal nuevo campeonato -->
+      <div id="modal-torneo" class="modal-overlay hidden" style="display:none">
+        <div class="modal">
+          <div class="modal-header"><h3>Nuevo Campeonato</h3><button class="btn btn-ghost btn-icon" onclick="SGT.closeModal('modal-torneo')">✕</button></div>
+          <div class="modal-body">
+            <form onsubmit="saveTorneo(event)">
+              <div class="form-group">
+                <label class="form-label">Nombre</label>
+                <input type="text" class="form-input" id="torneo-nombre" placeholder="Ej: Copa Lambayeque 2025" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Pozo de Premio (S/)</label>
+                <input type="number" class="form-input" id="torneo-pozo" placeholder="15000" required>
+              </div>
+              <div class="modal-footer" style="padding:1rem 0 0;border:none">
+                <button type="button" class="btn btn-ghost" onclick="SGT.closeModal('modal-torneo')">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Crear</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal nueva fecha -->
+      <div id="modal-fecha" class="modal-overlay hidden" style="display:none">
+        <div class="modal">
+          <div class="modal-header"><h3>Nueva Fecha de Evento</h3><button class="btn btn-ghost btn-icon" onclick="SGT.closeModal('modal-fecha')">✕</button></div>
+          <div class="modal-body">
+            <form onsubmit="saveFecha(event)">
+              <input type="hidden" id="fecha-camp-id">
+              <div class="form-group">
+                <label class="form-label">Nombre de la Fecha</label>
+                <input type="text" class="form-input" id="fecha-nombre" placeholder="Ej: Inauguración" required>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Fecha</label>
+                  <input type="date" class="form-input" id="fecha-calendario" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Cupo (potencia de 2)</label>
+                  <select class="form-select" id="fecha-cupo">
+                    <option value="4">4 participantes</option>
+                    <option value="8" selected>8 participantes</option>
+                    <option value="16">16 participantes</option>
+                    <option value="24">24 participantes</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Ubicación</label>
+                <input type="text" class="form-input" id="fecha-ubicacion" placeholder="Coliseo..." required>
+              </div>
+              <div class="form-group">
+                <div class="checkbox-item">
+                  <input type="checkbox" id="fecha-salto">
+                  <label for="fecha-salto">Habilitar Pase Directo (Salto/Bypass)</label>
+                </div>
+                <div class="form-hint">El ganador absoluto saltará a una fecha futura seleccionada</div>
+              </div>
+              <div class="modal-footer" style="padding:1rem 0 0;border:none">
+                <button type="button" class="btn btn-ghost" onclick="SGT.closeModal('modal-fecha')">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Agregar Fecha</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal participantes -->
+      <div id="modal-participantes" class="modal-overlay hidden" style="display:none">
+        <div class="modal" style="max-width:640px">
+          <div class="modal-header"><h3>Gestionar Participantes</h3><button class="btn btn-ghost btn-icon" onclick="SGT.closeModal('modal-participantes')">✕</button></div>
+          <div class="modal-body">
+            <input type="hidden" id="part-fecha-id">
+            <div class="flex gap-4 mb-4">
+              <input type="text" class="form-input" id="part-nombre" placeholder="Nombre del Galpón" style="flex:1">
+              <button class="btn btn-primary btn-sm" onclick="addParticipante()">Agregar</button>
+            </div>
+            <div id="participantes-list"></div>
+            <div class="flex gap-4 mt-4">
+              <button class="btn btn-secondary btn-sm" onclick="completarComodines()">🃏 Completar con Comodines</button>
+              <button class="btn btn-primary btn-sm" onclick="sortearLlaves()">🎲 Sorteo Ciego</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if (!SGT.requireAuth()) throw 'no auth';
+    document.getElementById('sidebar-container').innerHTML = SGT.renderSidebar('torneos');
+    document.getElementById('topbar-container').innerHTML = SGT.renderTopBar();
+    SGT.init();
+
+    function renderTorneos() {
+      const camps = DB.getAll('campeonatos');
+      document.getElementById('torneos-list').innerHTML = camps.map(c => {
+        const fechas = DB.filter('fechas_evento', f => f.campeonato_id === c.id);
+        return `
+        <div class="card mb-4">
+          <div class="card-header">
+            <div>
+              <span class="card-title">${c.nombre}</span>
+              <div class="card-subtitle">Pozo: S/ ${c.pozo_premio.toLocaleString()}</div>
+            </div>
+            <div class="flex gap-2">
+              <span class="badge badge-success">${c.estado}</span>
+              <button class="btn btn-primary btn-sm" onclick="openNewFecha('${c.id}')">+ Fecha</button>
+            </div>
+          </div>
+          ${fechas.length ? `
+          <div class="table-wrapper mt-4">
+            <table class="data-table">
+              <thead><tr><th>Fecha</th><th>Nombre</th><th>Ubicación</th><th>Cupo</th><th>Salto</th><th>Acciones</th></tr></thead>
+              <tbody>${fechas.map(f => {
+                const parts = DB.filter('participantes', p => p.fecha_id === f.id);
+                return `<tr>
+                  <td>${SGT.formatDate(f.fecha_calendario)}</td>
+                  <td><strong>${f.nombre}</strong></td>
+                  <td class="text-sm">${f.ubicacion}</td>
+                  <td><span class="badge badge-info">${parts.length}/${f.cupo_size}</span></td>
+                  <td>${f.habilitar_salto ? '<span class="badge badge-warning">Sí</span>' : '—'}</td>
+                  <td>
+                    <div class="flex gap-2">
+                      <button class="btn btn-ghost btn-sm" onclick="openParticipantes('${f.id}')">👥</button>
+                      <a href="mesa-juez.html?fecha=${f.id}" class="btn btn-ghost btn-sm">⚖️</a>
+                    </div>
+                  </td>
+                </tr>`;
+              }).join('')}</tbody>
+            </table>
+          </div>` : '<p class="text-sm mt-4" style="color:var(--text-secondary)">No hay fechas registradas. Agrega la primera.</p>'}
+        </div>`;
+      }).join('') || '<div class="empty-state card"><div class="icon">🏆</div><p>No hay campeonatos</p><button class="btn btn-primary" onclick="SGT.openModal(\'modal-torneo\')">Crear campeonato</button></div>';
+    }
+
+    function saveTorneo(e) {
+      e.preventDefault();
+      DB.add('campeonatos', {
+        id: 't-' + SGT.uuid(),
+        nombre: document.getElementById('torneo-nombre').value,
+        pozo_premio: parseInt(document.getElementById('torneo-pozo').value),
+        estado: 'Activo'
+      });
+      SGT.closeModal('modal-torneo');
+      SGT.toast('Campeonato creado');
+      renderTorneos();
+    }
+
+    function openNewFecha(campId) {
+      document.getElementById('fecha-camp-id').value = campId;
+      SGT.openModal('modal-fecha');
+    }
+
+    function saveFecha(e) {
+      e.preventDefault();
+      DB.add('fechas_evento', {
+        id: 'f-' + SGT.uuid(),
+        campeonato_id: document.getElementById('fecha-camp-id').value,
+        nombre: document.getElementById('fecha-nombre').value,
+        fecha_calendario: document.getElementById('fecha-calendario').value,
+        ubicacion: document.getElementById('fecha-ubicacion').value,
+        cupo_size: parseInt(document.getElementById('fecha-cupo').value),
+        habilitar_salto: document.getElementById('fecha-salto').checked,
+        salto_destino_id: null
+      });
+      SGT.closeModal('modal-fecha');
+      SGT.toast('Fecha de evento agregada');
+      renderTorneos();
+    }
+
+    function openParticipantes(fechaId) {
+      document.getElementById('part-fecha-id').value = fechaId;
+      renderParticipantes(fechaId);
+      SGT.openModal('modal-participantes');
+    }
+
+    function renderParticipantes(fechaId) {
+      const parts = DB.filter('participantes', p => p.fecha_id === fechaId);
+      const fecha = DB.getById('fechas_evento', fechaId);
+      document.getElementById('participantes-list').innerHTML = parts.map(p => `
+        <div class="flex items-center justify-between" style="padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.04)">
+          <div class="flex items-center gap-2">
+            <span>${p.es_comodin ? '🃏' : '🏠'}</span>
+            <span>${p.nombre_galpon}</span>
+            ${p.es_comodin ? '<span class="badge badge-warning">Comodín</span>' : ''}
+          </div>
+          <button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="removeParticipante('${p.id}','${fechaId}')">✕</button>
+        </div>
+      `).join('') || '<p class="text-sm" style="color:var(--text-secondary)">Sin participantes</p>';
+    }
+
+    function addParticipante() {
+      const fechaId = document.getElementById('part-fecha-id').value;
+      const nombre = document.getElementById('part-nombre').value;
+      if (!nombre) return;
+      DB.add('participantes', { id: 'p-' + SGT.uuid(), fecha_id: fechaId, nombre_galpon: nombre, es_comodin: false });
+      document.getElementById('part-nombre').value = '';
+      renderParticipantes(fechaId);
+    }
+
+    function removeParticipante(id, fechaId) {
+      DB.remove('participantes', id);
+      renderParticipantes(fechaId);
+    }
+
+    function completarComodines() {
+      const fechaId = document.getElementById('part-fecha-id').value;
+      const fecha = DB.getById('fechas_evento', fechaId);
+      const parts = DB.filter('participantes', p => p.fecha_id === fechaId);
+      const faltantes = fecha.cupo_size - parts.length;
+      for (let i = 0; i < faltantes; i++) {
+        DB.add('participantes', { id: 'p-' + SGT.uuid(), fecha_id: fechaId, nombre_galpon: `Comodín ${i + 1}`, es_comodin: true });
+      }
+      SGT.toast(`${faltantes} comodines agregados`);
+      renderParticipantes(fechaId);
+    }
+
+    function sortearLlaves() {
+      const fechaId = document.getElementById('part-fecha-id').value;
+      const fecha = DB.getById('fechas_evento', fechaId);
+      const parts = DB.filter('participantes', p => p.fecha_id === fechaId);
+      if (parts.length !== fecha.cupo_size) {
+        SGT.toast('Completa el cupo antes de sortear', 'error');
+        return;
+      }
+      // Remove existing keys
+      const existingKeys = DB.filter('llaves', l => l.fecha_id === fechaId);
+      existingKeys.forEach(k => DB.remove('llaves', k.id));
+
+      // Shuffle
+      const shuffled = [...parts].sort(() => Math.random() - 0.5);
+      for (let i = 0; i < shuffled.length; i += 2) {
+        DB.add('llaves', {
+          id: 'l-' + SGT.uuid(),
+          fecha_id: fechaId,
+          ronda: 1,
+          participante_a_id: shuffled[i].id,
+          participante_b_id: shuffled[i + 1].id,
+          gallo_a_placa: null,
+          gallo_b_placa: null,
+          ganador_id: null,
+          estado: 'Pendiente',
+          duracion_segundos: 0
+        });
+      }
+      SGT.toast('¡Llaves sorteadas! Ve a Mesa de Juez para iniciar.');
+      SGT.closeModal('modal-participantes');
+      renderTorneos();
+    }
+
+    renderTorneos();
+  </script>
+</body>
+</html>

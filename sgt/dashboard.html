@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Dashboard — SGT</title>
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <div class="app-layout" id="app">
+    <!-- Sidebar injected by JS -->
+    <div id="sidebar-container"></div>
+    <main class="main-content">
+      <div id="topbar-container"></div>
+      <div class="page-header">
+        <h1>📊 Dashboard</h1>
+        <p>Resumen general de tu galpón</p>
+      </div>
+
+      <!-- Stats -->
+      <div class="dashboard-stats stagger" id="stats-grid"></div>
+
+      <!-- Quick actions -->
+      <div class="card mb-4" style="padding:1.25rem">
+        <h3 style="font-weight:700;margin-bottom:1rem">⚡ Acciones Rápidas</h3>
+        <div class="flex gap-4" style="flex-wrap:wrap">
+          <a href="ejemplares.html" class="btn btn-secondary btn-sm">🐔 Registrar Ave</a>
+          <a href="camadas.html" class="btn btn-secondary btn-sm">🥚 Nueva Camada</a>
+          <a href="torneos.html" class="btn btn-secondary btn-sm">🏆 Crear Torneo</a>
+          <a href="pedigree.html" class="btn btn-secondary btn-sm">🌳 Ver Pedigree</a>
+          <a href="personal.html" class="btn btn-secondary btn-sm">👥 Invitar Delegado</a>
+        </div>
+      </div>
+
+      <!-- Recent activity -->
+      <div class="grid grid-2 gap-6">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🐔 Últimos Ejemplares</span>
+            <a href="ejemplares.html" class="text-sm">Ver todos →</a>
+          </div>
+          <div id="recent-birds"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🏆 Torneos Activos</span>
+            <a href="torneos.html" class="text-sm">Ver todos →</a>
+          </div>
+          <div id="active-tournaments"></div>
+        </div>
+      </div>
+
+      <!-- Alerts -->
+      <div class="card mt-6" id="alerts-card">
+        <div class="card-header">
+          <span class="card-title">🔔 Alertas del Sistema</span>
+        </div>
+        <div id="alerts-list"></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if (!SGT.requireAuth()) throw 'no auth';
+
+    document.getElementById('sidebar-container').innerHTML = SGT.renderSidebar('dashboard');
+    document.getElementById('topbar-container').innerHTML = SGT.renderTopBar();
+    SGT.init();
+
+    // Stats
+    const aves = DB.getAll('ejemplares');
+    const camadas = DB.getAll('camadas');
+    const torneos = DB.getAll('campeonatos');
+    const machos = aves.filter(a => a.sexo === 'Macho').length;
+    const hembras = aves.filter(a => a.sexo === 'Hembra').length;
+
+    document.getElementById('stats-grid').innerHTML = `
+      <div class="card stat-card">
+        <div class="stat-value">${aves.length}</div>
+        <div class="stat-label">Total Ejemplares</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-value">${machos}/${hembras}</div>
+        <div class="stat-label">Machos / Hembras</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-value">${camadas.length}</div>
+        <div class="stat-label">Camadas</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-value">${torneos.length}</div>
+        <div class="stat-label">Torneos Activos</div>
+      </div>
+    `;
+
+    // Recent birds
+    document.getElementById('recent-birds').innerHTML = aves.slice(-4).reverse().map(a => `
+      <div class="flex items-center justify-between" style="padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.04)">
+        <div>
+          <strong style="font-size:.9rem">${a.nombre}</strong>
+          <span class="text-xs" style="color:var(--text-secondary);margin-left:.5rem">${a.placa_ala}</span>
+        </div>
+        <div class="flex gap-2">
+          <span class="badge ${a.sexo==='Macho'?'badge-info':a.sexo==='Hembra'?'badge-warning':'badge-gold'}">${a.sexo}</span>
+          <span class="badge badge-gold">${a.rol}</span>
+        </div>
+      </div>
+    `).join('');
+
+    // Tournaments
+    document.getElementById('active-tournaments').innerHTML = torneos.map(t => `
+      <div class="flex items-center justify-between" style="padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.04)">
+        <div>
+          <strong style="font-size:.9rem">${t.nombre}</strong>
+          <span class="badge badge-success ml-2">${t.estado}</span>
+        </div>
+        <span style="color:var(--text-accent);font-weight:700">S/ ${t.pozo_premio.toLocaleString()}</span>
+      </div>
+    `).join('') || '<div class="empty-state"><p>No hay torneos activos</p></div>';
+
+    // Alerts
+    const pendientes = aves.filter(a => a.sexo === 'Pendiente');
+    const alertsHtml = [];
+    pendientes.forEach(a => {
+      const birth = new Date(a.fecha_nacimiento);
+      const months = (new Date().getFullYear() - birth.getFullYear()) * 12 + new Date().getMonth() - birth.getMonth();
+      if (months >= 3) {
+        alertsHtml.push(`<div style="padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;gap:.75rem">
+          <span class="badge badge-warning">⚠ Sexado</span>
+          <span class="text-sm"><strong>${a.nombre}</strong> (${a.placa_ala}) tiene ${months} meses y aún no ha sido sexado.</span>
+        </div>`);
+      }
+    });
+    if (!alertsHtml.length) alertsHtml.push('<p class="text-sm" style="color:var(--text-secondary);padding:.5rem 0">✓ No hay alertas pendientes</p>');
+    document.getElementById('alerts-list').innerHTML = alertsHtml.join('');
+  </script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Registro — SGT</title>
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card card animate-scale-in" style="max-width:520px">
+      <div class="auth-logo">
+        <div style="font-size:3rem;margin-bottom:.5rem">🐓</div>
+        <h1>Crear Cuenta</h1>
+        <p class="text-sm" style="color:var(--text-secondary)">Paso 1 de 2 — Datos personales</p>
+      </div>
+
+      <!-- Step 1: User data -->
+      <div id="step-1">
+        <form onsubmit="goStep2(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nombre completo</label>
+              <input type="text" class="form-input" id="reg-nombre" placeholder="Ej: Carlos Mendoza" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Teléfono</label>
+              <input type="tel" class="form-input" id="reg-telefono" placeholder="987654321" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Correo electrónico</label>
+            <input type="email" class="form-input" id="reg-email" placeholder="tu@correo.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contraseña</label>
+            <input type="password" class="form-input" id="reg-password" placeholder="Mínimo 6 caracteres" required minlength="6">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block btn-lg mt-4">Continuar →</button>
+        </form>
+      </div>
+
+      <!-- Step 2: Plan selection -->
+      <div id="step-2" class="hidden">
+        <p class="text-sm" style="color:var(--text-secondary);text-align:center;margin-bottom:1.5rem">Paso 2 de 2 — Selecciona tu plan</p>
+        <div id="plan-options" style="display:flex;flex-direction:column;gap:.75rem"></div>
+        <button class="btn btn-primary btn-block btn-lg mt-6" onclick="finishRegistration()">🚀 Crear mi cuenta</button>
+        <button class="btn btn-ghost btn-block mt-2" onclick="document.getElementById('step-1').classList.remove('hidden');document.getElementById('step-2').classList.add('hidden')">← Volver</button>
+      </div>
+
+      <p class="text-center mt-6 text-sm" style="color:var(--text-secondary)">
+        ¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    let selectedPlan = 'free';
+
+    function goStep2(e) {
+      e.preventDefault();
+      document.getElementById('step-1').classList.add('hidden');
+      document.getElementById('step-2').classList.remove('hidden');
+      renderPlans();
+    }
+
+    function renderPlans() {
+      const plans = DB.getAll('planes');
+      const container = document.getElementById('plan-options');
+      container.innerHTML = plans.map(p => `
+        <div class="card" style="cursor:pointer;border:2px solid ${selectedPlan===p.id?'var(--gold-500)':'transparent'};padding:1rem" onclick="selectPlan('${p.id}')">
+          <div class="flex items-center justify-between">
+            <div>
+              <strong>${p.nombre}</strong>
+              <p class="text-sm" style="color:var(--text-secondary)">${p.max_galpones===0?'Solo espectador':p.max_galpones+' galpón(es), '+p.max_aves+' aves'}</p>
+            </div>
+            <div style="text-align:right">
+              <span style="font-size:1.5rem;font-weight:800;color:var(--text-accent)">$${p.precio_mensual}</span>
+              <span class="text-sm" style="color:var(--text-secondary)">/mes</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function selectPlan(id) {
+      selectedPlan = id;
+      renderPlans();
+    }
+
+    function finishRegistration() {
+      const user = {
+        id: SGT.uuid(),
+        nombre: document.getElementById('reg-nombre').value,
+        telefono: document.getElementById('reg-telefono').value,
+        email: document.getElementById('reg-email').value,
+        plan_id: selectedPlan,
+        fecha_registro: new Date().toISOString().split('T')[0],
+        vista_preferida: selectedPlan === 'free' ? 'AFICIONADO' : 'PROPIETARIO'
+      };
+      DB.add('users', user);
+      SGT.setUser(user);
+
+      // Create subscription
+      if (selectedPlan !== 'free') {
+        DB.add('suscripciones', {
+          id: SGT.uuid(),
+          usuario_id: user.id,
+          plan_id: selectedPlan,
+          estado: 'Activa',
+          fecha_inicio: user.fecha_registro,
+          fecha_fin: '2027-06-01',
+          token_pago: 'tok_' + SGT.uuid()
+        });
+      }
+
+      SGT.toast('¡Cuenta creada exitosamente!');
+      setTimeout(() => window.location.href = 'dashboard.html', 800);
+    }
+  </script>
+</body>
+</html>
