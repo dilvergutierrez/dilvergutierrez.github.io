@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cotizador">
+<meta name="theme-color" content="#1C2B3A">
+<title>Cotizador Profesional</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--steel:#1C2B3A;--iron:#2E3F50;--spark:#F4A020;--smoke:#6B7A8D;--fog:#C8D0DA;--white:#fff;--danger:#D94040;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--steel);color:var(--white);display:flex;flex-direction:column;}
+header{background:var(--iron);border-bottom:3px solid var(--spark);padding:12px 16px;padding-top:calc(12px + env(safe-area-inset-top));display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.logo-hex{width:38px;height:38px;background:var(--spark);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:var(--steel);flex-shrink:0;}
+.logo-img{width:38px;height:38px;object-fit:contain;border-radius:6px;background:#fff;padding:2px;flex-shrink:0;}
+.hdr-name{font-weight:900;font-size:17px;letter-spacing:.03em;text-transform:uppercase;}
+.hdr-sub{color:var(--smoke);font-size:10px;letter-spacing:.08em;text-transform:uppercase;}
+.tab-bar{display:flex;background:var(--iron);border-bottom:1px solid #253545;flex-shrink:0;overflow-x:auto;}
+.tab{flex:1;min-width:58px;padding:9px 4px;text-align:center;cursor:pointer;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--smoke);background:none;border:none;border-bottom:3px solid transparent;transition:all .2s;}
+.tab.active{color:var(--spark);border-bottom-color:var(--spark);}
+.tab-icon{font-size:15px;display:block;margin-bottom:2px;}
+.panels{flex:1;overflow:hidden;position:relative;}
+.panel{position:absolute;inset:0;overflow-y:auto;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom));display:none;-webkit-overflow-scrolling:touch;}
+.panel.active{display:block;}
+.sec{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--spark);display:flex;align-items:center;gap:8px;margin-bottom:12px;margin-top:4px;}
+.sec::after{content:'';flex:1;height:1px;background:#2E3F50;}
+.field{margin-bottom:12px;}
+label.lbl{display:block;font-size:10px;font-weight:600;color:var(--smoke);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;}
+input[type=text],input[type=number],input[type=date],input[type=tel],textarea{width:100%;background:var(--iron);border:1px solid #3E5060;border-radius:6px;color:var(--white);font-family:inherit;font-size:15px;padding:10px 12px;outline:none;-webkit-appearance:none;appearance:none;}
+input:focus,textarea:focus{border-color:var(--spark);}
+textarea{resize:none;min-height:72px;}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.box{background:var(--iron);border:1px solid #3E5060;border-radius:10px;padding:14px;margin-bottom:12px;}
+.box-title{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--spark);margin-bottom:12px;}
+.mat-card{background:var(--iron);border:1px solid #3E5060;border-radius:8px;padding:12px;margin-bottom:8px;}
+.mat-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.mat-desc{flex:1;background:transparent;border:none;border-bottom:1px solid #3E5060;padding:4px 0;font-size:14px;color:var(--white);outline:none;font-family:inherit;}
+.mat-nums{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.mat-num{background:var(--iron);border:1px solid #3E5060;border-radius:5px;padding:7px 8px;font-size:14px;color:var(--white);text-align:center;width:100%;outline:none;font-family:inherit;}
+.mat-total{text-align:right;font-size:15px;font-weight:700;color:var(--spark);margin-top:8px;}
+.lbl-sm{display:block;font-size:9px;font-weight:600;color:var(--smoke);letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px;}
+.btn{font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;border:none;border-radius:8px;cursor:pointer;padding:12px 18px;display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin-bottom:8px;font-family:inherit;}
+.btn-p{background:var(--spark);color:var(--steel);}
+.btn-g{background:var(--iron);color:var(--fog);border:1px solid #3E5060;}
+.btn-d{background:rgba(217,64,64,.12);color:var(--danger);border:1px solid rgba(217,64,64,.25);}
+.btn-pdf{background:linear-gradient(135deg,#e05c1a,#f4a020);color:var(--steel);font-size:16px;padding:15px;}
+.btn-rm{background:rgba(217,64,64,.15);border:none;border-radius:5px;color:var(--danger);cursor:pointer;padding:6px 10px;font-size:13px;}
+.sum-card{background:var(--iron);border:1px solid #3E5060;border-radius:8px;margin-bottom:10px;overflow:hidden;}
+.sum-head{padding:10px 14px;border-bottom:1px solid #253545;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--spark);}
+.sum-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid #253545;font-size:13px;}
+.sum-row:last-child{border-bottom:none;}
+.total-hero{background:var(--spark);border-radius:10px;padding:18px;text-align:center;margin-bottom:12px;}
+.total-hero .lbl{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--steel);opacity:.7;margin-bottom:4px;}
+.total-hero .amt{font-size:44px;font-weight:900;color:var(--steel);line-height:1;}
+.total-hero .cur{font-size:22px;vertical-align:super;}
+.photo-zone{border:2px dashed #3E5060;border-radius:10px;padding:28px 16px;text-align:center;cursor:pointer;background:var(--iron);margin-bottom:12px;display:block;}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.photo-item{position:relative;aspect-ratio:4/3;border-radius:6px;overflow:hidden;border:1px solid #3E5060;}
+.photo-item img{width:100%;height:100%;object-fit:cover;display:block;}
+.photo-del{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.7);border:none;border-radius:50%;color:#fff;width:22px;height:22px;font-size:12px;cursor:pointer;}
+.photo-cap{position:absolute;bottom:0;left:0;width:100%;background:rgba(0,0,0,.65);border:none;color:#fff;font-size:10px;padding:4px 6px;outline:none;font-family:inherit;}
+.logo-upload{display:flex;align-items:center;gap:14px;background:var(--iron);border:2px dashed #3E5060;border-radius:10px;padding:16px;cursor:pointer;}
+.logo-preview{width:64px;height:64px;object-fit:contain;border-radius:8px;background:#fff;padding:4px;flex-shrink:0;}
+.logo-placeholder{width:64px;height:64px;background:#253545;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;}
+.preview-band{background:linear-gradient(135deg,#e05c1a,#f4a020);border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:10;margin-top:4px;}
+.empty{text-align:center;padding:32px 16px;color:var(--smoke);}
+.empty-icon{font-size:40px;margin-bottom:8px;opacity:.4;}
+#toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom));left:16px;right:16px;background:#1a3a1a;border:1px solid #3a7a3a;color:#7fd87f;padding:14px 18px;border-radius:10px;font-size:14px;font-weight:600;text-align:center;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.4);display:none;}
+</style>
+</head>
+<body>
+<header>
+  <div id="hdrLogo" class="logo-hex">EM</div>
+  <div>
+    <div class="hdr-name" id="hdrName">Tu empresa aquí</div>
+    <div class="hdr-sub">Cotizador Profesional</div>
+  </div>
+</header>
+<div class="tab-bar">
+  <button class="tab active" onclick="switchTab('empresa')"><span class="tab-icon">🏢</span>Empresa</button>
+  <button class="tab" onclick="switchTab('datos')"><span class="tab-icon">📋</span>Datos</button>
+  <button class="tab" onclick="switchTab('materiales')"><span class="tab-icon">🔩</span>Materiales</button>
+  <button class="tab" onclick="switchTab('fotos')"><span class="tab-icon">🖼️</span>Fotos</button>
+  <button class="tab" onclick="switchTab('resumen')"><span class="tab-icon">💰</span>Resumen</button>
+</div>
+<div class="panels">
+
+<!-- EMPRESA -->
+<div class="panel active" id="tab-empresa">
+  <div class="sec">Perfil de la empresa</div>
+  <div class="field">
+    <label class="lbl">Logo de la empresa</label>
+    <label class="logo-upload" id="logoZone">
+      <div class="logo-placeholder" id="logoPlaceholder">🏢</div>
+      <img id="logoPreview" class="logo-preview" style="display:none" alt="logo">
+      <div>
+        <div style="color:var(--spark);font-weight:700;font-size:14px;margin-bottom:4px" id="logoBtn">Subir logo</div>
+        <div style="color:var(--smoke);font-size:12px">PNG o JPG recomendado<br>Aparecerá en el PDF</div>
+      </div>
+      <input type="file" id="logoInput" accept="image/*" style="display:none" onchange="handleLogo(this.files)">
+    </label>
+    <button onclick="quitarLogo()" id="btnQuitarLogo" style="display:none;margin-top:6px;background:none;border:none;color:var(--danger);font-size:12px;cursor:pointer;padding:0">✕ Quitar logo</button>
+  </div>
+  <div class="field">
+    <label class="lbl">Nombre de la empresa</label>
+    <input type="text" id="empresa" placeholder="Ej: Estructuras Pérez SAC" oninput="updateHeader()">
+  </div>
+  <div class="box">
+    <div class="box-title">📞 Contacto</div>
+    <div class="field">
+      <label class="lbl">Nombre del contacto</label>
+      <input type="text" id="contactoNombre" placeholder="Ej: Juan Pérez — Gerente" oninput="updatePreview()">
+    </div>
+    <div class="field" style="margin-bottom:0">
+      <label class="lbl">Teléfono / WhatsApp</label>
+      <input type="tel" id="contactoNumero" placeholder="Ej: +51 999 888 777" oninput="updatePreview()">
+    </div>
+  </div>
+  <div class="box">
+    <div class="box-title">🏦 Datos de pago</div>
+    <div class="field">
+      <label class="lbl">Banco</label>
+      <input type="text" id="banco" placeholder="Ej: BCP, Interbank, BBVA..." oninput="updatePreview()">
+    </div>
+    <div class="field" style="margin-bottom:0">
+      <label class="lbl">Número de cuenta</label>
+      <input type="text" id="numeroCuenta" placeholder="Ej: 191-12345678-0-12" oninput="updatePreview()">
+    </div>
+  </div>
+  <div id="previewBand" style="display:none;margin-bottom:12px;">
+    <div style="font-size:10px;color:var(--smoke);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Vista previa — pie del PDF</div>
+    <div class="preview-band">
+      <div>
+        <div id="pvNombre" style="font-weight:700;color:#1C2B3A;font-size:12px"></div>
+        <div id="pvNumero" style="font-weight:900;color:#1C2B3A;font-size:18px"></div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:9px;font-weight:700;color:#1C2B3A;opacity:.7;text-transform:uppercase;margin-bottom:2px" id="pvBancoLabel"></div>
+        <div id="pvBanco" style="font-weight:700;color:#1C2B3A;font-size:12px"></div>
+        <div id="pvCuenta" style="font-weight:900;color:#1C2B3A;font-size:12px"></div>
+      </div>
+    </div>
+  </div>
+  <button class="btn btn-p" onclick="switchTab('datos')">Siguiente: Datos cotización →</button>
+</div>
+
+<!-- DATOS -->
+<div class="panel" id="tab-datos">
+  <div class="sec">Cotización</div>
+  <div class="r2">
+    <div class="field"><label class="lbl">N° Cotización</label><input type="text" id="quoteNum" placeholder="COT-001"></div>
+    <div class="field"><label class="lbl">Fecha</label><input type="date" id="quoteDate"></div>
+  </div>
+  <div class="field"><label class="lbl">Cliente</label><input type="text" id="client" placeholder="Nombre del cliente"></div>
+  <div class="field"><label class="lbl">Proyecto</label><input type="text" id="projectDesc" placeholder="Ej: Galpón industrial 20×30m"></div>
+  <div class="field"><label class="lbl">Válido hasta</label><input type="date" id="validDate"></div>
+  <div class="field"><label class="lbl">Notas</label><textarea id="notes" placeholder="Condiciones, plazos, especificaciones..."></textarea></div>
+  <button class="btn btn-p" onclick="switchTab('materiales')">Siguiente: Materiales →</button>
+</div>
+
+<!-- MATERIALES -->
+<div class="panel" id="tab-materiales">
+  <div class="sec">Lista de materiales</div>
+  <div id="matList"></div>
+  <div id="matEmpty" class="empty"><div class="empty-icon">🔩</div><p>Agrega tu primer material</p></div>
+  <button class="btn btn-p" onclick="addRow()">+ Agregar material</button>
+  <button class="btn btn-g" onclick="addCommon()">📦 Materiales frecuentes</button>
+  <button class="btn btn-d" onclick="clearAll()">🗑 Limpiar lista</button>
+</div>
+
+<!-- FOTOS -->
+<div class="panel" id="tab-fotos">
+  <div class="sec">Fotos del proyecto</div>
+  <label class="photo-zone">
+    <div style="font-size:40px;margin-bottom:10px">🖼️</div>
+    <div style="font-size:15px;font-weight:700;color:var(--spark);margin-bottom:6px">Toca aquí para seleccionar fotos</div>
+    <div style="font-size:12px;color:var(--smoke)">Se abrirá tu fototeca</div>
+    <input type="file" id="photoInput" accept="image/*" multiple style="display:none" onchange="handlePhotos(this.files)">
+  </label>
+  <div id="photoEmpty" class="empty"><div class="empty-icon">📷</div><p>Sin fotos todavía</p></div>
+  <div class="photo-grid" id="photoGrid"></div>
+</div>
+
+<!-- RESUMEN -->
+<div class="panel" id="tab-resumen">
+  <div class="sec">Mano de obra</div>
+  <div class="box">
+    <label class="lbl">Porcentaje sobre materiales</label>
+    <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
+      <input type="number" id="laborPct" value="80" min="0" max="999" oninput="recalc()" style="width:80px;text-align:center;font-size:22px;font-weight:700;color:var(--spark)">
+      <span style="color:var(--smoke);font-size:13px">% de los materiales</span>
+    </div>
+  </div>
+  <div class="total-hero">
+    <div class="lbl">Total cotización</div>
+    <div class="amt"><span class="cur">S/</span><span id="grandTotal">0.00</span></div>
+  </div>
+  <div class="sum-card">
+    <div class="sum-head">Desglose</div>
+    <div class="sum-row"><span style="color:var(--smoke)">Materiales</span><span style="font-weight:700;font-size:15px" id="sumMat">S/ 0.00</span></div>
+    <div class="sum-row" style="border-bottom:none"><span style="color:var(--smoke)" id="laborLabel">Mano de obra (80%)</span><span style="font-weight:700;font-size:15px" id="sumLabor">S/ 0.00</span></div>
+  </div>
+  <div class="sum-card">
+    <div class="sum-head">Materiales (<span id="itemCount">0</span> ítems)</div>
+    <div id="sumItems"><div style="padding:12px 14px;color:var(--smoke);font-size:12px;text-align:center">Sin materiales</div></div>
+  </div>
+  <button class="btn btn-pdf" onclick="generarPDF()" id="btnPdf">📄 Generar y compartir PDF</button>
+</div>
+
+</div>
+<div id="toast"></div>
+
+<script>
+// ── STATE ──
+let rows=[], nextId=1, photos=[], nextPhotoId=1, logoDataUrl='';
+
+// ── INIT ──
+document.getElementById('quoteDate').value = new Date().toISOString().split('T')[0];
+document.getElementById('quoteNum').value  = 'COT-' + String(Date.now()).slice(-4);
+
+// ── TABS ──
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    t.classList.toggle('active',['empresa','datos','materiales','fotos','resumen'][i]===name);
+  });
+  document.querySelectorAll('.panel').forEach(p=>{
+    p.classList.toggle('active',p.id==='tab-'+name);
+  });
+  if(name==='resumen') recalc();
+}
+
+// ── HEADER UPDATE ──
+function updateHeader(){
+  const n = document.getElementById('empresa').value;
+  const el = document.getElementById('hdrName');
+  el.textContent = n || 'Tu empresa aquí';
+  el.style.color = n ? '#fff' : '#6B7A8D';
+}
+
+// ── LOGO ──
+function handleLogo(files){
+  const file=files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const img=new Image();
+    img.onload=()=>{
+      const c=document.createElement('canvas');
+      const max=400; let w=img.width,h=img.height;
+      if(w>max){h=Math.round(h*max/w);w=max;}
+      c.width=w;c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      logoDataUrl=c.toDataURL('image/png');
+      // Mostrar en header
+      const hdr=document.getElementById('hdrLogo');
+      hdr.innerHTML='';
+      hdr.style.background='transparent';
+      hdr.style.clipPath='none';
+      const im=document.createElement('img');
+      im.src=logoDataUrl; im.className='logo-img';
+      hdr.appendChild(im);
+      // Mostrar en zona upload
+      document.getElementById('logoPlaceholder').style.display='none';
+      const lp=document.getElementById('logoPreview');
+      lp.src=logoDataUrl; lp.style.display='block';
+      document.getElementById('logoBtn').textContent='Cambiar logo';
+      document.getElementById('btnQuitarLogo').style.display='block';
+    };
+    img.src=ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function quitarLogo(){
+  logoDataUrl='';
+  const hdr=document.getElementById('hdrLogo');
+  hdr.innerHTML='EM';
+  hdr.style.background='var(--spark)';
+  hdr.style.clipPath='polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)';
+  document.getElementById('logoPlaceholder').style.display='flex';
+  document.getElementById('logoPreview').style.display='none';
+  document.getElementById('logoBtn').textContent='Subir logo';
+  document.getElementById('btnQuitarLogo').style.display='none';
+  document.getElementById('logoInput').value='';
+}
+
+// ── PREVIEW PIE ──
+function updatePreview(){
+  const n=v('contactoNombre'),nu=v('contactoNumero'),b=v('banco'),c=v('numeroCuenta');
+  const band=document.getElementById('previewBand');
+  if(!n&&!nu&&!b&&!c){band.style.display='none';return;}
+  band.style.display='block';
+  document.getElementById('pvNombre').textContent=n?'📞 '+n:'';
+  document.getElementById('pvNumero').textContent=nu||'';
+  document.getElementById('pvBancoLabel').textContent=(b||c)?'Datos de pago':'';
+  document.getElementById('pvBanco').textContent=b||'';
+  document.getElementById('pvCuenta').textContent=c?'Cta: '+c:'';
+}
+
+// ── MATERIALES ──
+function addRow(desc='',unit='',qty='',price=''){
+  const id=nextId++;
+  rows.push({id,desc,unit,qty,price});
+  renderRows();
+  setTimeout(()=>{const el=document.getElementById('d'+id);if(el)el.focus();},80);
+}
+
+function addCommon(){
+  [['Viga H 6"x4"','ml'],['Tubo cuadrado 100x100x3mm','ml'],
+   ['Tubo rectangular 100x50x2mm','ml'],['Ángulo 50x50x4mm','ml'],
+   ['Plancha A36 6mm','m²'],['Electrodo 6011 1/8"','kg'],
+   ['Perno 5/8" + tuerca','und'],['Pintura anticorrosiva','gal'],
+  ].forEach(([d,u])=>addRow(d,u,'',''));
+}
+
+function removeRow(id){rows=rows.filter(r=>r.id!==id);renderRows();}
+
+function onInput(id){
+  const r=rows.find(x=>x.id===id);if(!r)return;
+  r.desc=v('d'+id);r.unit=v('u'+id);r.qty=v('q'+id);r.price=v('p'+id);
+  const t=(parseFloat(r.qty)||0)*(parseFloat(r.price)||0);
+  const el=document.getElementById('t'+id);
+  if(el)el.textContent=t>0?'S/ '+fmt(t):'—';
+  recalc();
+}
+
+function renderRows(){
+  const list=document.getElementById('matList');
+  const empty=document.getElementById('matEmpty');
+  if(!rows.length){list.innerHTML='';empty.style.display='block';recalc();return;}
+  empty.style.display='none';
+  list.innerHTML=rows.map(r=>{
+    const t=(parseFloat(r.qty)||0)*(parseFloat(r.price)||0);
+    return `<div class="mat-card">
+      <div class="mat-top">
+        <input class="mat-desc" id="d${r.id}" value="${esc(r.desc)}" placeholder="Descripción del material" oninput="onInput(${r.id})">
+        <button class="btn-rm" onclick="removeRow(${r.id})">✕</button>
+      </div>
+      <div class="mat-nums">
+        <div><span class="lbl-sm">Unidad</span><input class="mat-num" id="u${r.id}" value="${esc(r.unit)}" placeholder="ml/kg" oninput="onInput(${r.id})"></div>
+        <div><span class="lbl-sm">Cantidad</span><input class="mat-num" type="number" id="q${r.id}" value="${r.qty}" placeholder="0" min="0" step="any" oninput="onInput(${r.id})"></div>
+        <div><span class="lbl-sm">Precio unit.</span><input class="mat-num" type="number" id="p${r.id}" value="${r.price}" placeholder="0.00" min="0" step="0.01" oninput="onInput(${r.id})"></div>
+      </div>
+      <div class="mat-total" id="t${r.id}">${t>0?'S/ '+fmt(t):'—'}</div>
+    </div>`;
+  }).join('');
+  recalc();
+}
+
+function clearAll(){if(!rows.length)return;if(!confirm('¿Limpiar todos los materiales?'))return;rows=[];renderRows();}
+
+// ── RECALC ──
+function recalc(){
+  const mt=rows.reduce((a,r)=>{const t=(parseFloat(r.qty)||0)*(parseFloat(r.price)||0);return a+t;},0);
+  const pct=parseFloat(document.getElementById('laborPct').value)||0;
+  const lab=mt*(pct/100),grand=mt+lab;
+  document.getElementById('sumMat').textContent='S/ '+fmt(mt);
+  document.getElementById('sumLabor').textContent='S/ '+fmt(lab);
+  document.getElementById('grandTotal').textContent=fmt(grand);
+  document.getElementById('laborLabel').textContent=`Mano de obra (${pct}%)`;
+  document.getElementById('itemCount').textContent=rows.length;
+  const se=document.getElementById('sumItems');
+  se.innerHTML=!rows.length
+    ?'<div style="padding:12px 14px;color:var(--smoke);font-size:12px;text-align:center">Sin materiales</div>'
+    :rows.map(r=>{const t=(parseFloat(r.qty)||0)*(parseFloat(r.price)||0);
+      return `<div class="sum-row"><span style="color:var(--smoke);font-size:12px">${r.desc||'Sin nombre'}</span><span style="font-weight:700;font-size:13px">S/ ${t>0?fmt(t):'0.00'}</span></div>`;
+    }).join('');
+}
+
+// ── FOTOS ──
+function handlePhotos(files){
+  Array.from(files).forEach(file=>{
+    if(!file.type.startsWith('image/'))return;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      const img=new Image();
+      img.onload=()=>{
+        const c=document.createElement('canvas');
+        const max=1200;let w=img.width,h=img.height;
+        if(w>max){h=Math.round(h*max/w);w=max;}
+        if(h>max){w=Math.round(w*max/h);h=max;}
+        c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);
+        photos.push({id:nextPhotoId++,dataUrl:c.toDataURL('image/jpeg',.85),caption:''});
+        renderPhotos();
+      };
+      img.onerror=()=>{photos.push({id:nextPhotoId++,dataUrl:ev.target.result,caption:''});renderPhotos();};
+      img.src=ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+  document.getElementById('photoInput').value='';
+}
+
+function removePhoto(id){photos=photos.filter(p=>p.id!==id);renderPhotos();}
+function updateCap(id,val){const p=photos.find(x=>x.id===id);if(p)p.caption=val;}
+
+function renderPhotos(){
+  const grid=document.getElementById('photoGrid');
+  const empty=document.getElementById('photoEmpty');
+  empty.style.display=photos.length?'none':'block';
+  grid.innerHTML=photos.map(p=>`
+    <div class="photo-item">
+      <img src="${p.dataUrl}" alt="">
+      <button class="photo-del" onclick="removePhoto(${p.id})">✕</button>
+      <input class="photo-cap" type="text" placeholder="Descripción..." value="${esc(p.caption)}" oninput="updateCap(${p.id},this.value)">
+    </div>`).join('');
+}
+
+// ── HELPERS ──
+function v(id){return(document.getElementById(id)||{}).value||'';}
+function fmt(n){return n.toLocaleString('es-PE',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmtDate(d){if(!d)return '—';const[y,m,day]=d.split('-');return`${day}/${m}/${y}`;}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',4000);}
+
+// ── GENERAR PDF ──
+async function generarPDF(){
+  const btn=document.getElementById('btnPdf');
+  btn.textContent='⏳ Generando...';btn.disabled=true;
+  try{
+    if(!window.jspdf){
+      await new Promise((res,rej)=>{
+        const s=document.createElement('script');
+        s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+        s.onload=res;s.onerror=rej;document.head.appendChild(s);
+      });
+    }
+    const{jsPDF}=window.jspdf;
+    const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    const W=210,M=14;let y=M;
+    const cSteel=[28,43,58],cSpark=[244,160,32],cSmoke=[107,122,141];
+    const cWhite=[255,255,255],cLight=[240,243,247];
+    const empresa=v('empresa')||'Mi Empresa';
+    const laborPct=parseFloat(v('laborPct'))||0;
+    const mt=rows.reduce((a,r)=>a+(parseFloat(r.qty)||0)*(parseFloat(r.price)||0),0);
+    const lab=mt*(laborPct/100),grand=mt+lab;
+
+    // HEADER
+    doc.setFillColor(...cSteel);doc.rect(0,0,W,32,'F');
+    if(logoDataUrl){
+      try{
+        await new Promise(res=>{const i=new Image();i.onload=res;i.onerror=res;i.src=logoDataUrl;});
+        doc.addImage(logoDataUrl,'PNG',M,4,24,24);
+      }catch(e){console.warn(e);}
+      doc.setTextColor(...cWhite);doc.setFontSize(15);doc.setFont('helvetica','bold');
+      doc.text(empresa.toUpperCase(),M+28,14);
+      doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(...cSmoke);
+      doc.text('COTIZACIÓN PROFESIONAL',M+28,21);
+    }else{
+      doc.setTextColor(...cWhite);doc.setFontSize(16);doc.setFont('helvetica','bold');
+      doc.text(empresa.toUpperCase(),M,14);
+      doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(...cSmoke);
+      doc.text('COTIZACIÓN PROFESIONAL',M,21);
+    }
+    doc.setFontSize(9);doc.setFont('helvetica','bold');doc.setTextColor(...cSpark);
+    doc.text(v('quoteNum')||'COT-000',W-M,13,{align:'right'});
+    doc.setFontSize(7);doc.setFont('helvetica','normal');doc.setTextColor(...cSmoke);
+    doc.text('N° COTIZACIÓN',W-M,19,{align:'right'});
+    y=38;
+
+    // DATOS CLIENTE
+    doc.setFillColor(...cLight);doc.roundedRect(M,y,W-M*2,28,2,2,'F');
+    doc.setFontSize(7);doc.setFont('helvetica','bold');doc.setTextColor(...cSmoke);
+    doc.text('CLIENTE',M+4,y+5);doc.text('PROYECTO',M+70,y+5);
+    doc.text('FECHA',M+140,y+5);doc.text('VÁLIDO HASTA',M+168,y+5);
+    doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(...cSteel);
+    doc.text(v('client')||'—',M+4,y+13);
+    doc.setFontSize(9);doc.setFont('helvetica','normal');
+    doc.text(v('projectDesc')||'—',M+70,y+13,{maxWidth:65});
+    doc.text(fmtDate(v('quoteDate')),M+140,y+13);
+    doc.text(fmtDate(v('validDate')),M+168,y+13);
+    y+=34;
+
+    // TABLA MATERIALES
+    doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(...cSpark);
+    doc.text('MATERIALES',M,y+4);y+=9;
+    const cols={d:M,u:M+82,q:M+107,p:M+130,t:M+158};
+    const rH=8;
+    doc.setFillColor(...cSteel);doc.rect(M,y,W-M*2,7,'F');
+    doc.setFontSize(7);doc.setFont('helvetica','bold');doc.setTextColor(...cWhite);
+    doc.text('DESCRIPCIÓN',cols.d+2,y+4.5);doc.text('UNIDAD',cols.u+2,y+4.5);
+    doc.text('CANT.',cols.q+2,y+4.5);doc.text('PRECIO UNIT.',cols.p+2,y+4.5);
+    doc.text('SUBTOTAL',cols.t+2,y+4.5);y+=7;
+    rows.forEach((r,i)=>{
+      const t=(parseFloat(r.qty)||0)*(parseFloat(r.price)||0);
+      if(i%2===0){doc.setFillColor(245,248,252);doc.rect(M,y,W-M*2,rH,'F');}
+      doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(...cSteel);
+      doc.text(r.desc||'',cols.d+2,y+5.5,{maxWidth:78});
+      doc.text(r.unit||'',cols.u+2,y+5.5);
+      doc.text(r.qty?String(parseFloat(r.qty)):'',cols.q+2,y+5.5);
+      doc.text(r.price?'S/ '+fmt(parseFloat(r.price)):'',cols.p+2,y+5.5);
+      doc.setFont('helvetica','bold');
+      doc.text(t>0?'S/ '+fmt(t):'—',W-M-2,y+5.5,{align:'right'});
+      doc.setDrawColor(220,225,232);doc.line(M,y+rH,W-M,y+rH);
+      y+=rH;if(y>245){doc.addPage();y=M;}
+    });
+    y+=5;
+
+    // TOTALES
+    const rw=82,rx=W-M-rw;
+    doc.setFillColor(...cLight);doc.rect(rx,y,rw,9,'F');
+    doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(...cSmoke);
+    doc.text('Subtotal materiales',rx+3,y+5.8);
+    doc.setFont('helvetica','bold');doc.setTextColor(...cSteel);
+    doc.text('S/ '+fmt(mt),rx+rw-3,y+5.8,{align:'right'});y+=9;
+    doc.setFillColor(...cLight);doc.rect(rx,y,rw,9,'F');
+    doc.setFont('helvetica','normal');doc.setTextColor(...cSmoke);
+    doc.text(`Mano de obra (${laborPct}%)`,rx+3,y+5.8);
+    doc.setFont('helvetica','bold');doc.setTextColor(...cSteel);
+    doc.text('S/ '+fmt(lab),rx+rw-3,y+5.8,{align:'right'});y+=9;
+    doc.setFillColor(...cSpark);doc.roundedRect(rx,y,rw,14,2,2,'F');
+    doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(...cSteel);
+    doc.text('TOTAL COTIZACIÓN',rx+3,y+5.5);
+    doc.setFontSize(13);doc.text('S/ '+fmt(grand),rx+rw-3,y+10.5,{align:'right'});
+    y+=20;
+
+    // FOTOS
+    if(photos.length){
+      if(y>200){doc.addPage();y=M;}
+      doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(...cSpark);
+      doc.text('FOTOGRAFÍAS DEL PROYECTO',M,y+4);y+=10;
+      const pw=56,ph=42,gap=5;let px=M,py=y;
+      for(const p of photos){
+        try{
+          let f2='JPEG';if(p.dataUrl.includes('image/png'))f2='PNG';
+          doc.addImage(p.dataUrl,f2,px,py,pw,ph);
+          if(p.caption){
+            doc.setFillColor(0,0,0);doc.rect(px,py+ph-7,pw,7,'F');
+            doc.setFontSize(6);doc.setFont('helvetica','normal');doc.setTextColor(255,255,255);
+            doc.text(p.caption,px+2,py+ph-2,{maxWidth:pw-4});
+          }
+          px+=pw+gap;
+          if(px+pw>W-M){px=M;py+=ph+gap+8;}
+          if(py>258){doc.addPage();py=M;px=M;}
+        }catch(e){console.warn(e);}
+      }
+      y=py+ph+12;
+    }
+
+    // NOTAS
+    const notes=v('notes');
+    if(notes){
+      if(y>240){doc.addPage();y=M;}
+      doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(...cSpark);
+      doc.text('NOTAS',M,y+4);y+=9;
+      const nl=doc.splitTextToSize(notes,W-M*2-8);
+      const nh=nl.length*5+8;
+      doc.setFillColor(...cLight);doc.roundedRect(M,y,W-M*2,nh,2,2,'F');
+      doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(...cSteel);
+      doc.text(nl,M+4,y+6);y+=nh+8;
+    }
+
+    // PIE CONTACTO + BANCO
+    const contactoNombre=v('contactoNombre'),contactoNumero=v('contactoNumero');
+    const banco=v('banco'),numeroCuenta=v('numeroCuenta');
+    const pc=doc.internal.getNumberOfPages();
+    for(let i=1;i<=pc;i++){
+      doc.setPage(i);
+      if(i===pc&&(contactoNombre||contactoNumero||banco||numeroCuenta)){
+        doc.setFillColor(224,92,26);doc.rect(0,255,W,18,'F');
+        doc.setFillColor(244,160,32);doc.rect(0,267,W,6,'F');
+        doc.setTextColor(28,43,58);doc.setFontSize(7);doc.setFont('helvetica','bold');
+        doc.text('CONTACTO',M,261);
+        doc.setFontSize(10);doc.setFont('helvetica','bold');
+        if(contactoNombre)doc.text(contactoNombre,M,267);
+        doc.setFontSize(13);
+        if(contactoNumero)doc.text(contactoNumero,M,272);
+        if(banco||numeroCuenta){
+          doc.setFontSize(7);doc.setFont('helvetica','bold');
+          doc.text('DATOS DE PAGO',W-M,261,{align:'right'});
+          doc.setFontSize(9);
+          if(banco)doc.text(banco.toUpperCase(),W-M,267,{align:'right'});
+          doc.setFontSize(10);
+          if(numeroCuenta)doc.text('Cta: '+numeroCuenta,W-M,272,{align:'right'});
+        }
+        doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(28,43,58);
+        if(empresa)doc.text(empresa.toUpperCase(),W/2,271,{align:'center'});
+      }
+      doc.setFillColor(...cSteel);doc.rect(0,287,W,10,'F');
+      doc.setFontSize(7);doc.setFont('helvetica','normal');doc.setTextColor(...cSmoke);
+      doc.text(empresa+' — Cotización generada digitalmente',M,293);
+      doc.text(`Página ${i} de ${pc}`,W-M,293,{align:'right'});
+    }
+
+    // COMPARTIR / DESCARGAR
+    const pdfBlob=doc.output('blob');
+    const pdfName=`Cotizacion_${(v('quoteNum')||'COT').replace(/[^a-zA-Z0-9-]/g,'_')}.pdf`;
+    if(navigator.share&&navigator.canShare){
+      const file=new File([pdfBlob],pdfName,{type:'application/pdf'});
+      if(navigator.canShare({files:[file]})){
+        await navigator.share({files:[file],title:'Cotización '+empresa});
+        showToast('✅ PDF listo para compartir');
+        return;
+      }
+    }
+    const url=URL.createObjectURL(pdfBlob);
+    const a=document.createElement('a');
+    a.href=url;a.download=pdfName;
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),15000);
+    showToast('✅ PDF generado — revisa Archivos');
+  }catch(err){
+    alert('Error: '+err.message);console.error(err);
+  }finally{
+    btn.innerHTML='📄 Generar y compartir PDF';btn.disabled=false;
+  }
+}
+
+// INIT
+addRow();addRow();addRow();
+</script>
+</body>
+</html>
