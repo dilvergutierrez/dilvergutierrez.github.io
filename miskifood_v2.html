@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MiskiFood | Barra Saludable de Cacao y Miel</title>
+  
+  <!-- Fuente Inter desde Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Configuración de paleta personalizada MiskiFood (Cacao, Miel y Avena) -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            cacao: {
+              50: '#FAF6F3',
+              100: '#F2E8E1',
+              200: '#E3CFC1',
+              300: '#CEAE98',
+              400: '#B5876A',
+              500: '#9C6849',
+              600: '#7D4E35',
+              700: '#5E3826',
+              800: '#3E2217',
+              900: '#26130C',
+            },
+            miel: {
+              50: '#FFFBEB',
+              100: '#FEF3C7',
+              200: '#FDE68A',
+              400: '#FBBF24',
+              500: '#F59E0B',
+              600: '#D97706',
+              700: '#B45309',
+            },
+            avena: '#FAF7F2',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Estilos sutiles para animaciones fluidas y enfoque minimalista */
+    body {
+      background-color: #FAF7F2;
+      color: #26130C;
+      overflow-x: hidden;
+    }
+
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .animate-float {
+      animation: floatSlow 5s ease-in-out infinite;
+    }
+
+    /* Estilo personalizado para el control deslizante financiero */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 8px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.15);
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 22px;
+      width: 22px;
+      border-radius: 9999px;
+      background: #F59E0B;
+      border: 3px solid #26130C;
+      margin-top: -7px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      transition: transform 0.15s ease;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.12);
+    }
+  </style>
+</head>
+<body class="font-sans antialiased selection:bg-miel-200 selection:text-cacao-900">
+
+  <!-- ==================== NAVEGACIÓN MINIMALISTA ==================== -->
+  <header class="sticky top-0 z-40 bg-avena/85 backdrop-blur-md border-b border-cacao-200/60">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+      <!-- Logotipo MiskiFood -->
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-2xl bg-cacao-900 flex items-center justify-center shadow-sm group-hover:bg-cacao-800 transition-colors">
+          <!-- Ícono SVG de barra de cacao con gota de miel -->
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none">
+            <rect x="4" y="3" width="16" height="18" rx="4" fill="#5E3826" stroke="#F59E0B" stroke-width="1.5"/>
+            <line x1="4" y1="9" x2="20" y2="9" stroke="#3E2217" stroke-width="1.5"/>
+            <line x1="4" y1="15" x2="20" y2="15" stroke="#3E2217" stroke-width="1.5"/>
+            <line x1="12" y1="3" x2="12" y2="21" stroke="#3E2217" stroke-width="1.5"/>
+            <path d="M16.5 11.5C16.5 11.5 19 14.2 19 15.8C19 17.18 17.88 18.3 16.5 18.3C15.12 18.3 14 17.18 14 15.8C14 14.2 16.5 11.5 16.5 11.5Z" fill="#F59E0B"/>
+          </svg>
+        </div>
+        <div>
+          <span class="text-xl font-extrabold tracking-tight text-cacao-900">Miski<span class="text-miel-600">Food</span></span>
+          <span class="hidden sm:block text-[11px] font-medium text-cacao-500 -mt-1">Cacao & Miel Natural</span>
+        </div>
+      </a>
+
+      <!-- Enlaces de navegación (Desktop) -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-cacao-700">
+        <a href="#primer-plano" class="hover:text-cacao-900 transition-colors">El Producto</a>
+        <a href="#beneficios" class="hover:text-cacao-900 transition-colors">Beneficios</a>
+        <a href="#ingredientes" class="hover:text-cacao-900 transition-colors">Ingredientes</a>
+        <a href="#finanzas" class="hover:text-cacao-900 transition-colors">Cifras del Negocio</a>
+      </nav>
+
+      <!-- Botón de acción directa -->
+      <div class="flex items-center gap-2">
+        <button onclick="openOrderModal()" class="px-4 py-2.5 sm:px-5 sm:py-2.5 rounded-full bg-cacao-900 hover:bg-cacao-800 text-white text-sm font-semibold shadow-sm transition-all active:scale-95 flex items-center gap-2">
+          <span>Pedir • S/ 2.50</span>
+          <svg class="w-4 h-4 text-miel-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ==================== SECCIÓN 1: PRESENTACIÓN & PRIMER PLANO ==================== -->
+    <section id="primer-plano" class="pt-10 pb-16 sm:pt-16 sm:pb-24 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+        
+        <!-- Columna Izquierda: Presentación de la propuesta de valor -->
+        <div class="lg:col-span-6 space-y-6">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-miel-100 border border-miel-200 text-cacao-800 text-xs font-semibold tracking-wide">
+            <span class="w-2 h-2 rounded-full bg-miel-500"></span>
+            SNACK SALUDABLE • ENDULZADO CON MIEL
+          </div>
+
+          <h1 class="text-4xl sm:text-5xl lg:text-[3.4rem] font-extrabold tracking-tight text-cacao-900 leading-[1.1]">
+            Todo el sabor del cacao, <span class="text-miel-600">sin dañar tu salud.</span>
+          </h1>
+
+          <p class="text-base sm:text-lg text-cacao-700 leading-relaxed max-w-xl">
+            Frente a las opciones grasosas y costosas del kiosco escolar, nace <strong>MiskiFood</strong>: una barra energética artesanal de cacao, plátano, avena y frutos secos, endulzada naturalmente con miel para darte energía real en clases.
+          </p>
+
+          <!-- Precio destacado y botones -->
+          <div class="pt-2 flex flex-wrap items-center gap-4">
+            <button onclick="openOrderModal()" class="px-6 py-3.5 rounded-2xl bg-cacao-900 hover:bg-cacao-800 text-white font-semibold text-sm sm:text-base shadow-lg shadow-cacao-900/15 transition-all active:scale-95">
+              Pedir ahora por S/ 2.50
+            </button>
+            <a href="#ingredientes" class="px-6 py-3.5 rounded-2xl bg-white hover:bg-cacao-50 text-cacao-900 border border-cacao-200 font-semibold text-sm sm:text-base transition-colors">
+              Ver ingredientes
+            </a>
+          </div>
+
+          <!-- Micro-indicadores rápidos -->
+          <div class="pt-4 grid grid-cols-3 gap-4 border-t border-cacao-200/70 max-w-md">
+            <div>
+              <p class="text-xs text-cacao-500 font-medium">Precio accesible</p>
+              <p class="text-xl font-extrabold text-cacao-900">S/ 2.50</p>
+            </div>
+            <div>
+              <p class="text-xs text-cacao-500 font-medium">Endulzante</p>
+              <p class="text-xl font-extrabold text-miel-600">100% Miel</p>
+            </div>
+            <div>
+              <p class="text-xs text-cacao-500 font-medium">Preparación</p>
+              <p class="text-xl font-extrabold text-cacao-900">Artesanal</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna Derecha: ESPACIO DEDICADO AL PRIMER PLANO DEL PRODUCTO -->
+        <div class="lg:col-span-6">
+          <div class="relative bg-white rounded-3xl p-4 sm:p-6 shadow-xl shadow-cacao-900/5 border border-cacao-200/80">
+            
+            <!-- Barra superior del marco de estudio -->
+            <div class="flex items-center justify-between mb-4 px-1">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-cacao-800"></span>
+                <span class="text-xs font-bold uppercase tracking-wider text-cacao-600">Primer Plano • MiskiFood Bar</span>
+              </div>
+              
+              <!-- Botón opcional para cargar otra foto real del producto durante la exposición -->
+              <label for="upload-product-photo" class="cursor-pointer inline-flex items-center gap-1.5 text-xs font-semibold text-miel-700 hover:text-miel-600 bg-miel-50 hover:bg-miel-100 px-3 py-1.5 rounded-full border border-miel-200 transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                </svg>
+                <span>Subir foto real</span>
+              </label>
+              <input id="upload-product-photo" type="file" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)" />
+            </div>
+
+            <!-- Contenedor Visual del Primer Plano (Aspecto Cuadrado/4:3 de Estudio) -->
+            <div id="closeup-stage" class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-cacao-100 via-cacao-50 to-miel-50 border border-cacao-200/60 flex items-center justify-center group">
+              
+              <!-- Fotografía oficial del producto con ruta relativa para GitHub Pages (github.io) -->
+              <img id="custom-product-image" src="./miski.jpeg" alt="Primer plano de barra MiskiFood" class="w-full h-full object-cover object-center" />
+
+              <!-- Etiquetas interactivas de capas (Hotspots) -->
+              <div id="closeup-hotspots" class="absolute inset-0 pointer-events-none">
+                <button type="button" onclick="selectLayer(0)" class="pointer-events-auto absolute top-5 left-5 px-3 py-1.5 rounded-full bg-cacao-900/90 hover:bg-cacao-900 text-white text-xs font-semibold shadow-md backdrop-blur-sm transition-transform hover:scale-105 flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-miel-400"></span>
+                  Cobertura de Cacao
+                </button>
+                <button type="button" onclick="selectLayer(1)" class="pointer-events-auto absolute top-5 right-5 px-3 py-1.5 rounded-full bg-miel-500/95 hover:bg-miel-500 text-cacao-900 text-xs font-bold shadow-md backdrop-blur-sm transition-transform hover:scale-105 flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-cacao-900"></span>
+                  Miel Natural
+                </button>
+                <button type="button" onclick="selectLayer(2)" class="pointer-events-auto absolute bottom-5 left-5 px-3 py-1.5 rounded-full bg-white/95 hover:bg-white text-cacao-900 text-xs font-semibold shadow-md backdrop-blur-sm transition-transform hover:scale-105 flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-cacao-600"></span>
+                  Avena & Plátano
+                </button>
+                <button type="button" onclick="selectLayer(3)" class="pointer-events-auto absolute bottom-5 right-5 px-3 py-1.5 rounded-full bg-white/95 hover:bg-white text-cacao-900 text-xs font-semibold shadow-md backdrop-blur-sm transition-transform hover:scale-105 flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-miel-600"></span>
+                  Frutos Secos
+                </button>
+              </div>
+            </div>
+
+            <!-- Panel descriptivo dinámico de la capa seleccionada en el primer plano -->
+            <div class="mt-4 p-4 rounded-2xl bg-cacao-50 border border-cacao-200/70 flex items-center justify-between gap-4">
+              <div>
+                <p id="layer-title" class="text-sm font-bold text-cacao-900">Cobertura de Chocolate & Cacao</p>
+                <p id="layer-desc" class="text-xs sm:text-sm text-cacao-600 mt-0.5">Capa superior intensa que satisface el antojo dulce desde el primer bocado.</p>
+              </div>
+              <button id="reset-photo-btn" onclick="resetPhoto()" class="hidden shrink-0 text-xs font-semibold text-cacao-600 hover:text-cacao-900 underline">
+                Restaurar foto
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== SECCIÓN 2: BENEFICIOS PARA LOS CLIENTES ==================== -->
+    <section id="beneficios" class="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 bg-white border-y border-cacao-200/60">
+      <div class="max-w-6xl mx-auto">
+        <div class="max-w-2xl">
+          <span class="text-xs font-bold uppercase tracking-widest text-miel-600">Propuesta de Valor</span>
+          <h2 class="mt-2 text-3xl sm:text-4xl font-extrabold text-cacao-900 tracking-tight">
+            ¿Por qué elegir MiskiFood en el recreo?
+          </h2>
+          <p class="mt-3 text-cacao-600 text-base">
+            Diseñado pensando en estudiantes que buscan algo rico, saludable y al alcance de su bolsillo.
+          </p>
+        </div>
+
+        <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Beneficio 1 -->
+          <div class="p-6 rounded-3xl bg-avena border border-cacao-200/70 hover:border-miel-400 transition-colors">
+            <div class="w-12 h-12 rounded-2xl bg-miel-100 text-miel-700 flex items-center justify-center mb-5">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-bold text-cacao-900">Dulce y Saludable</h3>
+            <p class="mt-2 text-sm text-cacao-600 leading-relaxed">
+              Endulzado con miel natural en lugar de azúcares refinados dañinos, cuidando tu bienestar sin perder el sabor dulce.
+            </p>
+          </div>
+
+          <!-- Beneficio 2 -->
+          <div class="p-6 rounded-3xl bg-avena border border-cacao-200/70 hover:border-miel-400 transition-colors">
+            <div class="w-12 h-12 rounded-2xl bg-cacao-100 text-cacao-800 flex items-center justify-center mb-5">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-bold text-cacao-900">Energía Duradera</h3>
+            <p class="mt-2 text-sm text-cacao-600 leading-relaxed">
+              La combinación de plátano, avena y frutos secos aporta energía natural para mantenerte activo y concentrado en clases.
+            </p>
+          </div>
+
+          <!-- Beneficio 3 -->
+          <div class="p-6 rounded-3xl bg-avena border border-cacao-200/70 hover:border-miel-400 transition-colors">
+            <div class="w-12 h-12 rounded-2xl bg-miel-100 text-miel-700 flex items-center justify-center mb-5">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-bold text-cacao-900">Precio Justo: S/ 2.50</h3>
+            <p class="mt-2 text-sm text-cacao-600 leading-relaxed">
+              Una alternativa económica frente a los precios elevados del kiosco escolar, sin sacrificar calidad ni porción.
+            </p>
+          </div>
+
+          <!-- Beneficio 4 -->
+          <div class="p-6 rounded-3xl bg-avena border border-cacao-200/70 hover:border-miel-400 transition-colors">
+            <div class="w-12 h-12 rounded-2xl bg-cacao-100 text-cacao-800 flex items-center justify-center mb-5">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-bold text-cacao-900">Cero Frituras</h3>
+            <p class="mt-2 text-sm text-cacao-600 leading-relaxed">
+              Horneadas a 180 °C y refrigeradas para lograr una textura firme y crocante sin exceso de grasas.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECCIÓN 3: INGREDIENTES Y ELABORACIÓN ==================== -->
+    <section id="ingredientes" class="py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-miel-600">Transparencia Nutricional</span>
+            <h2 class="mt-2 text-3xl sm:text-4xl font-extrabold text-cacao-900 tracking-tight">
+              Ingredientes reales que conoces
+            </h2>
+          </div>
+          <!-- Ficha rápida de preparación -->
+          <div class="inline-flex flex-wrap items-center gap-3 px-4 py-2.5 rounded-2xl bg-white border border-cacao-200 text-xs font-semibold text-cacao-700">
+            <span>🔥 Horneado: 10–15 min a 180 °C</span>
+            <span class="text-cacao-300">|</span>
+            <span>❄️ Refrigeración: 30 min</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Ingrediente 1 -->
+          <div class="p-5 rounded-2xl bg-white border border-cacao-200/80 flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-miel-100 flex items-center justify-center text-xl shrink-0">🍯</div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="font-bold text-cacao-900">Miel Natural</h3>
+                <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-miel-100 text-miel-700">Diferenciador</span>
+              </div>
+              <p class="text-sm text-cacao-600 mt-1">Aporta el dulzor perfecto de forma natural y saludable.</p>
+            </div>
+          </div>
+
+          <!-- Ingrediente 2 -->
+          <div class="p-5 rounded-2xl bg-white border border-cacao-200/80 flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-cacao-100 flex items-center justify-center text-xl shrink-0">🍫</div>
+            <div>
+              <h3 class="font-bold text-cacao-900">Cacao / Chocolate</h3>
+              <p class="text-sm text-cacao-600 mt-1">Cobertura derretida que envuelve la barra con intenso sabor a cacao.</p>
+            </div>
+          </div>
+
+          <!-- Ingrediente 3 -->
+          <div class="p-5 rounded-2xl bg-white border border-cacao-200/80 flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-miel-50 flex items-center justify-center text-xl shrink-0">🍌</div>
+            <div>
+              <h3 class="font-bold text-cacao-900">Plátano Fresco</h3>
+              <p class="text-sm text-cacao-600 mt-1">Base natural (2 unidades por lote) que brinda suavidad, potasio y energía.</p>
+            </div>
+          </div>
+
+          <!-- Ingrediente 4 -->
+          <div class="p-5 rounded-2xl bg-white border border-cacao-200/80 flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-cacao-50 flex items-center justify-center text-xl shrink-0">🌾</div>
+            <div>
+              <h3 class="font-bold text-cacao-900">Avena Integral</h3>
+              <p class="text-sm text-cacao-600 mt-1">1 taza de avena que aporta fibra y saciedad durante toda la jornada.</p>
+            </div>
+          </div>
+
+          <!-- Ingrediente 5 -->
+          <div class="p-5 rounded-2xl bg-white border border-cacao-200/80 flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-cacao-100 flex items-center justify-center text-xl shrink-0">🥜</div>
+            <div>
+              <h3 class="font-bold text-cacao-900">Mantequilla de Choco Maní</h3>
+              <p class="text-sm text-cacao-600 mt-1">1/3 de taza para lograr cremosidad y proteínas vegetales.</p>
+            </div>
+          </div>
+
+          <!-- Ingrediente 6 -->
+          <div class="p-5 rounded-2xl bg-white border border-cacao-200/80 flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-miel-50 flex items-center justify-center text-xl shrink-0">🌰</div>
+            <div>
+              <h3 class="font-bold text-cacao-900">Granola y Frutos Secos</h3>
+              <p class="text-sm text-cacao-600 mt-1">Toque crocante en el interior y acabado superior.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECCIÓN 4: INFORMACIÓN FINANCIERA DEL NEGOCIO ==================== -->
+    <section id="finanzas" class="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 bg-cacao-900 text-white">
+      <div class="max-w-6xl mx-auto">
+        <div class="max-w-2xl">
+          <span class="text-xs font-bold uppercase tracking-widest text-miel-400">Modelo Lean Canvas</span>
+          <h2 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+            Información Financiera del Proyecto
+          </h2>
+          <p class="mt-3 text-cacao-200 text-base">
+            Un emprendimiento escolar sostenible, transparente y rentable desde el primer lote de producción.
+          </p>
+        </div>
+
+        <!-- Cuadrícula de las 4 Cifras Clave + Precio de Venta -->
+        <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+          <!-- Precio de venta -->
+          <div class="p-6 rounded-3xl bg-miel-500 text-cacao-900 shadow-lg">
+            <p class="text-xs font-bold uppercase tracking-wider text-cacao-800">Precio de Venta</p>
+            <p class="mt-2 text-3xl sm:text-4xl font-extrabold">S/ 2.50</p>
+            <p class="mt-2 text-xs font-medium text-cacao-900/80">Precio accesible al público por barra</p>
+          </div>
+
+          <!-- 1. Costo Unitario -->
+          <div class="p-6 rounded-3xl bg-cacao-800/80 border border-cacao-700">
+            <p class="text-xs font-semibold uppercase tracking-wider text-cacao-300">Costo Unitario</p>
+            <p class="mt-2 text-3xl font-extrabold text-white">S/ 1.65</p>
+            <p class="mt-2 text-xs text-cacao-300">Insumos y producción por unidad</p>
+          </div>
+
+          <!-- 2. Margen de Ganancia -->
+          <div class="p-6 rounded-3xl bg-cacao-800/80 border border-cacao-700">
+            <p class="text-xs font-semibold uppercase tracking-wider text-cacao-300">Margen de Ganancia</p>
+            <p class="mt-2 text-3xl font-extrabold text-miel-400">33.3%</p>
+            <p class="mt-2 text-xs text-cacao-300">Rentabilidad saludable por barrita</p>
+          </div>
+
+          <!-- 3. Punto de Equilibrio -->
+          <div class="p-6 rounded-3xl bg-cacao-800/80 border border-cacao-700">
+            <p class="text-xs font-semibold uppercase tracking-wider text-cacao-300">Punto de Equilibrio</p>
+            <p class="mt-2 text-3xl font-extrabold text-white">14 unid.</p>
+            <p class="mt-2 text-xs text-cacao-300">Unidades para cubrir la inversión</p>
+          </div>
+
+          <!-- 4. Utilidad Neta -->
+          <div class="p-6 rounded-3xl bg-cacao-800/80 border border-cacao-700">
+            <p class="text-xs font-semibold uppercase tracking-wider text-cacao-300">Utilidad Neta</p>
+            <p class="mt-2 text-3xl font-extrabold text-miel-400">S/ 16.50</p>
+            <p class="mt-2 text-xs text-cacao-300">Ganancia neta proyectada del lote</p>
+          </div>
+        </div>
+
+        <!-- Simulador Interactivo de Ventas (Apoyo visual para la exposición) -->
+        <div class="mt-10 p-6 sm:p-8 rounded-3xl bg-cacao-800/50 border border-cacao-700/80">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div>
+              <h3 class="text-lg font-bold text-white">Simulador de Ventas por Lote</h3>
+              <p class="text-xs sm:text-sm text-cacao-300">Desliza para visualizar el ingreso total frente al punto de equilibrio (14 unidades).</p>
+            </div>
+            <div class="px-4 py-2 rounded-2xl bg-cacao-900 border border-cacao-700 text-right">
+              <span class="text-xs text-cacao-300 block">Unidades vendidas</span>
+              <span id="sim-units-label" class="text-2xl font-extrabold text-miel-400">14 barritas</span>
+            </div>
+          </div>
+
+          <input id="sales-slider" type="range" min="1" max="30" value="14" class="w-full" oninput="updateSimulator(this.value)" />
+
+          <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+            <div class="p-4 rounded-2xl bg-cacao-900/70 border border-cacao-700/60">
+              <span class="text-cacao-300 text-xs">Ingreso Bruto (S/ 2.50 c/u)</span>
+              <p id="sim-revenue" class="text-xl font-bold text-white mt-0.5">S/ 35.00</p>
+            </div>
+            <div class="p-4 rounded-2xl bg-cacao-900/70 border border-cacao-700/60">
+              <span class="text-cacao-300 text-xs">Costo de Producción (S/ 1.65 c/u)</span>
+              <p id="sim-cost" class="text-xl font-bold text-cacao-200 mt-0.5">S/ 23.10</p>
+            </div>
+            <div class="p-4 rounded-2xl bg-cacao-900/70 border border-cacao-700/60">
+              <span class="text-cacao-300 text-xs">Estado del Punto de Equilibrio</span>
+              <p id="sim-status" class="text-sm font-bold text-miel-400 mt-1">✓ Punto de equilibrio alcanzado</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECCIÓN 5: LLAMADO A LA ACCIÓN (CTA) ==================== -->
+    <section class="py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-4xl mx-auto rounded-3xl bg-gradient-to-br from-cacao-800 to-cacao-900 p-8 sm:p-12 text-center text-white shadow-2xl relative overflow-hidden">
+        <!-- Decoración sutil -->
+        <div class="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-miel-500/10 blur-2xl"></div>
+        <div class="absolute -bottom-16 -left-16 w-48 h-48 rounded-full bg-miel-500/10 blur-2xl"></div>
+
+        <span class="inline-block px-3.5 py-1 rounded-full bg-miel-500/20 text-miel-300 text-xs font-semibold tracking-wide mb-4">
+          DISPONIBLE AHORA EN EL COLEGIO
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
+          ¿Listo para probar tu MiskiFood?
+        </h2>
+        <p class="mt-3 text-cacao-200 max-w-xl mx-auto text-sm sm:text-base">
+          Pídenos tu barra directamente ahora mismo o escríbenos por WhatsApp para separar tu pedido por solo <strong>S/ 2.50</strong>.
+        </p>
+
+        <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <button onclick="openOrderModal()" class="w-full sm:w-auto px-7 py-4 rounded-2xl bg-miel-500 hover:bg-miel-400 text-cacao-900 font-bold text-base shadow-lg transition-all active:scale-95">
+            Pedir ahora / Ver QR WhatsApp
+          </button>
+          <button onclick="copyOrderMessage()" class="w-full sm:w-auto px-7 py-4 rounded-2xl bg-white/10 hover:bg-white/15 text-white border border-white/20 font-semibold text-base transition-colors">
+            Copiar mensaje de pedido
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="border-t border-cacao-200/80 py-8 px-4 sm:px-6 lg:px-8 bg-avena">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-cacao-500">
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-cacao-900">MiskiFood</span>
+        <span>•</span>
+        <span>Barra saludable de cacao, plátano, avena y miel.</span>
+      </div>
+      <p>Proyecto escolar desarrollado bajo metodología Scrum & Lean Startup.</p>
+    </div>
+  </footer>
+
+  <!-- ==================== MODAL DE PEDIDO / QR WHATSAPP ==================== -->
+  <div id="order-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-cacao-900/70 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 sm:p-7 shadow-2xl border border-cacao-200 relative animate-fade-in">
+      <button onclick="closeOrderModal()" aria-label="Cerrar ventana" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-cacao-50 hover:bg-cacao-100 text-cacao-700 flex items-center justify-center transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <div class="text-center">
+        <span class="px-3 py-1 rounded-full bg-miel-100 text-miel-700 text-xs font-bold">Pedido Rápido</span>
+        <h3 class="mt-2 text-2xl font-extrabold text-cacao-900">MiskiFood • S/ 2.50</h3>
+        <p class="mt-1 text-xs text-cacao-600">Escanea el código QR o copia el mensaje para pedir por WhatsApp.</p>
+
+        <!-- Código QR Vectorial Estilizado -->
+        <div class="my-5 mx-auto w-44 h-44 p-3 rounded-2xl bg-avena border-2 border-cacao-900 flex items-center justify-center">
+          <svg viewBox="0 0 120 120" class="w-full h-full" fill="none">
+            <!-- Esquinas QR -->
+            <rect x="8" y="8" width="32" height="32" rx="4" stroke="#26130C" stroke-width="6"/>
+            <rect x="17" y="17" width="14" height="14" rx="2" fill="#26130C"/>
+            <rect x="80" y="8" width="32" height="32" rx="4" stroke="#26130C" stroke-width="6"/>
+            <rect x="89" y="17" width="14" height="14" rx="2" fill="#26130C"/>
+            <rect x="8" y="80" width="32" height="32" rx="4" stroke="#26130C" stroke-width="6"/>
+            <rect x="17" y="89" width="14" height="14" rx="2" fill="#26130C"/>
+            <!-- Matriz QR decorativa -->
+            <rect x="50" y="10" width="8" height="8" rx="1.5" fill="#26130C"/>
+            <rect x="64" y="18" width="8" height="14" rx="1.5" fill="#26130C"/>
+            <rect x="50" y="34" width="12" height="8" rx="1.5" fill="#26130C"/>
+            <rect x="10" y="50" width="14" height="8" rx="1.5" fill="#26130C"/>
+            <rect x="30" y="56" width="10" height="14" rx="1.5" fill="#26130C"/>
+            <rect x="80" y="50" width="14" height="8" rx="1.5" fill="#26130C"/>
+            <rect x="100" y="58" width="12" height="14" rx="1.5" fill="#26130C"/>
+            <rect x="50" y="80" width="8" height="16" rx="1.5" fill="#26130C"/>
+            <rect x="66" y="88" width="14" height="8" rx="1.5" fill="#26130C"/>
+            <rect x="88" y="82" width="10" height="10" rx="1.5" fill="#26130C"/>
+            <rect x="84" y="100" width="24" height="10" rx="1.5" fill="#26130C"/>
+            <rect x="54" y="104" width="18" height="8" rx="1.5" fill="#26130C"/>
+            <!-- Centro con ícono de miel -->
+            <rect x="46" y="46" width="28" height="28" rx="6" fill="#F59E0B"/>
+            <text x="60" y="64" text-anchor="middle" font-size="11" font-weight="800" fill="#26130C" font-family="Inter, sans-serif">MF</text>
+          </svg>
+        </div>
+
+        <!-- Selector de cantidad en el modal -->
+        <div class="flex items-center justify-between p-3 rounded-2xl bg-cacao-50 border border-cacao-200 mb-4">
+          <span class="text-xs font-semibold text-cacao-700">Cantidad de barras:</span>
+          <div class="flex items-center gap-3">
+            <button type="button" onclick="changeModalQty(-1)" class="w-8 h-8 rounded-xl bg-white border border-cacao-200 font-bold text-cacao-900 hover:bg-cacao-100">-</button>
+            <span id="modal-qty" class="font-extrabold text-cacao-900 w-5 text-center">1</span>
+            <button type="button" onclick="changeModalQty(1)" class="w-8 h-8 rounded-xl bg-white border border-cacao-200 font-bold text-cacao-900 hover:bg-cacao-100">+</button>
+          </div>
+          <span id="modal-total" class="text-sm font-extrabold text-miel-700">S/ 2.50</span>
+        </div>
+
+        <button onclick="copyOrderMessage()" class="w-full py-3.5 rounded-2xl bg-cacao-900 hover:bg-cacao-800 text-white font-semibold text-sm transition-colors">
+          Copiar texto del pedido para WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== NOTIFICACIÓN TOAST (Sin alert()) ==================== -->
+  <div id="toast-banner" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden px-5 py-3 rounded-full bg-cacao-900 text-white text-xs sm:text-sm font-semibold shadow-xl border border-cacao-700 items-center gap-2">
+    <span class="w-2 h-2 rounded-full bg-miel-400"></span>
+    <span id="toast-text">Mensaje copiado al portapapeles</span>
+  </div>
+
+  <!-- ==================== SCRIPTS DE INTERACTIVIDAD ==================== -->
+  <script>
+    // Ruta relativa por defecto de la fotografía del producto
+    const DEFAULT_PRODUCT_IMAGE = './miski.jpeg';
+
+    // Datos de las capas del primer plano del producto
+    const productLayers = [
+      {
+        title: "Cobertura de Chocolate & Cacao",
+        desc: "Capa superior intensa que satisface el antojo dulce desde el primer bocado."
+      },
+      {
+        title: "Endulzado con Miel Natural",
+        desc: "Aporta dulzor limpio y energía saludable, sin necesidad de azúcares dañinos."
+      },
+      {
+        title: "Base Horneada de Plátano, Avena y Choco Maní",
+        desc: "Textura suave y nutritiva horneada a 180 °C que te mantiene lleno en clases."
+      },
+      {
+        title: "Topping Crocante de Granola y Frutos Secos",
+        desc: "Aporta textura crujiente y grasas saludables en cada mordida."
+      }
+    ];
+
+    // Seleccionar detalle en el primer plano
+    function selectLayer(index) {
+      const titleEl = document.getElementById('layer-title');
+      const descEl = document.getElementById('layer-desc');
+      if (productLayers[index]) {
+        titleEl.textContent = productLayers[index].title;
+        descEl.textContent = productLayers[index].desc;
+      }
+    }
+
+    // Permitir subir otra foto real del producto en el espacio de primer plano
+    function handlePhotoUpload(event) {
+      try {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.getElementById('custom-product-image');
+          const resetBtn = document.getElementById('reset-photo-btn');
+          
+          img.src = e.target.result;
+          resetBtn.classList.remove('hidden');
+          showToast('Foto de primer plano cargada correctamente');
+        };
+        reader.readAsDataURL(file);
+      } catch (err) {
+        showToast('No se pudo cargar la imagen');
+      }
+    }
+
+    // Volver a la fotografía oficial por defecto (./miski.jpeg)
+    function resetPhoto() {
+      const img = document.getElementById('custom-product-image');
+      const resetBtn = document.getElementById('reset-photo-btn');
+      
+      img.src = DEFAULT_PRODUCT_IMAGE;
+      resetBtn.classList.add('hidden');
+    }
+
+    // Simulador financiero interactivo
+    function updateSimulator(unitsVal) {
+      const units = parseInt(unitsVal, 10);
+      const revenue = (units * 2.50).toFixed(2);
+      const cost = (units * 1.65).toFixed(2);
+      const net = (units * (2.50 - 1.65)).toFixed(2);
+
+      document.getElementById('sim-units-label').textContent = `${units} ${units === 1 ? 'barrita' : 'barritas'}`;
+      document.getElementById('sim-revenue').textContent = `S/ ${revenue}`;
+      document.getElementById('sim-cost').textContent = `S/ ${cost}`;
+
+      const statusEl = document.getElementById('sim-status');
+      if (units < 14) {
+        statusEl.textContent = `Faltan ${14 - units} unid. para punto de equilibrio`;
+        statusEl.className = 'text-sm font-bold text-cacao-300 mt-1';
+      } else if (units === 14) {
+        statusEl.textContent = `✓ Punto de equilibrio alcanzado (14 unid.)`;
+        statusEl.className = 'text-sm font-bold text-miel-400 mt-1';
+      } else {
+        statusEl.textContent = `✓ Superado • Margen acumulado: S/ ${net}`;
+        statusEl.className = 'text-sm font-bold text-emerald-400 mt-1';
+      }
+    }
+
+    // Control de Modal y Cantidad de Pedido
+    let modalQty = 1;
+
+    function openOrderModal() {
+      const modal = document.getElementById('order-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeOrderModal() {
+      const modal = document.getElementById('order-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function changeModalQty(delta) {
+      modalQty = Math.max(1, Math.min(20, modalQty + delta));
+      document.getElementById('modal-qty').textContent = modalQty;
+      document.getElementById('modal-total').textContent = `S/ ${(modalQty * 2.50).toFixed(2)}`;
+    }
+
+    // Copiar pedido al portapapeles de forma segura (sin alert)
+    function copyOrderMessage() {
+      const total = (modalQty * 2.50).toFixed(2);
+      const message = `¡Hola! Quisiera pedir ${modalQty} ${modalQty === 1 ? 'barra' : 'barras'} de MiskiFood (Total: S/ ${total}).`;
+      
+      const tempInput = document.createElement('textarea');
+      tempInput.value = message;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand('copy');
+        showToast('¡Pedido copiado! Pégalo en WhatsApp');
+      } catch (e) {
+        showToast('Listo para pedir: ' + message);
+      }
+      document.body.removeChild(tempInput);
+    }
+
+    // Mostrar notificación toast temporal
+    let toastTimeout;
+    function showToast(text) {
+      const toast = document.getElementById('toast-banner');
+      const toastText = document.getElementById('toast-text');
+      toastText.textContent = text;
+      toast.classList.remove('hidden');
+      toast.classList.add('flex');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('hidden');
+        toast.classList.remove('flex');
+      }, 3200);
+    }
+
+    // Cerrar modal al hacer clic fuera de la tarjeta
+    document.getElementById('order-modal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeOrderModal();
+      }
+    });
+  </script>
+</body>
+</html>
